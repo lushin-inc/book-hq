@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6F2E8">
+<title>Chop Wood Carry Water — Joshua Medcalf</title>
+<link rel="icon" href="img/cover.png">
+<link rel="apple-touch-icon" href="img/cover.png">
+<script>
+(function(){var t="light";try{t=localStorage.getItem("cwcw-theme")||"light";}catch(e){}
+document.documentElement.setAttribute("data-theme",t);})();
+</script>
+<style>
+@font-face{font-family:'Caladea';font-style:normal;font-weight:400;font-display:block;src:url('fonts/caladea-regular.woff2') format('woff2')}
+@font-face{font-family:'Caladea';font-style:italic;font-weight:400;font-display:block;src:url('fonts/caladea-italic.woff2') format('woff2')}
+@font-face{font-family:'Caladea';font-style:normal;font-weight:700;font-display:block;src:url('fonts/caladea-bold.woff2') format('woff2')}
+@font-face{font-family:'Carlito';font-style:normal;font-weight:400;font-display:block;src:url('fonts/carlito-regular.woff2') format('woff2')}
+@font-face{font-family:'Carlito';font-style:normal;font-weight:700;font-display:block;src:url('fonts/carlito-bold.woff2') format('woff2')}
+
+:root{
+  --paper:#F6F2E8; --ink:#1C1B18; --soft:#6E6A60;
+  --indigo:#2F4858; --cedar:#9A6234; --rule:#D6CDB8;
+  --panel:#FBF8F1; --plate:1;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --serif:"Caladea",Georgia,serif;
+  --sans:"Carlito","Helvetica Neue",Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  --paper:#15191C; --ink:#E9E3D7; --soft:#9A948A;
+  --indigo:#9FB6C4; --rule:#2C343A;
+  --panel:#1B2126;
+}
+html[data-theme="dark"]{ --cedar:#C9964F; }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-size:17px; line-height:1.62;
+  -webkit-tap-highlight-color:transparent;
+  transition:background-color .3s var(--ease), color .3s var(--ease);
+}
+.wrap{
+  max-width:44rem; margin:0 auto;
+  padding:2.4rem calc(1.25rem + env(safe-area-inset-left))
+          calc(4rem + env(safe-area-inset-bottom))
+          calc(1.25rem + env(safe-area-inset-right));
+}
+
+/* ---------------------------------------------------------- masthead */
+.mast{text-align:center}
+.cover{display:block; width:min(13rem,64%); margin:0 auto 1.5rem;
+  background:#fff; border:1px solid var(--rule); border-radius:2px;
+  box-shadow:0 1px 3px rgba(0,0,0,.10);}
+html[data-theme="dark"] .cover{filter:brightness(.86)}
+h1{font-family:var(--sans); font-weight:700; font-size:1.55rem; line-height:1.2;
+   letter-spacing:-.01em; margin:0 0 .3rem}
+.byline{font-family:var(--sans); font-size:.95rem; color:var(--soft); margin:0}
+
+/* ---------------------------------------------------------- buttons */
+.files{display:grid; gap:.6rem; margin:2.1rem 0 .4rem}
+@media(min-width:34rem){ .files{grid-template-columns:repeat(auto-fit,minmax(13rem,1fr))} }
+.file{
+  display:flex; align-items:center; justify-content:space-between; gap:.75rem;
+  min-height:52px; padding:.85rem 1.05rem; text-decoration:none;
+  background:var(--panel); border:1px solid var(--rule); border-radius:3px;
+  color:var(--ink); font-family:var(--sans); font-size:.94rem; line-height:1.25;
+  transition:border-color .25s var(--ease), transform .25s var(--ease);
+}
+.file:hover{border-color:var(--cedar)}
+.file:active{transform:translateY(1px)}
+.file .arw{color:var(--cedar); font-size:1.05rem; flex:none}
+
+/* ---------------------------------------------------------- mode bar */
+.bar{
+  position:sticky; top:0; z-index:20; margin:2.4rem 0 0;
+  background:var(--paper); border-bottom:1px solid var(--rule);
+  transition:background-color .3s var(--ease);
+}
+.modes{position:relative; display:flex; gap:1.6rem}
+.mode{
+  appearance:none; background:none; border:0; cursor:pointer;
+  font-family:var(--sans); font-size:.95rem; color:var(--soft);
+  padding:.95rem .1rem; min-height:44px;
+  transition:color .3s var(--ease);
+}
+.mode[aria-current="true"]{color:var(--ink)}
+.slide{position:absolute; bottom:-1px; height:1px; background:var(--cedar);
+  transition:transform .45s var(--ease), width .45s var(--ease)}
+.themer{
+  margin-left:auto; appearance:none; background:none; border:0; cursor:pointer;
+  min-width:44px; min-height:44px; color:var(--soft); font-family:var(--sans);
+  font-size:.95rem; transition:color .3s var(--ease);
+}
+.themer:hover{color:var(--ink)}
+
+/* ---------------------------------------------------------- views */
+.view{display:none}
+.view.on{display:block}
+
+/* ---------------------------------------------------------- entries */
+.entry{border-bottom:1px solid var(--rule)}
+.head{
+  width:100%; display:flex; align-items:flex-start; gap:1rem; text-align:left;
+  appearance:none; background:none; border:0; cursor:pointer; color:inherit;
+  padding:1.35rem 0; min-height:44px;
+}
+.num{font-family:var(--sans); font-size:.72rem; letter-spacing:.13em;
+  color:var(--cedar); padding-top:.42rem; flex:none}
+.name{font-family:var(--sans); font-weight:700; font-size:1.09rem; line-height:1.34;
+  flex:1; transition:color .25s var(--ease)}
+.head:hover .name{color:var(--cedar)}
+.sign{position:relative; width:15px; height:15px; flex:none; margin-top:.5rem}
+.sign i{position:absolute; left:0; top:7px; width:15px; height:1.5px;
+  background:var(--soft); display:block;
+  transition:transform .4s var(--ease), opacity .4s var(--ease)}
+.sign i.up{transform:rotate(90deg)}
+.entry.open .sign i.up{transform:rotate(0deg); opacity:0}
+
+.fold{display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s var(--ease)}
+.entry.open .fold{grid-template-rows:1fr}
+.fold > div{overflow:hidden}
+.inner{padding:0 0 1.7rem}
+
+.plate{display:block; width:34%; min-width:8.5rem; margin:0 0 1.15rem}
+html[data-theme="dark"] .plate{filter:invert(1)}
+.body{margin:0 0 1rem}
+.proof{margin:0 0 1.05rem; padding-left:1rem; border-left:2px solid var(--rule);
+  font-style:italic; color:var(--indigo)}
+.turn{font-family:var(--sans); font-weight:700; color:var(--cedar); margin:0}
+.when{color:var(--soft); margin:0 0 1rem}
+.care{margin:1.05rem 0 0; font-style:italic; font-size:.95rem; color:var(--soft)}
+
+/* ---------------------------------------------------------- plates */
+.plates{padding-top:1.6rem}
+.plates img{display:block; width:100%; max-width:26rem; margin:0 auto 2.6rem}
+html[data-theme="dark"] .plates img{filter:invert(1)}
+
+/* ---------------------------------------------------------- settle */
+.settle{opacity:0; transform:translateY(9px)}
+.ready .settle{opacity:1; transform:none;
+  transition:opacity .42s var(--ease), transform .42s var(--ease)}
+.ready .settle:nth-child(2){transition-delay:.05s}
+.ready .settle:nth-child(3){transition-delay:.10s}
+.ready .settle:nth-child(4){transition-delay:.15s}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important; animation:none !important}
+  .settle{opacity:1; transform:none}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast settle">
+<img class="cover" src="img/cover.png" alt="" onerror="this.remove()">
+<h1>Chop Wood Carry Water</h1>
+<p class="byline">Joshua Medcalf</p>
+</header>
+
+<nav class="files settle">
+<a class="file" href="./Chop Wood Carry Water - Important Insights and Action Guide.pdf">Insights and Action Guide<span class="arw" aria-hidden="true">&#8599;</span></a>
+<a class="file" href="./Chop Wood Carry Water - Spoken Companion.docx">Spoken Companion<span class="arw" aria-hidden="true">&#8599;</span></a>
+</nav>
+
+<div class="bar settle">
+<div class="modes">
+<button class="mode" id="mode-insights" data-mode="insights" aria-current="true">Insights</button>
+<button class="mode" id="mode-actions" data-mode="actions" aria-current="false">Actions</button>
+<button class="mode" id="mode-plates" data-mode="plates" aria-current="false">Plates</button>
+<button class="themer" id="themer" aria-label="Switch to dark">Dark</button>
+<span class="slide" id="slide" aria-hidden="true"></span>
+</div>
+</div>
+
+<main class="settle">
+<div class="view on" id="view-insights">
+<section class="entry" id="insight-1">
+<button class="head" aria-expanded="false"><span class="num">01</span><span class="name">You Are Always Building Your Own House</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/insight-01.png" alt="">
+<p class="body">Every day you are producing two things: the work, and the person doing the work. The work gets handed over, forgotten, or lost. The person is the only permanent output. Treat any assignment as something you are doing for someone else and you will quietly lower the standard, because the cost of lowering it seems to land on them.</p>
+<p class="proof">Kota built the finest houses in Tokyo for thirty years, hand-selecting every material. Asked to build one last house before retiring, he agreed with his head but not his heart — he delegated, details slipped, the house passed code and nothing more. When he finished, his boss handed him a small box with the keys inside. It was his house. It had been his the whole time.</p>
+<p class="turn">Before you cut a corner, ask who actually receives the cut. The answer is always the same person.</p>
+</div></div></div></section>
+<section class="entry" id="insight-2">
+<button class="head" aria-expanded="false"><span class="num">02</span><span class="name">With One Eye on the Goal, You Only Have One Eye for the Journey</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/insight-02.png" alt="">
+<p class="body">Attention is not additive. Whatever you give the outcome comes out of the process, and the process is the only place the skill is actually built. A related trap: treating situations as tests. If it is a test, you optimize for passing it. If it is an opportunity, you optimize for what you take out of it. Over years those two people end up in different places.</p>
+<p class="proof">John asks how long it will take to become a samurai archer. Ten years. And if he skips chopping wood and carrying water? Twenty. And if he gives every waking moment to archery alone? Thirty. Ice climbers who stare at the summit cannot see where to put a foot; they slip and they die.</p>
+<p class="turn">Judge your day by whether you did the work well, not by where the work left you on the scoreboard.</p>
+</div></div></div></section>
+<section class="entry" id="insight-3">
+<button class="head" aria-expanded="false"><span class="num">03</span><span class="name">Your Value Comes From Who You Are, Not From What You Do</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/insight-03.png" alt="">
+<p class="body">When identity is fused to performance, every result becomes a verdict on your worth — which inflates you when things go well, flattens you when they don&#x27;t, and quietly corrupts your decisions, because now every choice is also a defense of your value. The fix is to locate identity in something that cannot be taken away in a moment.</p>
+<p class="proof">John overtrains, tears his shoulder, and is put out of action for six to eight weeks. Akira asks him: you cannot shoot, you cannot chop wood or carry water — so who are you? John has no answer. Akira&#x27;s own: I am not a samurai archer; I am a human being who happens to be world class at archery.</p>
+<p class="turn">Answer the question now, in writing, while nothing has been taken away — because the day it is taken away is the worst day to start looking.</p>
+</div></div></div></section>
+<section class="entry" id="insight-4">
+<button class="head" aria-expanded="false"><span class="num">04</span><span class="name">Achievement Is Salt Water</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/insight-04.png" alt="">
+<p class="body">Achievement does not fill the hole people expect it to fill; it enlarges the thirst. If what you have accomplished so far has not done the job, more of it will not do the job either. The society-issued scorecard — win more, earn more, be seen more — is not a hard scorecard to top. It is an impossible one, which is a different problem entirely.</p>
+<p class="proof">Kobe Bryant says a sixth title will satisfy him and let him retire. Andre Agassi, after reaching number one in the world: “I thought that getting to number one was going to be the moment I made sense of my life. But it left me a little empty, and I spiraled down.”</p>
+<p class="turn">You need a scorecard of your own, made of characteristics rather than results, and you need to actually grade yourself on it.</p>
+</div></div></div></section>
+<section class="entry" id="insight-5">
+<button class="head" aria-expanded="false"><span class="num">05</span><span class="name">Growth Happens Underground Long Before It Happens in the Air</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/insight-05.png" alt="">
+<p class="body">Mastery moves in steps, not constants — long flat plateaus broken by sudden jumps. Feeling stuck is therefore not evidence of being stuck; it is the normal texture of the middle. And the invisible years are not wasted time before the growth. They are the structure that lets the growth hold.</p>
+<p class="proof">Plant bamboo in good soil and water it faithfully and you see nothing for roughly five years — while underground a dense mat of roots spreads out to carry weight that does not yet exist. Then it comes up ninety feet in six weeks. Height without roots is the story of people who arrive at success and cannot hold it.</p>
+<p class="turn">Measure the watering, not the height, and do not read a plateau as a verdict.</p>
+</div></div></div></section>
+<section class="entry" id="insight-6">
+<button class="head" aria-expanded="false"><span class="num">06</span><span class="name">Surrender the Outcome</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/insight-06.png" alt="">
+<p class="body">Partially controllable goals — winning, sales, someone else&#x27;s record — are alluring and dangerous, because pursuing them hard enough leaves a wake regardless of whether you arrive. Reaching the goal makes the wake easier to justify. It does not make it smaller. Surrender is not indifference; it is removing the one thing that makes you tight, forces your hand, and keeps you out of the moment.</p>
+<p class="proof">Akira drives all day through Croatian mountains to reach a waterfall, snapping at the woman he loves, ignoring her when she says she only wants to spend the day with him, ignoring locals who warn him off the trail — and finally, in the dark and the rain, having sent her back down with strangers, he turns around without ever seeing it.</p>
+<p class="turn">Name what you actually control, commit everything to it, and let the rest go before it costs you the people standing next to you.</p>
+</div></div></div></section>
+</div>
+<div class="view" id="view-actions">
+<section class="entry" id="action-1">
+<button class="head" aria-expanded="false"><span class="num">01</span><span class="name">Build Your Own Scorecard</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/action-01.png" alt="">
+<p class="body">List the people you genuinely admire and the characteristics they embodied that you would want to be known for. Narrow it to the four that matter most. Grade yourself on those four twice a day.</p>
+<p class="when">Set it up once. Grade at midday and again at night — midday so you still have an evening to correct what is slipping.</p>
+<p class="turn">Any situation, including a bad one, becomes a place to move a number you chose yourself rather than one the world assigned you.</p>
+<p class="care">Four, not eight. A scorecard you cannot hold in your head is a list, not a scorecard.</p>
+</div></div></div></section>
+<section class="entry" id="action-2">
+<button class="head" aria-expanded="false"><span class="num">02</span><span class="name">Keep a What Went Well Journal</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/action-02.png" alt="">
+<p class="body">Write a worth statement at the top — my value comes from who I am, not from what I do — then a growth statement: anything that happens to me today is in my best interest and an opportunity to learn and grow. Then fifteen specific things you did well. Then, and only then, two areas for growth and two things you learned.</p>
+<p class="when">After every training session, performance, or working day.</p>
+<p class="turn">Fifteen stops being hard. You start noticing good repetitions while they are happening rather than reconstructing them at night.</p>
+<p class="care">Two growth areas, never more — nobody can hold more than two in mind the next day. If you quit short of fifteen, beat yesterday&#x27;s stopping point by two.</p>
+</div></div></div></section>
+<section class="entry" id="action-3">
+<button class="head" aria-expanded="false"><span class="num">03</span><span class="name">Carry Your Principles in Your Pocket</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/action-03.png" alt="">
+<p class="body">Each morning, before the work starts, write out four to six principles you will hold to no matter what. Fold the paper and put it in your pocket.</p>
+<p class="when">Daily, and especially on days you can already feel your mood making decisions for you.</p>
+<p class="turn">When feelings surge, you touch the pocket or read the list aloud, and the decision is already made.</p>
+<p class="care">Borrow principles that have been tested for a long time rather than inventing clever ones. You will still slip; the practice is getting back on the road, not never leaving it.</p>
+</div></div></div></section>
+<section class="entry" id="action-4">
+<button class="head" aria-expanded="false"><span class="num">04</span><span class="name">Set Your Warrior Dial Before You Perform</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/action-04.png" alt="">
+<p class="body">Notice where your activation sits on a one-to-ten scale, decide where it needs to be for this particular task, and move it deliberately. Down: slow breathing, slower speech, lower voice, slower movement, calm music. Up: upbeat music, movement, anything that fires you.</p>
+<p class="when">In the minutes before anything that requires precision — and before the games that feel too big, which is exactly when everyone overshoots.</p>
+<p class="turn">You arrive at the line at your number instead of whatever number the occasion handed you.</p>
+<p class="care">Turning the dial down is much harder than turning it up, and most training cultures only ever practice up.</p>
+</div></div></div></section>
+<section class="entry" id="action-5">
+<button class="head" aria-expanded="false"><span class="num">05</span><span class="name">Take the Two-Minute Gratefulness Walk</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
+<div class="fold"><div><div class="inner">
+<img class="plate" src="img/action-05.png" alt="">
+<p class="body">Walk for two minutes naming everything you are grateful for, with deliberate attention on the things you normally take for granted.</p>
+<p class="when">Immediately after a loss, a bad session, or any moment you notice perspective has gone.</p>
+<p class="turn">You can feel the shift inside two minutes — and you are markedly easier to be around for the people who have to live with your result.</p>
+<p class="care">It works as a reset, not as a substitute for the reckoning. Do the walk, then have the honest conversation about what went wrong.</p>
+</div></div></div></section>
+</div>
+<div class="view plates" id="view-plates">
+<img src="img/insight-01.png" alt="">
+<img src="img/insight-02.png" alt="">
+<img src="img/insight-03.png" alt="">
+<img src="img/insight-04.png" alt="">
+<img src="img/insight-05.png" alt="">
+<img src="img/insight-06.png" alt="">
+<img src="img/action-01.png" alt="">
+<img src="img/action-02.png" alt="">
+<img src="img/action-03.png" alt="">
+<img src="img/action-04.png" alt="">
+<img src="img/action-05.png" alt="">
+</div>
+</main>
+
+</div>
+<script>
+(function(){
+  var root=document.documentElement;
+  var MODES=["insights","actions","plates"];
+
+  function paintTheme(t){
+    root.setAttribute("data-theme",t);
+    var m=document.querySelector('meta[name="theme-color"]');
+    if(m) m.setAttribute("content", t==="dark" ? "#15191C" : "#F6F2E8");
+    var b=document.getElementById("themer");
+    if(b){ b.textContent = t==="dark" ? "Light" : "Dark";
+           b.setAttribute("aria-label", t==="dark" ? "Switch to light" : "Switch to dark"); }
+  }
+
+  function slide(){
+    var live=document.querySelector('.mode[aria-current="true"]');
+    var s=document.getElementById("slide");
+    if(!live||!s) return;
+    s.style.width=live.offsetWidth+"px";
+    s.style.transform="translateX("+live.offsetLeft+"px)";
+  }
+
+  function show(mode){
+    MODES.forEach(function(m){
+      var v=document.getElementById("view-"+m);
+      if(v) v.classList.toggle("on", m===mode);
+      var b=document.getElementById("mode-"+m);
+      if(b) b.setAttribute("aria-current", m===mode ? "true" : "false");
+    });
+    slide();
+  }
+
+  function openEntry(el){
+    if(!el) return;
+    el.classList.add("open");
+    var h=el.querySelector(".head");
+    if(h) h.setAttribute("aria-expanded","true");
+  }
+
+  function route(){
+    var h=(location.hash||"").replace(/^#/,"");
+    if(MODES.indexOf(h)>-1){ show(h); return; }
+    var m=h.match(/^(insight|action)-(\d+)$/);
+    if(m){
+      show(m[1]==="insight" ? "insights" : "actions");
+      var el=document.getElementById(h);
+      openEntry(el);
+      if(el) requestAnimationFrame(function(){
+        el.scrollIntoView({block:"start", behavior:"smooth"});
+      });
+      return;
+    }
+    show("insights");
+  }
+
+  document.addEventListener("click", function(e){
+    var mb=e.target.closest(".mode");
+    if(mb){ location.hash=mb.dataset.mode; return; }
+
+    var tb=e.target.closest("#themer");
+    if(tb){
+      var next = root.getAttribute("data-theme")==="dark" ? "light" : "dark";
+      paintTheme(next);
+      try{ localStorage.setItem("cwcw-theme", next); }catch(err){}
+      return;
+    }
+
+    var hd=e.target.closest(".head");
+    if(hd){
+      var entry=hd.closest(".entry");
+      var open=entry.classList.toggle("open");
+      hd.setAttribute("aria-expanded", open ? "true" : "false");
+      if(open) history.replaceState(null,"","#"+entry.id);
+    }
+  });
+
+  window.addEventListener("hashchange", route);
+  window.addEventListener("resize", slide);
+
+  paintTheme(root.getAttribute("data-theme")||"light");
+  route();
+  requestAnimationFrame(function(){ slide(); document.body.classList.add("ready"); });
+})();
+</script>
+</body>
+</html>
