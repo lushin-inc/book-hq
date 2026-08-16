@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Ladder of Divine Ascent — A Study Companion</title>
+<meta name="description" content="A study companion to The Ladder of Divine Ascent by Saint John Climacus: the insights, the action guide, and reference pages.">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23161618'/%3E%3Cg stroke='%23f5f5f7' stroke-width='2' stroke-linecap='round' opacity='.9'%3E%3Cpath d='M11 26V7M21 26V7'/%3E%3Cpath d='M11 21.5h10M11 16.5h10M11 11.5h10'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  /* set theme before first paint so there is no flash */
+  (function () {
+    var t = "dark";
+    try { var s = localStorage.getItem("ladder.theme"); if (s === "light" || s === "dark") t = s; } catch (e) {}
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+<style>
+:root{
+  --bg:#0a0a0b;
+  --surface:#161618;
+  --surface-2:#1e1e21;
+  --hairline:rgba(255,255,255,.09);
+  --ink:#f5f5f7;
+  --ink-2:#a6a6ab;
+  --ink-3:#77777d;
+  --topbar:rgba(10,10,11,.72);
+  --card-shadow:none;
+  --tile-shadow:none;
+  --art-bg:#f2f2f4;
+  --art-filter:brightness(.92) contrast(1.02);
+  --invert-bg:#f5f5f7;
+  --invert-ink:#0a0a0b;
+}
+[data-theme="light"]{
+  --bg:#f5f5f7;
+  --surface:#ffffff;
+  --surface-2:#ffffff;
+  --hairline:rgba(0,0,0,.10);
+  --ink:#1d1d1f;
+  --ink-2:#515154;
+  --ink-3:#86868b;
+  --topbar:rgba(245,245,247,.78);
+  --card-shadow:0 1px 2px rgba(0,0,0,.04), 0 10px 30px rgba(0,0,0,.05);
+  --tile-shadow:0 1px 2px rgba(0,0,0,.05), 0 14px 34px rgba(0,0,0,.09);
+  --art-bg:#ffffff;
+  --art-filter:none;
+  --invert-bg:#1d1d1f;
+  --invert-ink:#ffffff;
+}
+
+/* section identity — one colour per section, used flat */
+.sec-start    { --c:#7d5440; --cm:#c08a62; }
+.sec-insights { --c:#8a6e36; --cm:#c9a45a; }
+.sec-actions  { --c:#8e4038; --cm:#d07c6e; }
+.sec-reference{ --c:#4f6b4a; --cm:#86a87c; }
+.sec-quick    { --c:#46527a; --cm:#8494c6; }
+.sec-images   { --c:#2e6265; --cm:#6baaad; }
+[data-theme="light"] .sec-start,[data-theme="light"] .sec-insights,[data-theme="light"] .sec-actions,
+[data-theme="light"] .sec-reference,[data-theme="light"] .sec-quick,[data-theme="light"] .sec-images{ --cm:var(--c); }
+
+*{box-sizing:border-box;-webkit-text-size-adjust:100%}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,'Segoe UI',sans-serif;
+  font-size:17px; line-height:1.55; letter-spacing:-.011em;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  min-height:100vh; padding-bottom:100px;
+  transition:background .3s ease, color .3s ease;
+}
+img{max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit;border:none;background:none}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.hide{display:none !important}
+
+/* ── top bar ─────────────────────────────────────────── */
+.topbar{position:sticky;top:0;z-index:40;background:var(--topbar);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--hairline)}
+.topbar-in{max-width:1040px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:10px}
+.nav{flex:1;min-width:0;display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;padding:6px 12px;border-radius:999px;font-size:14px;font-weight:500;letter-spacing:-.01em;white-space:nowrap;color:var(--ink-3);transition:color .2s ease,background .2s ease}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--surface-2);color:var(--ink)}
+[data-theme="light"] .nav a.on{background:rgba(0,0,0,.06)}
+.speechify{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:var(--invert-bg);color:var(--invert-ink);font-size:14px;font-weight:500;letter-spacing:-.01em;transition:opacity .2s ease}
+.speechify:hover{opacity:.82;color:var(--invert-ink)}
+.iconbtn{flex:0 0 auto;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:999px;color:var(--ink-3);cursor:pointer;padding:0;transition:color .2s ease}
+.iconbtn:hover{color:var(--ink)}
+.iconbtn svg{width:17px;height:17px;display:block}
+[data-theme="dark"] .i-sun{display:block}
+[data-theme="dark"] .i-moon{display:none}
+[data-theme="light"] .i-sun{display:none}
+[data-theme="light"] .i-moon{display:block}
+
+/* ── type ────────────────────────────────────────────── */
+h1,h2,h3{margin:0;font-weight:600}
+.display{font-size:clamp(34px,5vw,50px);line-height:1.06;letter-spacing:-.035em}
+.sec-title{font-size:clamp(30px,4.4vw,40px);line-height:1.1;letter-spacing:-.032em}
+.h2{font-size:26px;line-height:1.2;letter-spacing:-.025em;font-weight:600;margin:0 0 18px}
+.lede{font-size:19px;line-height:1.5;letter-spacing:-.015em;color:var(--ink-2)}
+.body{font-size:17px;line-height:1.55;color:var(--ink-2);margin:0;text-wrap:pretty}
+.label{font-size:12px;font-weight:600;letter-spacing:.055em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.intro{font-size:17px;line-height:1.5;color:var(--ink-3);max-width:62ch;margin:-6px 0 22px}
+
+/* ── section header ──────────────────────────────────── */
+.sechead{padding:56px 0 30px}
+.mark{width:38px;height:4px;border-radius:999px;background:var(--cm);margin-bottom:20px}
+
+/* ── surfaces ────────────────────────────────────────── */
+.card{background:var(--surface);border-radius:18px;padding:26px;box-shadow:var(--card-shadow)}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.stack{display:grid;gap:8px}
+
+/* ── home ────────────────────────────────────────────── */
+.hero{display:flex;flex-wrap:wrap;gap:44px;align-items:center;margin:56px 0 52px}
+.hero img{width:clamp(180px,36vw,280px);border-radius:12px;display:block;box-shadow:var(--tile-shadow)}
+.hero-copy{flex:1;min-width:280px}
+.hero .author{margin-top:12px;font-size:21px;letter-spacing:-.02em;color:var(--ink-3)}
+.hero p{margin:22px 0 0;max-width:48ch}
+.striphead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.arrows{display:flex;gap:6px}
+.arrow{width:30px;height:30px;border-radius:999px;background:var(--surface);color:var(--ink-3);font-size:15px;cursor:pointer;box-shadow:var(--card-shadow);transition:color .2s ease}
+.arrow:hover{color:var(--ink)}
+.strip{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:14px;margin-bottom:52px}
+.strip figure{flex:0 0 auto;width:min(80vw,420px);margin:0;scroll-snap-align:center;cursor:zoom-in}
+figure img{width:100%;display:block;border-radius:12px;background:var(--art-bg);filter:var(--art-filter);transition:filter .25s ease}
+figure:hover img{filter:none}
+figcaption{margin-top:10px;font-size:14px;line-height:1.45;color:var(--ink-3)}
+figcaption strong{color:var(--ink-2);font-weight:500}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.tile{display:flex;align-items:flex-end;min-height:210px;padding:26px;border-radius:22px;background:var(--c);color:#fff;box-shadow:var(--tile-shadow);transition:transform .25s cubic-bezier(.2,.7,.3,1),filter .25s ease}
+.tile:hover{color:#fff;transform:translateY(-3px);filter:brightness(1.08)}
+.tile .t-title{font-size:27px;font-weight:600;line-height:1.15;letter-spacing:-.025em}
+
+/* ── rows ────────────────────────────────────────────── */
+.movrow{display:flex;gap:20px;align-items:flex-start;background:var(--surface);border-radius:18px;padding:22px 24px;box-shadow:var(--card-shadow);transition:transform .2s ease}
+.movrow:hover{transform:translateY(-1px)}
+.movrow .num{font-size:15px;font-weight:600;color:var(--ink-3);letter-spacing:-.01em;padding-top:3px;min-width:44px}
+.movrow .mt{font-size:21px;font-weight:600;letter-spacing:-.02em}
+.movrow .ms{font-size:14px;color:var(--ink-3);margin-top:4px}
+.movrow p{margin:10px 0 0;font-size:16px;line-height:1.5;color:var(--ink-2)}
+
+/* ── insights ────────────────────────────────────────── */
+.filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;max-width:1040px;margin:0 auto;padding:0 24px 24px}
+.pill{padding:7px 14px;border-radius:999px;font-size:14px;font-weight:500;letter-spacing:-.01em;white-space:nowrap;cursor:pointer;background:var(--surface);color:var(--ink-2);box-shadow:var(--card-shadow);transition:background .2s ease,color .2s ease}
+.pill:hover{color:var(--ink)}
+.pill.on{background:var(--c);color:#fff}
+.pill.ghost{margin-left:auto;background:transparent;box-shadow:none;color:var(--ink-3)}
+.pill.ghost:hover{color:var(--ink)}
+.movhead{display:flex;gap:20px;align-items:baseline;padding:0 4px 14px;margin-bottom:12px;border-bottom:1px solid var(--hairline)}
+.movhead .num{font-size:14px;font-weight:600;color:var(--ink-3);min-width:44px}
+.movhead .mt{font-size:22px;font-weight:600;letter-spacing:-.022em;line-height:1.2}
+.movhead .ms{font-size:14px;color:var(--ink-3);margin-top:4px}
+.item{background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:var(--card-shadow)}
+.item-head{display:flex;gap:18px;align-items:flex-start;padding:22px 24px;cursor:pointer}
+.item-title{font-size:20px;font-weight:600;line-height:1.25;letter-spacing:-.022em}
+.item-pull{margin-top:8px;font-size:16px;line-height:1.45;color:var(--cm)}
+.plus{flex:0 0 auto;width:26px;height:26px;border-radius:999px;background:var(--surface-2);color:var(--ink-3);font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;transition:color .2s ease,background .2s ease}
+[data-theme="light"] .plus{background:rgba(0,0,0,.05)}
+.item-head:hover .plus{color:var(--ink)}
+.item-body{padding:0 24px 26px;display:grid;gap:22px}
+.item-body p{margin:0;font-size:17px;line-height:1.55;color:var(--ink-2);text-wrap:pretty}
+.example{border-left:2px solid var(--cm);padding-left:18px}
+.example p{color:var(--ink)}
+.inline-art{width:100%;display:block;border-radius:12px;background:var(--art-bg);filter:var(--art-filter);cursor:zoom-in;transition:filter .25s ease}
+.inline-art:hover{filter:none}
+
+/* ── actions ─────────────────────────────────────────── */
+.progressrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;max-width:1040px;margin:0 auto;padding:0 24px 26px}
+.track{flex:1;min-width:180px;height:5px;border-radius:999px;background:var(--hairline);overflow:hidden}
+.fill{height:100%;border-radius:999px;background:var(--ink);opacity:.85;transition:width .35s cubic-bezier(.2,.7,.3,1)}
+.plabel{font-size:14px;font-weight:500;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.clear{padding:6px 12px;border-radius:999px;font-size:14px;font-weight:500;cursor:pointer;color:var(--ink-3);transition:color .2s ease}
+.clear:hover{color:var(--ink)}
+.phasehead{padding:0 4px 14px;margin-bottom:12px;border-bottom:1px solid var(--hairline)}
+.phasehead .pt{font-size:22px;font-weight:600;letter-spacing:-.022em}
+.phasehead p{margin:8px 0 0;font-size:16px;line-height:1.5;color:var(--ink-3);max-width:68ch}
+.act-head{display:flex;gap:16px;align-items:flex-start;padding:20px 24px}
+.check{flex:0 0 auto;width:24px;height:24px;margin-top:2px;border-radius:999px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;background:var(--surface-2);color:transparent;transition:background .2s ease,color .2s ease}
+[data-theme="light"] .check{background:rgba(0,0,0,.06)}
+.check:hover{background:var(--hairline)}
+.check.done{background:var(--ink);color:var(--bg)}
+.act-title{flex:1;cursor:pointer;font-size:17px;font-weight:500;line-height:1.45;letter-spacing:-.015em;transition:color .2s ease}
+.act-title.done{color:var(--ink-3);text-decoration:line-through}
+.act-body{padding:0 24px 26px 64px;display:grid;gap:20px}
+.act-body p{margin:0;font-size:17px;line-height:1.55;color:var(--ink-2)}
+.caution{border-left:2px solid var(--cm);padding-left:18px}
+
+/* ── reference / quick ───────────────────────────────── */
+.defrow{display:flex;flex-wrap:wrap;gap:4px 24px;background:var(--surface);border-radius:16px;padding:20px 24px;box-shadow:var(--card-shadow)}
+.defrow .dt{flex:0 0 auto;width:170px;font-size:17px;font-weight:600;letter-spacing:-.018em;line-height:1.4}
+.defrow.wide .dt{width:210px}
+.defrow p{flex:1;min-width:240px;margin:0;font-size:16px;line-height:1.55;color:var(--ink-2);text-wrap:pretty}
+.dist{background:var(--surface);border-radius:16px;padding:22px 24px;box-shadow:var(--card-shadow)}
+.dist .dt{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--cm);letter-spacing:-.012em}
+.dist p{margin:0;font-size:16px;line-height:1.55;color:var(--ink-2);text-wrap:pretty}
+.rungs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px 32px}
+.rung{display:flex;gap:16px;align-items:baseline;padding:11px 4px;border-bottom:1px solid var(--hairline)}
+.rung .n{flex:0 0 auto;width:22px;text-align:right;font-size:14px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rung .t{flex:1;font-size:16px;line-height:1.45;color:var(--ink-2)}
+.principle{display:flex;gap:18px;align-items:baseline;background:var(--surface);border-radius:16px;padding:18px 22px;box-shadow:var(--card-shadow)}
+.principle .n{flex:0 0 auto;width:22px;font-size:14px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.principle .t{flex:1;font-size:17px;line-height:1.5;text-wrap:pretty}
+
+/* ── images ──────────────────────────────────────────── */
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+.gallery figure{margin:0;cursor:zoom-in}
+.strip.big figure{width:min(88vw,700px)}
+
+/* ── lightbox ────────────────────────────────────────── */
+.lightbox{position:fixed;inset:0;z-index:90;background:rgba(6,6,7,.86);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.lightbox img{max-width:100%;max-height:76vh;object-fit:contain;border-radius:12px;background:#fff}
+.lightbox .cap{margin-top:18px;color:#f5f5f7;font-size:15px;text-align:center;max-width:60ch}
+.lightbox .cap strong{font-weight:600}
+.lightbox .ctrls{margin-top:20px;display:flex;gap:10px;align-items:center}
+.lb-btn{width:42px;height:42px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer;transition:background .2s ease}
+.lb-btn:hover{background:rgba(255,255,255,.22)}
+.lb-count{color:rgba(245,245,247,.6);font-size:14px;min-width:56px;text-align:center;font-variant-numeric:tabular-nums}
+.lb-close{position:absolute;top:20px;right:20px}
+
+/* ── footer ──────────────────────────────────────────── */
+.foot{max-width:1040px;margin:72px auto 0;padding:0 24px;font-size:14px;line-height:1.5;color:var(--ink-3)}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap,.topbar-in,.filters,.progressrow,.foot{padding-left:18px;padding-right:18px}
+  .sechead{padding:38px 0 24px}
+  .hero{margin:36px 0 40px;gap:28px}
+  .tile{min-height:150px;padding:22px}
+  .tile .t-title{font-size:24px}
+  .card,.item-head,.act-head{padding-left:20px;padding-right:20px}
+  .item-body,.act-body{padding-left:20px;padding-right:20px}
+  .defrow .dt,.defrow.wide .dt{width:100%}
+  .movrow .num,.movhead .num{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <nav class="nav" id="nav"></nav>
+    <a class="speechify" href="https://speechify.app.link/qK39f70ex5b" target="_blank" rel="noopener"><span style="font-size:11px">&#9654;</span>Speechify</a>
+    <button class="iconbtn" id="themeBtn" aria-label="Toggle light and dark" title="Toggle light and dark">
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.5 1.5M17.3 17.3l1.5 1.5M18.8 5.2l-1.5 1.5M6.7 17.3l-1.5 1.5"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.2 8.2 0 0 1 9.5 4a8.3 8.3 0 1 0 10.5 10.5z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<div class="foot">Source text: The Ladder of Divine Ascent, translated by Archimandrite Lazarus Moore, 1959. All content is paraphrase.</div>
+
+<div id="lb"></div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────────────
+   CONTENT
+   To add an insight: append an object to the `ins` array of a movement.
+   To add an action: append to the `acts` array of a phase.
+   To add an illustration: drop the file in images/ and add a line to IMAGES.
+   ───────────────────────────────────────────────────────────────────────── */
+const DATA = {
+  IMAGES: [
+    { f: "01_one_rung_at_a_time.png", title: "One Rung at a Time", caption: "The order is the instruction. Next rung only." },
+    { f: "02_love_catches_fire.png", title: "Love Catches Fire", caption: "Fear ends in smoke. Reward turns in place." },
+    { f: "03_audience_test.png", title: "The Audience Test", caption: "If it dies when nobody is watching, praise was the water." },
+    { f: "04_name_it_in_the_dark.png", title: "Name It in the Dark", caption: "What is never named is done freely." },
+    { f: "05_fall_and_rise.png", title: "Fall and Rise", caption: "Falling is human. Staying down is not." },
+    { f: "06_opposite_act.png", title: "The Opposite Act", caption: "Repentance is hope's daughter, and its content is the opposite act." },
+    { f: "07_false_better_task.png", title: "The False Better Task", caption: "The sudden, more useful task at the appointed hour is the symptom." },
+    { f: "08_thought_vs_delight.png", title: "Thought vs. Delight", caption: "The thought is not the sin. The delight is the decision." },
+    { f: "09_prickly_pear.png", title: "The Prickly Pear", caption: "No posture is immune. Including the modest one." },
+    { f: "10_walk_past_lightning.png", title: "Walk Past the Lightning", caption: "Do not wrestle with it. Despise it and walk on." }
+  ],
+
+  WORDS: [
+    { t: "The passions", d: "Not strong feelings, but the settled, habitual disorders of a soul. John holds they are not natural and that God did not create them: nature gives us anger so we can be angry at the serpent, and we turned it on our neighbour. A passion is a good faculty bent out of direction and hardened there by habit, which is why he thinks it can be straightened." },
+    { t: "The eight capital vices", d: "Gluttony, lust, avarice, sorrow, anger, despondency, vainglory, pride. Three are treated as the root trio: love of pleasure, love of money, love of glory. When John asked the elders which vice fathers which, they told him the irrational passions have no order and no reason, but every sort of disorder and every kind of chaos." },
+    { t: "Dispassion (apatheia)", d: "Not apathy, indifference, or numbness. Freedom from passion through being filled with the Holy Spirit as a fruit of divine love: a state in which burning love for God and for people leaves no room for the selfish passions. John can speak of the fire of dispassion without contradiction." },
+    { t: "Stillness (hesychia)", d: "Both an outward condition, living alone rather than in community, and an inward one, a mind that has stopped churning. The word gave its name to hesychasm. John's warning: the outward version without the inward version is a man who jumped off a ship and expects to reach shore on a plank." },
+    { t: "Joy-grief (charmolype)", d: "John's signature compound: joy and sorrow at once, the specific quality of genuine repentance, which he insists is not misery. He calls it a pleasureless pleasure and says he is amazed that a thing called grief should contain gladness woven into it like honey in a comb." },
+    { t: "The frame", d: "The he in this book is a monk under vows, under a superior, owning nothing, expecting to die where he entered. John speaks to laypeople exactly once, in Step One, and briefly: do good, slander no one, steal from no one, lie to no one, hate no one, go to church, help the needy, wreck no marriage, be content with your own wife." }
+  ],
+
+  MOV: [
+    {
+      n: "One", title: "Cutting the Rope", steps: "Steps 1–4 · Renunciation · Detachment · Exile · Obedience",
+      blurb: "Departure treated as a technical operation with stages. John's interest is not whether you left but why, because he thinks the motive determines whether the departure holds.",
+      ins: [
+        { t: "The Three Motives, and Only One of Them Compounds", img: "02_love_catches_fire.png",
+          w: "Everyone who leaves the world does so for one of three reasons: fear of judgment, hope of reward, or love of God. John does not treat these as equally serviceable. He grades them by what happens to them over time.",
+          y: "This is a diagnosis of the failure mode of every long undertaking. Fear starts hot and cools. Reward-seeking sustains motion without producing movement. Only the third is self-amplifying, and John says the outcome is already determined at the outset by which one is operating.",
+          e: "The man who renounces the world out of fear is like burning incense, which begins in fragrance and ends in smoke. The man who leaves in hope of reward is like a millstone, which turns forever in the same place, revolving around itself. But the man who withdraws out of love has obtained fire at the very outset, and like fire set to fuel it soon kindles a larger fire.",
+          c: "Audit the motive rather than the behaviour, because two people doing identical things are on different trajectories. And when fervour is lost, John says it returns only through the same door by which it left, so find what took it and go back for it there, rather than substituting fresh resolve.",
+          p: "Fear ends in smoke. Reward turns in place. Only love catches fire from itself." },
+        { t: "Water-Loving Plants Die in Desert Soil", img: "03_audience_test.png",
+          w: "John watched people who kept austere disciplines in the world, vigils, fasts, hardships, enter the monastery and abandon all of it. He worked out why, and the answer was about what had been feeding the discipline rather than about the discipline itself.",
+          y: "It explains a phenomenon everyone has witnessed: the disciplined person whose discipline evaporates the moment there is no audience. And it means visible spiritual achievement is not evidence of anything until it has been moved somewhere unobserved.",
+          e: "In the world they had planted many different plants of the virtues, John says, and those plants were watered by vainglory as though by an underground sewage pipe, hoed by ostentation, and manured with praise. Transplanted to desert soil, where nobody was watching, they withered at once. Water-loving plants do not bear fruit in a hard and arid training field.",
+          c: "The test of a practice is not its difficulty but its survival in obscurity. John also identifies a third renunciation nobody expects, after the renunciation of possessions and of one's own will: the renunciation of the conceit that grows out of obedience itself.",
+          p: "If it dies when nobody is watching, praise was the water." },
+        { t: "Test the Physician, Then Stop Judging Him",
+          w: "John's account of obedience is the most extreme in the book. He calls it voluntary death and says a corpse does not argue about what is good. But he builds the safeguard in himself, at the front, and it is a two-stage rule.",
+          y: "Read only the second half and the teaching is dangerous. Read both halves and it is a considered position: the examination belongs before the commitment, and once made, second-guessing turns the whole exercise into an audit that produces nothing.",
+          e: "Before entering, John says, question and examine and even test your helmsman, so as not to mistake a sailor for the pilot, a sick man for a doctor, or the open sea for a harbour. But once you have entered the arena, stop judging him, even if you notice slight failings, since he is only a man. And match him to the disease: if you are prone to lust, do not choose a wonderworker who greets everyone with a meal, but an ascetic who will hear of no consolation in food. If you are haughty, let him be stern rather than kindly.",
+          c: "Diligence goes at the front, not throughout. And the selection criterion is fit to your particular sickness, not impressiveness, which inverts how people usually choose a teacher.",
+          p: "All the scrutiny before. None after. And choose for fit, not for stature." },
+        { t: "Confession Is a Bridle, Not a Report", img: "04_name_it_in_the_dark.png",
+          w: "The staged public confession of the robber at the Alexandrian monastery is the most theatrical scene in the book, and John asked the abbot afterwards why he had done it. The abbot gave a mechanism, not a sentiment.",
+          y: "John's claim is that unconfessed material behaves differently from confessed material, that the act of naming changes future behaviour rather than merely settling accounts on past behaviour. It is a claim about how restraint actually works.",
+          e: "The abbot gave two reasons: to deliver the penitent from future shame by means of present shame, and to induce the others in the brotherhood who were carrying unconfessed sins to confess too. And John states the mechanism directly: by resolving to make one's confession, the soul is held back from sinning as if by a bridle, since what we do not confess, we do fearlessly, as though in the dark.",
+          c: "It also rules out the sophisticated evasion. Do not confess your own sins as though they belonged to someone else, John says, and do not lay the blame elsewhere: say it is my wound, my plague, caused by my own negligence and nothing else. You cannot escape shame except by shame.",
+          p: "What is never named is done freely, in the dark." },
+        { t: "It Is the Property of Men to Fall and Rise", img: "05_fall_and_rise.png",
+          w: "Macedonius, the chief deacon demoted for returning a day late, later asked to be put back among the novices and invented a sin in order to stay there. John got him alone and asked why, and the answer became the most quoted line in the book.",
+          y: "This single sentence is why the Ladder, for all its severity, is not a counsel of despair. It relocates the diagnostic from falling to staying down, and it is the load-bearing distinction underneath every passage in the book about failure.",
+          e: "It is the property of angels not to fall, and even, as some say, quite impossible for them to fall. It is the property of men to fall, and to rise again as often as this may happen. But it is the property of devils, and devils alone, not to rise once they have fallen.",
+          c: "Falling stops being evidence about your character. John adds the physician's note: while a wound is fresh and warm it is easy to heal, but old, neglected, festering ones require much cutting and cauterizing, and many become incurable from long neglect. So speed of return, not absence of falls, is the thing to protect.",
+          p: "Falling is human. Staying down is not." },
+        { t: "The Second Snare Looks Exactly Like Progress",
+          w: "John names the two ways obedience fails. The first is discouragement. The second is the one that catches people who are doing well, and it arrives wearing the costume of the next stage.",
+          y: "Because the trap is not that the next stage is bad. It is that the first fruits of a discipline feel like a graduation certificate and are not one. This is the same structural problem John will devote Steps Twenty-Two and Twenty-Three to: the vice that feeds specifically on progress.",
+          e: "John saw people who under a good director became filled with compunction, meek, temperate, zealous, free of inner conflict, and fervent. And then the demons sowed the thought that they were now qualified for the solitary life and would attain freedom from the passions there as a final prize. Thus deceived, he says, they left the harbour and put out to sea, and when a storm came down they were pitifully endangered, because they had no pilots.",
+          c: "The first evidence that something is working is not permission to escalate. John's other half of the same warning: the devil suggests impossible virtues to those under obedience and unsuitable ideas to those in solitude. Each is tempted by the other's programme.",
+          p: "The first fruits of a discipline are not a licence to leave it." }
+      ]
+    },
+    {
+      n: "Two", title: "The Grief That Gladdens", steps: "Steps 5–7 · Repentance · Remembrance of Death · Mourning",
+      blurb: "The hardest material in the book for a modern reader, and the place where John says something genuinely unexpected. Everything here depends on accepting that mourning and gladness are not opposites.",
+      ins: [
+        { t: "Repentance Is the Daughter of Hope", img: "06_opposite_act.png",
+          w: "John's definitions of repentance are unusually good, and two of them cut against the picture most readers arrive with. It is not self-hatred and it is not primarily a feeling.",
+          y: "Self-hatred has already given up, so it cannot be repentance on John's account: despair and repentance are structurally opposed. And locating repentance in reversed behaviour rather than in remorse makes it something a person can actually do on a given morning.",
+          e: "Repentance is the renewal of baptism. It is a contract with God for a second life. A penitent is a buyer of humility. Repentance is the daughter of hope and the renunciation of despair. And: repentance is reconciliation with the Lord by the practice of good deeds contrary to the sins.",
+          c: "The measurable content of repentance is the deliberate practice of the opposite of the specific thing done, not a quantity of regret. And John's flat verdict on the alternative: nothing equals or excels God's mercies, therefore he who despairs is committing suicide.",
+          p: "Repentance is hope's daughter, and its content is the opposite act." },
+        { t: "The Prison, and the Author's Own Warning Label",
+          w: "John spent thirty days in the separate house of penitents a mile from the great monastery, and reports what he saw there in detail so extreme that he attaches a warning telling part of his audience not to read the chapter.",
+          y: "Because he understood that the same material produces opposite effects in different readers, and he says so rather than assuming one response. It is also the clearest instance in the book of John reporting rather than prescribing.",
+          e: "He describes men standing all night without moving, hands tied behind them like criminals, faces bent to the earth; knees that from the number of prostrations seemed to have turned to wood; cheeks scalded by hot tears. And then: I am fully aware that these struggles will seem to some incredible, to others hard to believe, and to some will seem to breed despair. To a courageous soul they will serve as a spur. But the careless man should leave my stories alone, in case he despairs and squanders even the little he has accomplished.",
+          c: "It licenses a reader to say this is not my rung without concluding that the book has nothing for him. John's own verdict on what he saw is the part to keep: I consider those fallen mourners more blessed than those who have not fallen and are not mourning, because as a result of their fall they have risen by a sure resurrection.",
+          p: "The same fire is a spur to one man and despair to another. Know which you are." },
+        { t: "The Hour of Death Is Hidden On Purpose",
+          w: "People evidently asked John why, if the remembrance of death is so useful, God has hidden the hour of it. His answer is that the hiddenness is not an obstacle to the practice but the condition of it.",
+          y: "It reframes uncertainty as mercy rather than as a defect, and it explains why John wants the thought of death held daily rather than calculated. He also distinguishes it sharply from morbidity, and grades four completely different conditions that all look like wanting to die.",
+          e: "No one who knew the date of his own death would come to baptism or the monastic life at once, John says. Everyone would spend all his days in wrongdoing and approach repentance only on the last day, and by then long habit would have confirmed him in vice and left him incorrigible. He also names the four: some pray for death out of habitual sin with humility, some invoke it out of despair, some out of self-esteem imagine themselves already free of passion, and some through the Holy Spirit genuinely long for it.",
+          c: "A man who wants the remembrance of death and material distraction at once, John says, is like a man swimming who wants to clap his hands. And the operational form: it is impossible to spend the present day devoutly unless we regard it as the last of our whole life.",
+          p: "The date is hidden so the thought can work every day." },
+        { t: "Joy-Grief, and the Sequence It Starts",
+          w: "Step Seven's title is On mourning which causes joy, and the argument is that grief and gladness are simultaneous rather than sequential. John then traces where it leads, and the trace is the whole arc of the book stated at rung seven.",
+          y: "Everything in the middle of the Ladder, the tears, the vigils, the self-accusation, is unintelligible and looks like misery unless this is true. And John places the arc early, twenty-three rungs before the summit, which tells you he thought the top was visible from the bottom.",
+          e: "When I consider the actual nature of compunction, he says, I am amazed that a thing called mourning and grief should contain joy and gladness woven within it like honey in a comb. There is no pleasureless pleasure in the soul, for God consoles those who are contrite of heart in a secret way. And then: tears over our departure produce fear. When fear begets fearlessness, joy dawns. And when joy is unfailingly obtained, holy love bursts into flower.",
+          c: "It supplies a test for whether a period of self-examination is the real thing: the real thing is a spur, not a weight, and it does not exclude gladness. John also says God does not desire that a man mourn from sorrow of heart but that out of love he rejoice with spiritual laughter. What is the use of a bandage where there is no wound?",
+          p: "Real grief over yourself has honey in the comb. If it only has weight, it is something else." },
+        { t: "Not All Tears Are the Same Tears",
+          w: "Having built a chapter on weeping, John spends much of it explaining that tears are unreliable evidence, and lists the many different sources they can have.",
+          y: "This is the safeguard that keeps his whole account from collapsing into emotional self-indulgence. Feeling is not the measure; John is explicit that the feeling can be manufactured by exactly the thing it is supposed to be curing.",
+          e: "Tears are born in many ways, John says: from nature, from God, from adverse suffering, from praiseworthy suffering, from vainglory, from licentiousness, from love, from the remembrance of death. So do not trust your fountains of tears before your soul has been purified, because wine cannot be trusted when it is drawn straight from the vat. And the diagnostic: when we see anger and pride in people who seem to be mourning in a way pleasing to God, their tears are to be regarded as repugnant to God.",
+          c: "Judge by the adjacent conduct, not the feeling. John's sharpest version: the man who is proud of his tears and secretly condemns those who do not weep is like a man who asks the king for a weapon against his enemy and then commits suicide with it.",
+          p: "Tears prove nothing on their own. Look at the temper standing next to them." },
+        { t: "Compunction That Arrives While You Are Slack Is Suspect",
+          w: "John identifies a timing trap that anyone who has attempted a discipline will recognize instantly, and it inverts the natural reading of one's own spiritual weather.",
+          y: "Because it explains the single most demoralizing pattern in any practice: the dry stretch that arrives precisely while you are keeping the discipline, and the warm feeling that arrives precisely while you are not.",
+          e: "If we watch carefully, John says, we shall often find a bitter joke played on us by the demons. When we are full, they stir us up to compunction, and when we are fasting they harden our hearts, so that, deceived by spurious tears, we give ourselves up to indulgence. We must not listen to them, but do the opposite.",
+          c: "Dryness during discipline is normal and not a verdict. Warmth during laxity is not a green light. He adds the image for the split life: the man who alternates mourning and indulgence is stoning the dog of sensuality with bread, in appearance driving it off, in fact teaching it to stay.",
+          p: "Feeling nothing while keeping the rule is not failure. Feeling much while breaking it is not permission." }
+      ]
+    },
+    {
+      n: "Three", title: "The Loud Passions", steps: "Steps 8–17 · Anger · Resentment · Slander · Talk · Lying · Despondency · Stomach · Chastity · Money · Poverty",
+      blurb: "The long middle: the war against the passions a person can see in himself. John defines each vice precisely, traces its parentage, grades the corresponding virtue by beginning, middle and end, and twice puts the vice on trial.",
+      ins: [
+        { t: "Shutting Your Mouth Is the Entry-Level Skill",
+          w: "John grades freedom from anger in three stages, and the ordering matters more than the definitions, because it tells a person which achievement they have actually made.",
+          y: "Most people who have stopped shouting believe they have dealt with their temper. John's grading says they have completed the first of three stages and that the remaining two are different accomplishments, not more of the same one.",
+          e: "The beginning of freedom from anger is silence of the lips when the heart is agitated. The middle is silence of the thoughts when there is a mere disturbance of soul. And the end is an imperturbable calm under the breath of unclean winds. He also refuses the excuse that a short temper is harmless: there is a quick movement of a millstone that in one moment grinds up more spiritual grain than another crushes in a whole day.",
+          c: "Locate yourself on the three-stage scale rather than in a binary. And John's rule for correcting others: do not hack at a splinter with a stick instead of a lancet, because you will drive it deeper. The Apostle said reprove, rebuke, exhort. He did not say beat.",
+          p: "Silence of the lips is stage one of three, not the finish line." },
+        { t: "The Real Test for Forgiveness",
+          w: "John gives a single diagnostic for whether resentment is gone, and he explicitly disqualifies the three things people usually offer as evidence.",
+          y: "It is the sharpest self-assessment tool in the book, it applies to anyone regardless of setting, and it identifies as intermediate stages exactly the acts most people treat as completion.",
+          e: "You will know that you have completely got rid of this rot, John says, not when you pray for the person who offended you, nor when you exchange presents with him, nor when you invite him to your table, but only when, on hearing that he has fallen into misfortune of body or soul, you suffer and weep for him as for yourself.",
+          c: "Every disqualified item is still a real achievement: John is grading, not dismissing. He adds two barbs: the remembrance of wrongs is an interpreter of Scripture that adjusts the words of the Spirit to its own views; and a man who dwells on wrongs and thinks he is repenting is like a man who dreams that he is running.",
+          p: "You have forgiven him when his misfortune hurts you." },
+        { t: "One Sentence That Stops Slander",
+          w: "John's remedy for gossip is a specific line to say out loud, and it is designed to accomplish two things at once rather than to win an argument.",
+          y: "Because refusing to participate in slander usually requires either a lecture or an awkward silence, and John's version requires neither. It also removes the moral high ground from the person refusing, which is the reason it works.",
+          e: "Do not pay attention to the feelings of a person who speaks disparagingly about his neighbour, John says, but say to him: stop, brother. I fall into graver sins every day, so how can I criticize him? In this way you achieve two things: you heal yourself and your neighbour with one plaster. And this is one of the shortest roads to the forgiveness of sins, which is simply not to judge.",
+          c: "He also supplies the epistemic argument, not just the moral one: some have fallen openly into great sins but have done greater good in secret, so their critics were tricked, getting smoke instead of the sun. And flatly: do not condemn, even if you see it with your own eyes, because eyes are often deceived.",
+          p: "I fall into worse every day, so how can I criticize him? Two people, one plaster." },
+        { t: "Despondency Arrives Disguised as a Better Task", img: "07_false_better_task.png",
+          w: "The Greek is akedia, not sadness and not clinical depression, but the specific collapse of motivation that attacks in the middle of a long commitment. John's portrait of it is the most acute psychological writing in the book.",
+          y: "Because the standard picture of sloth is wrong. Despondency does not make a person lazy about everything; it makes them energetic about anything except the one thing they committed to, and it presents the substitute as more virtuous than the original.",
+          e: "It is languid in singing psalms, weak in prayer, stubbornly bent on service, resolute in manual labour, and indifferent in obedience. It is a pretext for hospitality. It insists that by manual labour alms could be given. It urges us eagerly to visit the sick, recalling him who said, I was sick and you visited me. It reminds those standing at prayer of necessary duties, and leaves no stone unturned to find a plausible pretext for dragging us away from prayer as if with a halter.",
+          c: "Suspect the urgent good idea that arrives at the hour of the difficult thing. Its firstborn, on its own confession, is changing from place to place, so the impulse to relocate is a symptom, not a solution. Its named antidotes are psalmody and manual labour: singing and working with your hands, not resolve.",
+          p: "The sudden, more useful task at the appointed hour is the symptom." },
+        { t: "John Overrules Evagrius on Fasting",
+          w: "Evagrius, an earlier and enormously influential ascetic writer, had prescribed bread and water whenever the soul desires other foods. John rejects it outright and substitutes a graduated method, one of very few places where he openly contradicts an authority.",
+          y: "It shows the design principle underneath the whole book. John is not maximizing severity; he is designing for adherence, and he treats a rule that produces collapse as a bad rule regardless of who wrote it.",
+          e: "To prescribe that, he says, is like telling a child to go up the whole ladder in one stride. Instead: when our soul desires different foods, it is demanding what is proper to its nature. Deny yourself first fattening foods, then heating foods, and only then whatever makes food pleasant. And, remarkably: if possible, give your stomach satisfying and digestible food, so as to satisfy its insatiable hunger by sufficiency.",
+          c: "Reduce in stages, in a stated order, and feed the body enough of the right kind that it stops arguing. John also gives the mechanism: a man who burdens his stomach distends his inside, and a man who wars with it contracts it, and once contracted, we become fasters naturally.",
+          p: "Nobody goes up the whole ladder in one stride, least of all at the table." },
+        { t: "The Anatomy of Consent", img: "08_thought_vs_delight.png",
+          w: "In Step Fifteen John reports a six-part analysis, inherited from earlier Fathers, of the stages by which a thought becomes a sin. It is far more careful than anything a reader will be expecting from an ascetic manual.",
+          y: "Because it locates guilt at a precise point rather than diffusing it over the whole experience, and this is the standard by which the Christian East has assessed thoughts ever since. It is the difference between a usable conscience and a general sense of contamination.",
+          e: "Attraction is a simple conception, or an image encountered for the first time, which has lodged in the heart. Intercourse is conversation with what has presented itself. Consent is the bending of the soul to what has been presented, accompanied by delight. Captivity is a forcible and involuntary abduction of the heart. Struggle is a power equal to the attacking force. And passion, strictly, is what lurks in the soul so long that it becomes a habit. Of these, the first is without sin, the second not always, and the third is sinful or sinless according to the condition of the contestant.",
+          c: "A thought arriving is not a sin. Entertaining it may or may not be. Delighting in it is the point at which something has been decided. John also records, without resolving, something faster than all of this, what some Fathers called a flick of the mind, which introduces the passion without word, image, or passage of time.",
+          p: "The thought is not the sin. The delight is the decision." },
+        { t: "The Flesh Names Its Own Four Weaknesses",
+          w: "Step Fifteen ends with a dialogue in which John puts a series of unanswerable questions to his own body, and then lets the body reply. Its answer is entirely cooperative and gives away the whole strategy of the ladder.",
+          y: "Because the four handles it names are ranked, and the decisive one is not asceticism. At the most physical rung on the ladder, the body itself points to humility, which is precisely where the remaining fifteen rungs are heading.",
+          e: "If you know the deep and obvious weakness that is in both you and me, the flesh says, you have bound my hands. If you starve your appetite, you have bound my feet from going further. If you take the yoke of obedience, you have thrown off my yoke. If you obtain humility, you have cut off my head. John's own conclusion in the same step: it is impossible for anyone to conquer his own nature. Offer God the weakness of your nature, fully acknowledging your incapacity, and you will imperceptibly receive the gift of chastity.",
+          c: "Order the effort accordingly: honest admission of weakness first, restraint second, submission third, humility last and decisive. And stop treating the hardest rung as a matter of stronger resolve, which John says explicitly does not work.",
+          p: "Admission ties the hands. Restraint ties the feet. Obedience lifts the yoke. Humility takes the head." },
+        { t: "Generosity's Trajectory Runs the Wrong Way",
+          w: "John's treatment of money is brief, and its most useful sentence is about the direction a motive travels over time rather than about the amount a person holds.",
+          y: "Because it describes a drift that is invisible from inside. The generous phase and the grasping phase are the same disposition at two points in its development, which means present generosity is not evidence against the vice.",
+          e: "The beginning of the love of money is the pretext of almsgiving, John says, and the end of it is hatred of the poor. So long as a man is collecting, he is charitable; when the money is in hand, he tightens his hold. And: do not say you are collecting money for the poor, because the Kingdom was purchased with two mites.",
+          c: "He also ranks the two renunciations and prefers the harder: great is he who piously renounces possessions, but holy is he who renounces his own will. And he warns against pointless austerity: a man who impoverishes himself for no reason abstains from present goods and is deprived of future ones.",
+          p: "Charity while accumulating proves nothing. The grip shows up later." }
+      ]
+    },
+    {
+      n: "Four", title: "The Quiet Passions", steps: "Steps 18–23 · Insensibility · Sleep · Vigil · Cowardice · Vainglory · Pride",
+      blurb: "The more dangerous half of the war, because these vices do not look like vices. Vainglory and pride John treats as one disease at two ages, and he regards them as the reason spiritually advanced people fail.",
+      ins: [
+        { t: "The Portrait of the Man Who Reads About It and Does Nothing",
+          w: "John's chapter on insensibility contains a long portrait of a specific type, and it is unmistakably a portrait of the religious reader. He then admits, unusually, that he has this vice himself.",
+          y: "Because it names the failure mode of reading books like this one. The danger is not disagreement; it is fluent agreement that changes nothing, and John's list makes that condition visible enough to be uncomfortable.",
+          e: "He philosophizes about death and behaves as if he were immortal. He reads about the judgment and begins to smile. He reads about vainglory and is vainglorious while actually reading. He repeats what he has learned about keeping vigil and drops asleep on the spot. He praises prayer and runs from it as from the plague. He blesses obedience and is the first to disobey. He blesses silence and praises it with a spate of words. In front of others he blames himself for being vainglorious, and in blaming himself he is only angling for glory.",
+          c: "John says he could not have described its tricks without catching and holding it firmly himself, and he reports only partial results: vigil will relax its hold to some extent. He also gives the treatment rule: find out what caused it in you and fight its mother, because she is not the same in every case.",
+          p: "Agreeing with a book is the condition it was written to break." },
+        { t: "Vigil Is for Visibility, Not Endurance",
+          w: "John's short rungs on sleep and vigil are mostly reconnaissance, a catalogue of the specific tactics used against a man trying to get up and pray, and a statement of what night watching is actually for.",
+          y: "Because the usual assumption is that vigil is a feat of endurance offered up. John's reason is functional: at night the thoughts become catchable, because there is nothing else in the room.",
+          e: "A monk who denies himself sleep is a fisher of thoughts, and in the stillness of the night he can easily observe and catch them. And the tactics: some stand by our bed and urge us to lie down again, wait until the preliminary hymns are finished, then go to church. Others make us lean against the wall as though from fatigue. Some force us to hurry the reading merely out of laziness; others suggest we sing more slowly for the pleasure of it.",
+          c: "John also grades the ways of keeping vigil and refuses to insist on one, adding that God accepts and values the offerings of each according to their intention and power. And his counter to the whole catalogue is a realization rather than a technique: he who realizes he is standing before God will be as still as a pillar.",
+          p: "The night is quiet enough to see what you are thinking. That is the point of it." },
+        { t: "However You Throw the Prickly Pear, a Spike Stands Up", img: "09_prickly_pear.png",
+          w: "John's most famous passage on vainglory is a list of paired opposites in which he is caught either way, and its purpose is to establish that this vice cannot be handled by adjusting outward behaviour.",
+          y: "Because every previous rung was, in part, a behavioural adjustment, and this one demonstrates that the method has run out. Everything gained on the earlier rungs is exactly what vainglory has to work with.",
+          e: "I am vainglorious when I fast, and when I relax the fast so as not to be noticed, I am vainglorious again over my prudence. When I am well dressed I am overcome by vainglory, and when I put on poor clothes I am vainglorious again. When I talk I am defeated, and when I am silent I am defeated again. However I throw this prickly pear, a spike stands upright. He also states the structural point directly: the spirit of despair rejoices at the sight of increasing vice, and the spirit of vainglory at the sight of increasing virtue.",
+          c: "Stop looking for a version of the behaviour that is immune. And note John's account of praise as the loss itself: God often hides even the perfections we have obtained, but the man who praises us opens our eyes, and as soon as our eyes are opened, our treasure vanishes.",
+          p: "There is no posture this vice cannot use. Including the modest one." },
+        { t: "The Set of Things You Can Boast About Is Empty",
+          w: "John's argument against pride in Step Twenty-Three is not a moral appeal but a question of ownership, and if the reasoning is followed to the end it leaves nothing behind.",
+          y: "Because it makes humility a matter of accurate accounting rather than of self-deprecation. John elsewhere says explicitly that it is not the man who depreciates himself who shows humility, for who will not put up with himself, but the man who keeps the same love for someone who reproaches him.",
+          e: "Be exalted only by such merits as you had before your birth, John says, because what you got after your birth, and birth itself, God gave you. Only those virtues which you have obtained without the cooperation of the mind belong to you, because your mind was given you by God. Only such victories as you have won without the cooperation of the body have been accomplished by your own efforts, because the body is not yours but a work of God.",
+          c: "It also explains John's escalating scale of curability, and why pride sits this late on the ladder: men can cure the lustful, angels the malicious, but only God the proud. And he notes the blindness: the proud for the most part remain ignorant of themselves and imagine they are victorious over their passions.",
+          p: "Boast only about what you had before you were born." },
+        { t: "Pride Rides Along With Every Virtue You Have Acquired",
+          w: "In the third of the book's three interrogations, John forces pride to testify, and its confession includes a list of the company it keeps. Every item on the list is a rung already climbed.",
+          y: "Because it destroys the idea that there is a point on the ladder at which a person becomes safe. And it identifies the one thing pride admits it cannot touch, which turns out to be the only act in the book that cannot be performed for an audience.",
+          e: "We often accompany patience under dishonour, pride says, and obedience, and freedom from anger, and lack of resentment, and service of one's neighbour. Our offspring are the sins of spiritual people: anger, calumny, spite, irritability, shouting, blasphemy, hypocrisy, hatred, envy, disputing, self-will, disobedience. And then: there is only one thing in which we have no power to meddle. If you keep up a sincere condemnation of yourself before the Lord, you can count us as weak as a cobweb.",
+          c: "Pride is not the enemy of the ascent; it is the passenger. And the counter is not another visible virtue but an invisible internal act, which is why John will devote the next rung to a thing he says can only be taught from inside.",
+          p: "Everything you have gained is what it is riding on. The one exception is self-accusation nobody sees." },
+        { t: "Intrusive Blasphemy Is Not Yours, and Must Not Be Fought", img: "10_walk_past_lightning.png",
+          w: "John appends to the rung on pride a short section on intrusive blasphemous thoughts, arriving at the worst possible moment and often in church. His handling of it is the most pastorally valuable passage in the book.",
+          y: "Because the phenomenon is still common, still terrifies people, and is almost never confessed. John says no other thought is so hard to tell in confession, which is why it stays with people for life, destroying hope like a worm in a tree.",
+          e: "If these shameless words are my own, John asks, how could I worship after receiving the Gift? How can I praise and revile at one and the same time? No one need think the guilt lies within him, for the Lord is the knower of hearts and knows that such words do not come from us. As for method: he who wants to grapple with this demon in any other way is like a man trying to hold lightning in his hands. He who despises this foe is delivered from its torture.",
+          c: "Do not argue with it, do not analyse it, and do not treat its arrival as evidence about yourself. One monk fought it for twenty years with fasts and vigils, felt no benefit, then wrote it on a card and handed it to an elder, who smiled and said, lay your hand on my neck; on my neck be this sin, only, after this, ignore it. It was gone before he left the cell.",
+          p: "Do not wrestle with lightning. Despise it and walk on." }
+      ]
+    },
+    {
+      n: "Five", title: "The Summit", steps: "Steps 24–30 · Meekness · Humility · Discernment · Stillness · Prayer · Dispassion · Love",
+      blurb: "The register changes. Up to here John has mostly described things to do; from Step Twenty-Four he increasingly describes things that happen to a person, and repeatedly apologizes for attempting to write about them at all.",
+      ins: [
+        { t: "Meekness Is the Light You Need Before You Can Look at the Sun",
+          w: "John opens the last movement with an image that fixes its order, and he takes the order from the sentence in which Christ names the two virtues together.",
+          y: "Because it makes humility unreachable directly. If meekness is the precondition, then a person pursuing humility while still needing to win arguments is attempting the impossible, and John says impossible twice.",
+          e: "The morning light precedes the sun, he says, and the precursor of all humility is meekness. So before looking at the sun, which is humility, we must be illumined by the light, which is meekness, and then we can look at the sun with a clear gaze. It is impossible, absolutely impossible, to gaze on the sun before we have experienced that light. And his definition is not passivity: meekness is a rock overlooking the sea of irritability, which breaks all the waves that dash against it and remains completely unmoved.",
+          c: "It also makes temper an intellectual problem, not only a moral one. A quiet soul makes room for words of wisdom, John says; the souls of the meek are filled with knowledge, but an angry mind is a denizen of darkness and ignorance.",
+          p: "You cannot look at humility until you have stopped needing to be right." },
+        { t: "Humility Cannot Be Defined, Only Recognized",
+          w: "John convenes a committee on humility, lists six definitions from other men, admits none of them satisfied him, and then gives his own, which is a confession that the thing has no transmissible definition.",
+          y: "Because it is the strongest claim in the Ladder, and it determines what all the earlier rungs are for. If humility is taught only from inside, then the previous twenty-four rungs are not its cause but the clearing of space to receive it.",
+          e: "Having gathered what fell from the lips of those blessed fathers as a dog gathers crumbs from the table, John says, I gave my own definition. Humility is a nameless grace in the soul, its name known only to those who have learned it by experience. It is unspeakable wealth, a name and a gift from God, for it is said: learn not from an angel, not from man, and not from a book, but from me, that is, from me indwelling, from my illumination and action in you.",
+          c: "It rules out humility as a technique or a manner. But John still gives checkable signs: acceptance of indignity with pleasure, the loss of all bad temper, and a true distrust of one's own good qualities together with a constant desire to learn. And an interior set: an abundance of unspeakable light, an unutterable love for prayer, and before either, a heart that does not judge the faults of others.",
+          p: "Not from an angel, not from a man, and not from a book." },
+        { t: "The Three Pits",
+          w: "The most immediately usable passage in Step Twenty-Six: a description of three successive attacks on any attempt to do good, each with its own counter, and the third only becoming available once the first two have failed.",
+          y: "Because it maps the entire trajectory of a good undertaking, and it explains why success feels like the end of the danger when it is the beginning of the third attack. It is the Ladder's structure in miniature.",
+          e: "In all our actions in which we try to please God, John says, the demons dig three pits. In the first, they endeavour to prevent any good at all from being done. In the second, after their first defeat, they try to secure that it should not be done according to the will of God. And when they fail at that too, then, standing quietly before our soul, they praise us for living a thoroughly godly life. The first is to be opposed by zeal and fear of death, the second by obedience and humiliation, and the third by unceasing self-condemnation.",
+          c: "It tells you which counter to reach for by identifying which pit you are standing in, and the counters are not interchangeable. He also gives the companion image: drawing water from a well, we sometimes bring up a frog without noticing, and so gluttony comes up with hospitality, cunning with discernment, familiarity with humility, and behind all of them, vainglory.",
+          p: "Stopped, then spoiled, then praised. Three pits, three different counters." },
+        { t: "How to Learn What You Should Do",
+          w: "John gives a procedure for discerning God's will that has four steps and one surprising provision about the person you consult.",
+          y: "Because the provision is the whole point. John's guarantee attaches to the disposition of the person asking, not to the qualifications of the person answering, which makes the method available where a qualified director is not.",
+          e: "Those who wish to learn the will of the Lord must first mortify their own will. Then, having prayed to God with faith and honest simplicity, and having asked the fathers or even the brothers with humility of heart and no thought of doubt, they should accept the advice as though from the mouth of God, even if it is contrary to their own view, and even if the people consulted are not very spiritual. For God is not unjust, and will not lead astray souls who with faith and innocence humbly submit to the judgment of their neighbour.",
+          c: "It converts an unresolvable interior question into an answerable exterior one. John adds the caution about dithering: to waver for a long time without assurance is the sign of an unenlightened and ambitious soul. And the reassurance about attempting too much: God judges our repentance not by our labours but by our humility.",
+          p: "Kill your own preference first. Then ask. Then take the answer." },
+        { t: "Withdrawal Has an Audit",
+          w: "Before John will describe the solitary life, he lists the wrong reasons for entering it, seven of them, and then, almost wistfully, the right one. He then hands the reader the self-examination directly.",
+          y: "Because the outward act is identical in every case and the interior condition is not, and John thinks the wrong version does active harm. This is his single most transferable diagnostic for any withdrawal from other people.",
+          e: "Some enter this harbour, or rather this sea, or perhaps this abyss, because they cannot control their tongue; others because they cannot master their temper in crowded society; others because out of conceit they judged it better to sail at their own discretion than under direction; others to acquire glory from it. And then: let each look to see which step he is standing on. Is it self-will, or human glory, or weakness of tongue, or hot temper, or too great an attachment?",
+          c: "He supplies the outcome test, which settles the question after the fact. Signs of doing it rightly: an unruffled mind, a constant hunger for prayer, loss of talkativeness, a well of discernment. Signs of doing it wrongly: a dearth of spiritual wealth, an increase of anger, a hoard of resentment, a diminution of love, a growth of vanity.",
+          p: "If time alone makes you angrier and less loving, the withdrawal is the problem." },
+        { t: "Thanksgiving, Confession, Petition, and Few Words",
+          w: "John's instruction on the structure of prayer is three items in a fixed order, and his instruction on its length is emphatically for brevity, which is notable in a writer this fond of lists.",
+          y: "Because it removes the two commonest obstacles at once: not knowing how to begin, and believing that more elaborate words are better ones. And John gives a diagnostic afterwards that is checkable rather than felt.",
+          e: "Before everything else, let us list sincere thanksgiving first on our prayer card. On the second line, confession and heartfelt contrition of soul. And then let us present our petition to the King of all. And: do not attempt to talk much when you pray, in case your mind is distracted searching for words. One word of the publican propitiated God, and one cry of faith saved the thief. Loquacity leads to phantasy; brevity makes for concentration.",
+          c: "It also relieves the beginner of the wrong standard. God does not require of those still under obedience a prayer free of distraction. When your thoughts are stolen, do not despond, but recall your mind, indefinitely, since unbroken recollection belongs to angels. And the test afterwards: when you have prayed soberly, you will soon be fighting against fits of temper, for this is what our enemies aim at.",
+          p: "Thanks, then confession, then the ask. Keep it short. Then watch your temper." },
+        { t: "If You Cannot Reach the Palace, Get Inside the Wall",
+          w: "Step Twenty-Nine describes dispassion as heaven on earth and insists it admits of no gaps, and then, having set the standard impossibly high, John makes an explicit concession with three tiers.",
+          y: "Because it is the answer to the obvious objection that the summit of this book is unreachable. John agrees that it is, for most readers, and states a floor rather than leaving them with nothing.",
+          e: "Imagine dispassion as the celestial palace of the Heavenly King, and the many mansions as the dwellings within that city, and the wall of this celestial Jerusalem as the forgiveness of sins. Let us run to enter the bridal hall of this palace. If we are prevented by anything, by some burden or old habit, or by time itself, what a disaster, but let us at least occupy one of those mansions around the palace. And if we sink down and grow weak, let us make sure of being at least within the walls.",
+          c: "The palace is dispassion, the outbuildings are lesser attainments, and the wall is simply the forgiveness of sins. He makes the same concession about humility: hasten to the crest, or failing that climb onto her shoulders, and if you cannot manage even that, at least do not fall out of her arms.",
+          p: "Palace, outbuildings, or inside the wall. Take the highest you can get." },
+        { t: "Someone Is Standing at the Top of the Ladder",
+          w: "The book ends with John addressing love directly, asking how Jacob saw it fixed above the ladder, and receiving an answer. That answer reveals what the thirty rungs were a route to.",
+          y: "Because it settles the question of what the whole ascetic apparatus is for. If the summit is a person rather than a condition, then the fasting, vigils, tears, obedience and humiliations are instrumental all the way down, and none of them is the point.",
+          e: "Tell me, John asks: what are the means of such an ascent? I thirst to know the number of those steps, and the time needed for the ascent. And the answer, appearing as if from heaven and speaking in the ear of his soul: unless, beloved, you renounce your gross flesh, you cannot know my beauty. May this ladder teach you the spiritual combination of the virtues. On the top of it I have established myself, and now there remain faith, hope, love, these three, but the greatest of all is love.",
+          c: "It supplies the horizontal test that John gives for the whole thing: he who loves the Lord has first loved his brother, because the second is proof of the first. And: he who says he loves the Lord but is angry with his brother is like a man who dreams that he is running.",
+          p: "The thirty rungs are not a route to a condition. They are a route to a person." }
+      ]
+    }
+  ],
+
+  PHASES: [
+    { title: "Phase One — The Beginning", blurb: "The beginning is always about the mouth, the stomach, and telling the truth to one other person. Never about interior states.",
+      acts: [
+        { t: "Audit the motive before adjusting the behaviour.",
+          when: "At the start of anything you intend to sustain, and again whenever fervour drops.",
+          prob: "Fear-driven and reward-driven effort look identical to love-driven effort from outside, and they fail on schedule.",
+          win: "You can name which of the three is operating, and when fervour falls you go looking for the specific thing that took it rather than for fresh resolve.",
+          caution: "John says fervour returns only through the same door by which it left. Substituting a new discipline for the lost one is the standard mistake." },
+        { t: "Take the first of the three stages of anger: silence of the lips when the heart is agitated.",
+          when: "Now, and before attempting anything about interior calm.",
+          prob: "People who have stopped shouting believe the temper is dealt with. On John's grading they have completed one of three stages.",
+          win: "The mouth stays shut under provocation. Silence of the thoughts, and then calm under provocation, are separate later achievements.",
+          caution: "Do not mistake nursing resentment under cover of silence for stage one. John says he considered those men more pitiable than the ravers." },
+        { t: "Say the sentence when someone brings you gossip: I fall into graver sins every day, so how can I criticize him?",
+          when: "Every time, and out loud.",
+          prob: "Refusing to join in usually requires a lecture or an awkward silence. Both fail, and the lecture makes it worse.",
+          win: "The conversation stops without anyone being reproached from above. John: you heal yourself and your neighbour with one plaster.",
+          caution: "It only works if it is true when you say it. Said from the high ground it becomes the vice it was meant to avoid." },
+        { t: "Name one thing to one person who is entitled to hear it.",
+          when: "As soon as there is something you have decided not to say.",
+          prob: "What is never named is done freely, in the dark. John's claim is that confession alters future conduct, not just past accounts.",
+          win: "The specific thing is on the record with someone, in the first person, with no blame relocated.",
+          caution: "Do not confess your own material as though it were someone else's, and do not name a cause outside yourself. You cannot escape shame except by shame." },
+        { t: "Reduce at the table in stages, in John's stated order: fattening foods first, then heating foods, then whatever makes food pleasant.",
+          when: "Instead of any all-at-once restriction.",
+          prob: "Maximal rules produce collapse. John overrules Evagrius on exactly this point and calls the maximal version telling a child to climb the whole ladder in one stride.",
+          win: "The restriction survives a month. And, John adds, feed the body enough of the right food that it stops arguing: sufficiency, not minimum.",
+          caution: "John is regulating a monastic rule, not giving dietary advice. Take the design principle, stages and adherence over severity, rather than the specific stages." }
+      ] },
+    { title: "Phase Two — The Middle", blurb: "The middle is where the visible work is already going well and the failure modes become invisible. Almost every action here is a diagnostic rather than a discipline.",
+      acts: [
+        { t: "Apply the forgiveness test rather than the forgiveness gestures.",
+          when: "Whenever you believe a grievance is settled.",
+          prob: "Praying for the person, exchanging gifts, and having them at your table are all real achievements and none is the finish line.",
+          win: "News of misfortune striking them hurts you as your own would. Until then, John says the rot is still there.",
+          caution: "Do not use the test to conclude that the intermediate stages are worthless. John is grading them, not dismissing them." },
+        { t: "Suspect the urgent, more useful task that appears at the hour of the difficult thing.",
+          when: "Midway through any long commitment. John's noonday.",
+          prob: "Despondency does not present as laziness. It presents as hospitality, as visiting the sick, as necessary duties suddenly remembered at the hour of prayer.",
+          win: "You can name the substitution while it is happening. Its firstborn is the urge to change location, so a plan to move is a symptom to be logged, not acted on.",
+          caution: "Its own named antidotes are psalmody and manual labour: singing and working with your hands. Not resolve, and not analysis of the mood." },
+        { t: "Locate the sin at the point of delight, not at the point of arrival.",
+          when: "Any time an unwanted thought shows up.",
+          prob: "Treating arrival as guilt produces either scrupulosity or the conclusion that the whole framework is unliveable.",
+          win: "You can distinguish a thought lodging, conversing with it, and consenting to it with delight, and you attribute guilt only to the third.",
+          caution: "John also records something faster than all three, which some Fathers called a flick of the mind, and he does not claim to have resolved it. Do not build a system that requires the taxonomy to be complete." },
+        { t: "Run the withdrawal audit before and after any retreat from other people.",
+          when: "Before you go, and at intervals while you are there.",
+          prob: "The outward act is identical whether the motive is love of God, an ungovernable tongue, an ungovernable temper, conceit, or a desire for the reputation of it.",
+          win: "Before: you can name which of John's reasons is yours. After: an unruffled mind, hunger for prayer, less talk, more discernment.",
+          caution: "The failure signs are increase of anger, a hoard of resentment, diminution of love, growth of vanity. If time alone is producing those, the withdrawal is the problem and not the cure." },
+        { t: "Resolve stuck decisions by killing your own preference and then asking someone.",
+          when: "When a choice has been unresolved long enough to become a state rather than a question.",
+          prob: "Interior discernment about one's own case is exactly the discernment most compromised by self-interest.",
+          win: "You have surrendered the outcome you were hoping for, asked plainly, and taken the answer, including when it contradicts you.",
+          caution: "John's guarantee attaches to the disposition of the asker, not the qualifications of the answerer. And to remain undecided for a long time is, on his account, the mark of an unenlightened and ambitious soul." },
+        { t: "Pray thanksgiving, then confession, then petition. Keep it short.",
+          when: "Daily, at a set time, whether or not anything is felt.",
+          prob: "Not knowing how to start, and believing that more elaborate words are better ones.",
+          win: "The order holds and the words stay few. Then apply the after-test: soon you will be fighting fits of temper, and the state of your temper afterwards is the report.",
+          caution: "God does not require of a beginner a prayer free of distraction. When the thoughts are stolen, recall the mind and continue, indefinitely. Unbroken attention belongs to angels." }
+      ] },
+    { title: "Phase Three — The End", blurb: "The end of the ladder is not more effort but the removal of the last obstacle to something given. The actions here are mostly refusals, and one explicit permission to settle for less.",
+      acts: [
+        { t: "Stop looking for a version of the behaviour that vainglory cannot use.",
+          when: "As soon as you notice yourself adjusting conduct in order to be unnoticed.",
+          prob: "However you throw the prickly pear, a spike stands upright. Fasting, relaxing the fast, dressing well, dressing poorly, speaking, keeping silent, all available for display.",
+          win: "You keep the practice and drop the project of making it immune. Self-consciousness is treated as the loss itself rather than as the risk of a loss.",
+          caution: "This is not permission to stop hiding your practices. John still says to hide your manner of life wherever you go; he is only saying that hiding is not a solution to the vice." },
+        { t: "Handle praise mechanically, in John's three-step order.",
+          when: "The moment praise arrives, before responding to it.",
+          prob: "Praise opens the eyes to a perfection God was hiding, and as soon as the eyes are opened, the treasure vanishes.",
+          win: "First recall the multitude of your own sins. If that is insufficient, briefly recollect your death. If that too fails, at least fear the shame that follows honour.",
+          caution: "Deprecating yourself out loud is not the counter. John: it is not the man who depreciates himself who shows humility, but the man who keeps the same love for someone who reproaches him." },
+        { t: "Refuse to wrestle with intrusive blasphemous or violently obscene thoughts. Despise them and continue.",
+          when: "Immediately, and especially when they arrive at the worst possible moment.",
+          prob: "They arrive faster than deliberation, so any attempt to argue them down is trying to hold lightning in your hands, and twenty years of asceticism against them may accomplish nothing.",
+          win: "You stop treating their arrival as evidence about yourself, and stop analysing them. He who despises this foe is delivered from its torture.",
+          caution: "John says no thought is harder to confess, which is why it stays with people for life. Say it to one person. And note that he identifies judging one's neighbour as its root, which is removable." },
+        { t: "Practise the one act that cannot be performed for an audience: sincere self-accusation before God.",
+          when: "Continually, and specifically after anything has gone well.",
+          prob: "Pride's own confession is that it accompanies patience under dishonour, obedience, freedom from anger, lack of resentment, and service of one's neighbour: every rung already climbed.",
+          win: "Nothing observable. That is the design. Pride says: if you keep up a sincere condemnation of yourself before the Lord, you can count us as weak as a cobweb.",
+          caution: "The moment it becomes something you can be seen doing, or can congratulate yourself on having done, it has been converted into the thing it was meant to defeat." },
+        { t: "Take the highest tier you can actually reach, and do not treat the summit's inaccessibility as a verdict.",
+          when: "Whenever the standard in front of you is clearly beyond you.",
+          prob: "An unreachable summit produces either pretence or abandonment, and John regards despair as the one unrecoverable position.",
+          win: "Palace, outbuilding, or inside the wall, and the wall is simply the forgiveness of sins. On humility likewise: the crest, or her shoulders, or at minimum not falling out of her arms.",
+          caution: "The tiers are a floor, not a ceiling. John still says to run for the bridal hall. He is only refusing to let the reader stop because he cannot get there." },
+        { t: "Test every claim of spiritual progress horizontally, against one specific person.",
+          when: "Always, and in preference to any interior evidence.",
+          prob: "Interior states are the least reliable evidence available and the easiest to counterfeit, which is the burden of two-thirds of this book.",
+          win: "He who loves the Lord has first loved his brother, because the second is proof of the first. And one of the signs of humility, John says, is a heart that does not judge the faults of others.",
+          caution: "John's verdict on the alternative is blunt: he who says he loves the Lord but is angry with his brother is like a man who dreams that he is running." }
+      ] }
+  ],
+
+  DEFS: [
+    { t: "Obedience", d: "Absolute renunciation of one's own life, expressed in bodily action. The tomb of the will and the resurrection of humility. John's final formulation: the abandonment of discernment in a wealth of discernment." },
+    { t: "Repentance", d: "The renewal of baptism; a contract with God for a second life. The daughter of hope and the renunciation of despair. Reconciliation with God by the practice of good deeds contrary to the sins." },
+    { t: "Mourning", d: "A golden spur in a soul stripped of all attachment, fixed by holy sorrow to keep watch over the heart. Note: a spur, not a weight." },
+    { t: "Freedom from anger", d: "An insatiable appetite for dishonour, exactly as in the vainglorious there is an unbounded desire for praise." },
+    { t: "Meekness", d: "An unchangeable state of mind which remains the same in honour and in dishonour. A rock overlooking the sea of irritability, which breaks every wave and remains unmoved." },
+    { t: "Silence", d: "The mother of prayer, a recall from captivity, the preservation of fire, a supervisor of thoughts, a prison of mourning, a friend of tears, an opponent of the desire to teach, unseen progress, secret ascent." },
+    { t: "Despondency", d: "A slackness of soul, a weakening of the mind, hatred of the vow one has made. It accuses God of being merciless. Languid in prayer, resolute in manual labour." },
+    { t: "Fasting", d: "The coercion of nature, the uprooting of bad thoughts, purity of prayer, the light of the soul, a lull in chatter, a guard of obedience, an agent of dispassion, the gate of Paradise." },
+    { t: "Purity", d: "Putting on the angelic nature; the earthly heaven of the heart. A supernatural denial of nature, and therefore, John insists, not attainable by one's own effort." },
+    { t: "Poverty", d: "The resignation of cares, life without anxiety, an unencumbered traveller, alienation from sorrow. A poor monk is lord of the world." },
+    { t: "Insensibility", d: "Deadened feeling, which from long sickness and negligence lapses into loss of feeling. The mother of forgetfulness, which gives birth to loss of the fear of God, and then becomes the daughter of her own daughter." },
+    { t: "Vainglory", d: "A dissipation of labours, a waste of sweat, a betrayal of treasure, shipwreck in harbour. An ant on the threshing floor which, though small, has designs on all one's fruit." },
+    { t: "Pride", d: "Denial of God, the offspring of praise, a sign of sterility, flight from divine assistance, the precursor of madness, the herald of falls, an inhuman judge, a root of blasphemy." },
+    { t: "Humility", d: "A nameless grace in the soul, its name known only to those who have learned it by experience. Unspeakable wealth; a gift from God, taught from within rather than by angel, man, or book." },
+    { t: "Discernment", d: "In beginners, true knowledge of themselves. In intermediate souls, a spiritual sense that faultlessly distinguishes the truly good from the natural and from its opposite. In the perfect, knowledge by divine illumination." },
+    { t: "Stillness", d: "Solitude of the body is the ordering of one's habits and feelings; solitude of soul is the knowledge of one's own thoughts and an inviolable mind. And: unceasing worship and waiting upon God." },
+    { t: "Prayer", d: "The converse and union of man with God. The mother and also the daughter of tears; a bridge over temptations, a wall against afflictions, an axe for despair, the mirror of progress." },
+    { t: "Dispassion", d: "The interior heaven of the mind, which regards the tricks of the demons as mere toys. Some call it the resurrection of the soul before the body." },
+    { t: "Love", d: "By nature, a resemblance to God as far as that is possible for mortals; in its activity, inebriation of the soul; by its distinctive property, a fountain of faith, an abyss of patience, a sea of humility." },
+    { t: "Hope", d: "A wealth of hidden riches; a rest from labours; the door of love; the superannuation of despair; an image of what is absent. The failure of hope is the disappearance of love." }
+  ],
+
+  DISTINCTIONS: [
+    { t: "Falling vs. staying down", d: "It is the property of men to fall and rise as often as it happens; of devils alone not to rise once fallen. Falling is not the diagnostic." },
+    { t: "Contrition vs. self-knowledge vs. humility", d: "Contrition is the result of a fall. Self-knowledge is a true idea of one's growth and remembrance of one's slightest sins. Humility is neither, and is taught from within." },
+    { t: "Natural vs. supernatural fear of death", d: "As tin resembles silver but is not silver, so there is a clear difference for the discerning between the fear of death that comes from disobedience and terror at death, which is evidence of unrepented sin." },
+    { t: "The three renunciations", d: "Of business, people and parents; of one's own will; and, the one nobody expects, of the conceit that grows out of obedience itself." },
+    { t: "Attraction vs. consent vs. passion", d: "A thought lodging is without sin. Conversing with it may or may not be. Bending to it with delight is the decision. Long habituation is passion proper." },
+    { t: "Two glories", d: "You may be sure the glory is from God when you regard it as harmful and hide your manner of life. You will know the other kind when you do something, however trifling, hoping to be observed." },
+    { t: "Vainglory vs. pride", d: "The difference between a child and a man, or between wheat and bread. One is the beginning; the other is the end. John counts them as one vice, not two." },
+    { t: "Natural vs. recovered simplicity", d: "The natural kind is sheltered and blessed but its reward is not much. The kind grafted in with toil after repenting leads to the highest humility, and its reward is infinite." },
+    { t: "The consuming fire vs. the illuminating light", d: "One and the same fire. Those who still lack purification are burned by it; those further on are enlightened. Coming away from prayer having felt neither means one prayed bodily." },
+    { t: "Virtues vs. mothers of virtues", d: "A wise man goes after the mothers. God himself teaches those; there are plenty of teachers for the daughters." }
+  ],
+
+  STORIES: [
+    { t: "The robber at the church door", d: "Confessed everything before two hundred and thirty monks and was clothed as a monk the same hour. The abbot's stated reason: to deliver him from future shame by present shame, and to induce others carrying unconfessed sins to speak." },
+    { t: "Isidore at the gate", d: "A magistrate from Alexandria, found to be cruel, sly and arrogant. Stationed at the gate for seven years to prostrate to everyone passing. His account of the three stages: bitterness, then expectation of reward, then a self-assessment that had stopped thinking in terms of transaction at all." },
+    { t: "Laurence beside the table", d: "Eighty years old, forty-eight years in the community, second priest, left standing at the table through an entire meal without a word of explanation. He said he had stood praying not before a table of men but before the altar of God." },
+    { t: "Abbacyrus, fifteen years hungry", d: "Driven out of the refectory almost daily for being slightly too talkative. He knew he was being tested and said so: gold is not purified without trial. His last words were thanks to the men who had done it." },
+    { t: "Macedonius the archdeacon", d: "Demoted for returning a day late, restored after forty days, and then requested demotion again, inventing a sin to secure it. Source of the line about the property of angels, men, and devils." },
+    { t: "Acacius and the elder who said, I have committed murder", d: "Nine years of beatings under a careless elder. After his death the elder was answered from the grave, and afterwards lived in a cell by the tomb repeating that he had committed murder." },
+    { t: "Antiochus and the debt", d: "John the Sabbaite's own story, told as another man's. Three dreams: a debt of a hundred pounds of gold, a credit for ten, and finally a receipt in full, across sixteen years of deliberately sought humiliation." },
+    { t: "Hesychius the Horebite", d: "Wholly negligent, then briefly left his body during an illness. He walled up his door and lived twelve years in silence on bread and water. His only words at the end: no one who has acquired the remembrance of death will ever be able to sin." },
+    { t: "The Prison", d: "Thirty days among the penitents a mile from the monastery. John attaches his own warning: a spur to the courageous, and material the careless should leave alone." },
+    { t: "The elder who took the sin on his neck", d: "Twenty years of fasts and vigils against intrusive blasphemy, with no benefit. The elder read the card, smiled, and said: on my neck be this sin; only, after this, ignore it. It ended before the man left the cell." },
+    { t: "The demons who praised a discerning brother", d: "He answered: if you stop praising me, I shall conclude I am great; if you continue, from your praise I shall guess my impurity. So either leave, or praise me and give me more humility. They vanished." }
+  ],
+
+  RUNGS: ["Renunciation of the world","Detachment","Exile or pilgrimage","Blessed and ever-memorable obedience","Painstaking and true repentance","Remembrance of death","Mourning which causes joy","Freedom from anger, and meekness","Remembrance of wrongs","Slander or calumny","Talkativeness and silence","Lying","Despondency","The clamorous master — the stomach","Incorruptible purity and chastity","Love of money, or avarice","Poverty that hastens heavenwards","Insensibility","Sleep, prayer and psalmody in chapel","Bodily vigil, and spiritual vigil","Unmanly and puerile cowardice","The many forms of vainglory","Mad pride, and blasphemous thoughts","Meekness, simplicity, guilelessness","Most sublime humility","Discernment of thoughts, passions, virtues","Holy stillness of body and soul","Holy and blessed prayer","Godlike dispassion — heaven on earth","Faith, hope, and love"],
+
+  PRINCIPLES: ["It is the property of men to fall and rise again as often as it happens. Of devils alone, not to rise once fallen.","No one climbs a ladder in a single stride. The rungs are ordered, and the order is not decoration.","Fear ends in smoke. Reward turns in place. Only love catches fire from itself.","Fervour returns only through the same door by which it left.","If a practice dies when nobody is watching, praise was watering it.","All the scrutiny before you submit to a teacher. None after. And choose for fit to your sickness, not for stature.","What we never name, we do fearlessly, as though in the dark.","Real grief over yourself has honey in the comb. If it only has weight, it is something else.","Tears prove nothing alone. Look at the temper standing next to them.","Dryness while keeping the rule is normal. Warmth while breaking it is not permission.","Silence of the lips is stage one of three.","You have forgiven him when his misfortune hurts you.","The sudden, more useful task at the appointed hour is the symptom. Its firstborn is the urge to move.","Nobody goes up the whole ladder in one stride, least of all at the table.","The thought is not the sin. The delight is the decision.","Admission ties the hands, restraint the feet, obedience lifts the yoke, humility takes the head.","Charity while accumulating proves nothing. The grip shows up later.","Agreeing fluently with a book like this is the condition it was written to break.","However you throw the prickly pear, a spike stands upright.","Boast only about what you had before you were born.","Men can cure the lustful, angels the malicious, only God the proud.","Pride is not the enemy of the ascent. It is the passenger.","Do not wrestle with lightning. Despise it and walk on.","You cannot look at humility until you have stopped needing to be right.","Not from an angel, not from a man, and not from a book.","Stopped, then spoiled, then praised: three pits, three different counters.","Every virtue comes up out of the well with a vice around it, and vainglory behind them all.","Go after the mothers of the virtues. The daughters have plenty of teachers.","Kill your own preference first. Then ask. Then take the answer.","If withdrawal alone makes you angrier and less loving, the withdrawal is the problem.","Thanks, then confession, then the ask. Keep it short. Then watch your temper.","One fire is called both the flame that consumes and the light that illumines.","Palace, outbuildings, or inside the wall — and the wall is the forgiveness of sins.","The crest of humility, or her shoulders, or at least do not fall out of her arms.","He who says he loves the Lord and is angry with his brother is dreaming that he is running.","Someone is standing at the top of the ladder, and it is love."],
+
+  TILES: [
+    { href: "#start", eyebrow: "The argument and six words", title: "Start Here" },
+    { href: "#insights", eyebrow: "Five movements, thirty-four cards", title: "The Insights" },
+    { href: "#actions", eyebrow: "Beginning, middle, end", title: "The Action Guide" },
+    { href: "#reference", eyebrow: "Definitions, distinctions, stories", title: "Reference" },
+    { href: "#quick", eyebrow: "Thirty rungs, thirty-six principles", title: "Quick Reference" },
+    { href: "#images", eyebrow: "Ten sketches from the guide", title: "Illustrations" }
+  ],
+
+  NAV: [
+    { href: "#", label: "Home", key: "home" },
+    { href: "#start", label: "Start Here", key: "start" },
+    { href: "#insights", label: "Insights", key: "insights" },
+    { href: "#actions", label: "Actions", key: "actions" },
+    { href: "#reference", label: "Reference", key: "reference" },
+    { href: "#quick", label: "Quick Ref", key: "quick" },
+    { href: "#images", label: "Images", key: "images" }
+  ]
+};
+
+/* ── state ──────────────────────────────────────────── */
+var VIEWS = ["start","insights","actions","reference","quick","images"];
+var state = { view:"home", open:{}, actOpen:{}, done:{}, filter:"all", allOpen:false, light:-1 };
+var HAVE = {};            /* which image files actually exist */
+var PICS = [];            /* images present, in order — drives the lightbox */
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+function $(id){ return document.getElementById(id); }
+function load(k,f){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):f; }catch(e){ return f; } }
+function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+/* ── theme ──────────────────────────────────────────── */
+$("themeBtn").addEventListener("click",function(){
+  var next = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme",next);
+  try{ localStorage.setItem("ladder.theme", JSON.stringify(next).slice(1,-1)); }catch(e){}
+});
+
+/* ── image preflight: only show art that is actually in images/ ── */
+var COVERS = ["cover.jpg","cover.png","cover.jpeg"];
+function coverFile(){ for(var i=0;i<COVERS.length;i++){ if(HAVE[COVERS[i]]) return COVERS[i]; } return ""; }
+
+function preflight(done){
+  var files = COVERS.concat(DATA.IMAGES.map(function(i){return i.f;}));
+  var left = files.length, timer = setTimeout(finish, 1500), finished = false;
+  files.forEach(function(f){
+    var im = new Image();
+    im.onload = function(){ HAVE[f]=true; tick(); };
+    im.onerror = tick;
+    im.src = "images/"+f;
+  });
+  function tick(){ if(--left<=0) finish(); }
+  function finish(){
+    if(finished) return; finished = true; clearTimeout(timer);
+    PICS = DATA.IMAGES.filter(function(i){ return HAVE[i.f]; });
+    done();
+  }
+}
+function picIndex(file){ for(var i=0;i<PICS.length;i++){ if(PICS[i].f===file) return i; } return -1; }
+
+/* ── routing ────────────────────────────────────────── */
+function syncHash(){
+  var h = (location.hash||"").replace("#","");
+  state.view = VIEWS.indexOf(h)>=0 ? h : "home";
+}
+window.addEventListener("hashchange",function(){ syncHash(); render(); window.scrollTo(0,0); });
+
+/* ── nav ────────────────────────────────────────────── */
+function renderNav(){
+  $("nav").innerHTML = DATA.NAV.filter(function(n){
+    return n.key!=="images" || PICS.length>0;
+  }).map(function(n){
+    return '<a href="'+n.href+'" class="'+(state.view===n.key?"on":"")+'">'+esc(n.label)+'</a>';
+  }).join("");
+}
+
+/* ── views ──────────────────────────────────────────── */
+function head(title){
+  return '<div class="sechead"><div class="mark"></div><h2 class="sec-title">'+esc(title)+'</h2></div>';
+}
+function figureHTML(im,idx){
+  return '<figure data-pic="'+idx+'"><img src="images/'+im.f+'" alt="'+esc(im.title)+'" loading="lazy">'+
+         '<figcaption><strong>'+esc(im.title)+'</strong> &mdash; '+esc(im.caption)+'</figcaption></figure>';
+}
+
+function viewHome(){
+  var cf = coverFile();
+  var cover = cf ? '<img src="images/'+cf+'" alt="The Ladder of Divine Ascent">' : '';
+  var strip = "";
+  if(PICS.length){
+    strip =
+      '<div class="striphead"><div class="label" style="margin:0">Illustrations</div>'+
+      '<div class="arrows"><button class="arrow" data-scroll="strip1:-1" aria-label="Scroll left">&lsaquo;</button>'+
+      '<button class="arrow" data-scroll="strip1:1" aria-label="Scroll right">&rsaquo;</button></div></div>'+
+      '<div class="strip" id="strip1">'+PICS.map(figureHTML).join("")+'</div>';
+  }
+  var tiles = DATA.TILES.filter(function(t){
+    return t.href!=="#images" || PICS.length>0;
+  }).map(function(t){
+    var sec = t.href.replace("#","");
+    return '<a class="tile sec-'+sec+'" href="'+t.href+'"><div class="t-title">'+esc(t.title)+'</div></a>';
+  }).join("");
+  return '<div class="wrap">'+
+    '<div class="hero">'+cover+'<div class="hero-copy">'+
+      '<h1 class="display">The Ladder of Divine Ascent</h1>'+
+      '<div class="author">Saint John Climacus</div>'+
+      '<p class="lede">A graduated climb of thirty rungs, each resting on the one beneath it. The insights, the action guide, and the reference pages, drawn from the Lazarus Moore translation.</p>'+
+    '</div></div>'+ strip +
+    '<div class="tiles">'+tiles+'</div></div>';
+}
+
+function viewStart(){
+  var art = HAVE["01_one_rung_at_a_time.png"]
+    ? '<img class="inline-art" src="images/01_one_rung_at_a_time.png" alt="One rung at a time" data-pic="'+picIndex("01_one_rung_at_a_time.png")+'" loading="lazy" style="margin-top:22px">'
+    : '';
+  var words = DATA.WORDS.map(function(w){
+    return '<div class="card"><div class="item-title" style="margin-bottom:10px">'+esc(w.t)+'</div><p class="body" style="font-size:16px">'+esc(w.d)+'</p></div>';
+  }).join("");
+  var movs = DATA.MOV.map(function(m,i){
+    return '<a class="movrow" href="#insights" data-filter="m'+i+'"><div class="num">'+esc(m.n)+'</div><div style="flex:1">'+
+      '<div class="mt">'+esc(m.title)+'</div><div class="ms">'+esc(m.steps)+'</div><p>'+esc(m.blurb)+'</p></div></a>';
+  }).join("");
+  return '<div class="wrap sec-start">'+ head("Start Here")+
+      '<div class="grid-auto" style="margin-bottom:14px">'+
+        '<div class="card"><div class="label">The central question</div><p class="body" style="color:var(--ink);font-size:19px;line-height:1.45;letter-spacing:-.015em">What is the actual, ordered sequence of interior change that carries a person from a life ruled by the passions to a life ruled by love?</p></div>'+
+        '<div class="card"><div class="label">The central answer</div><p class="body">A graduated climb of thirty rungs, each resting on the one beneath it, in which practices break attachment, virtues displace vices, and humility acts as the hinge on which the whole structure turns. No one climbs it in a single stride, and no one climbs it alone.</p></div>'+
+      '</div>'+
+      '<div class="card" style="margin-bottom:46px"><div class="label">Why the order matters</div>'+
+        '<p class="body" style="margin-bottom:16px">John borrowed his image from Genesis, where Jacob sleeps at Bethel and sees a ladder set on the earth with its top reaching heaven. His ladder has thirty rungs, one for each year of Christ&rsquo;s hidden life before his baptism, and each rung takes a single subject: a thing to leave, a vice to fight, a virtue to acquire, or a state that can only be given.</p>'+
+        '<p class="body">The ordering is the whole architecture. Obedience produces humility; humility produces discernment; discernment produces insight, and insight foresight. Anger fathers resentment, resentment fathers slander, slander needs talkativeness as its door, and talkativeness gives birth to despondency. If the order is real, then a man who attacks his pride while leaving his stomach and his tongue alone is wasting his effort.</p>'+ art +
+      '</div>'+
+      '<div class="h2">Six Words You Will Need</div>'+
+      '<p class="intro">John writes in a technical vocabulary his original readers already knew. Without it, several of his most important sentences slide past.</p>'+
+      '<div class="grid-auto" style="margin-bottom:46px">'+words+'</div>'+
+      '<div class="h2">The Five Movements</div>'+
+      '<div class="stack">'+movs+'</div>'+
+    '</div>';
+}
+
+function viewInsights(){
+  var filters = [{k:"all",label:"All"}].concat(DATA.MOV.map(function(m,i){ return {k:"m"+i,label:m.title}; }));
+  var pills = filters.map(function(f){
+    return '<button class="pill '+(state.filter===f.k?"on":"")+'" data-pick="'+f.k+'">'+esc(f.label)+'</button>';
+  }).join("")+
+  '<button class="pill ghost" data-toggleall="1">'+(state.allOpen?"Collapse all":"Expand all")+'</button>';
+
+  var body = DATA.MOV.map(function(m,mi){
+    if(state.filter!=="all" && state.filter!=="m"+mi) return "";
+    var cards = m.ins.map(function(c,ci){
+      var id = mi+"-"+ci, open = !!state.open[id];
+      var art = (c.img && HAVE[c.img])
+        ? '<img class="inline-art" src="images/'+c.img+'" alt="'+esc(c.t)+'" data-pic="'+picIndex(c.img)+'" loading="lazy">'
+        : '';
+      return '<div class="item">'+
+        '<div class="item-head" data-open="'+id+'"><div style="flex:1">'+
+          '<div class="item-title">'+esc(c.t)+'</div><div class="item-pull">'+esc(c.p)+'</div></div>'+
+          '<div class="plus">'+(open?"&minus;":"+")+'</div></div>'+
+        (open ? '<div class="item-body">'+
+          '<div><div class="label">What it is</div><p>'+esc(c.w)+'</p></div>'+
+          '<div><div class="label">Why it matters</div><p>'+esc(c.y)+'</p></div>'+
+          '<div class="example"><div class="label">The strongest example</div><p>'+esc(c.e)+'</p></div>'+
+          '<div><div class="label">What it changes in practice</div><p>'+esc(c.c)+'</p></div>'+ art +
+        '</div>' : '')+
+      '</div>';
+    }).join("");
+    return '<div style="margin-bottom:46px"><div class="movhead"><div class="num">'+esc(m.n)+'</div><div>'+
+      '<div class="mt">'+esc(m.title)+'</div><div class="ms">'+esc(m.steps)+'</div></div></div>'+
+      '<div class="stack">'+cards+'</div></div>';
+  }).join("");
+
+  return '<div class="sec-insights">'+
+    '<div class="wrap">'+head("The Insights")+'</div>'+
+    '<div class="filters">'+pills+'</div>'+
+    '<div class="wrap">'+body+'</div></div>';
+}
+
+function viewActions(){
+  var total=0, done=0;
+  DATA.PHASES.forEach(function(ph,pi){ ph.acts.forEach(function(a,ai){ total++; if(state.done["a"+pi+"-"+ai]) done++; }); });
+  var pct = total ? Math.round(done/total*100) : 0;
+
+  var body = DATA.PHASES.map(function(ph,pi){
+    var acts = ph.acts.map(function(a,ai){
+      var id="a"+pi+"-"+ai, isDone=!!state.done[id], open=!!state.actOpen[id];
+      return '<div class="item">'+
+        '<div class="act-head">'+
+          '<button class="check '+(isDone?"done":"")+'" data-check="'+id+'" aria-label="Mark done">&#10003;</button>'+
+          '<div class="act-title '+(isDone?"done":"")+'" data-act="'+id+'">'+esc(a.t)+'</div>'+
+          '<div class="plus" data-act="'+id+'" style="cursor:pointer">'+(open?"&minus;":"+")+'</div>'+
+        '</div>'+
+        (open ? '<div class="act-body">'+
+          '<div><div class="label">When to use it</div><p>'+esc(a.when)+'</p></div>'+
+          '<div><div class="label">The problem it addresses</div><p>'+esc(a.prob)+'</p></div>'+
+          '<div><div class="label">What success looks like</div><p>'+esc(a.win)+'</p></div>'+
+          '<div class="caution"><div class="label">Caution</div><p>'+esc(a.caution)+'</p></div>'+
+        '</div>' : '')+
+      '</div>';
+    }).join("");
+    return '<div style="margin-bottom:46px"><div class="phasehead"><div class="pt">'+esc(ph.title)+'</div><p>'+esc(ph.blurb)+'</p></div>'+
+      '<div class="stack">'+acts+'</div></div>';
+  }).join("");
+
+  return '<div class="sec-actions">'+
+    '<div class="wrap">'+head("The Action Guide")+'</div>'+
+    '<div class="progressrow"><div class="track"><div class="fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="plabel">'+done+' of '+total+'</div>'+
+    '<button class="clear" data-clear="1">Clear</button></div>'+
+    '<div class="wrap">'+body+'</div></div>';
+}
+
+function viewReference(){
+  var defs = DATA.DEFS.map(function(d){
+    return '<div class="defrow"><div class="dt">'+esc(d.t)+'</div><p>'+esc(d.d)+'</p></div>';
+  }).join("");
+  var dist = DATA.DISTINCTIONS.map(function(d){
+    return '<div class="dist"><div class="dt">'+esc(d.t)+'</div><p>'+esc(d.d)+'</p></div>';
+  }).join("");
+  var stories = DATA.STORIES.map(function(s){
+    return '<div class="defrow wide"><div class="dt">'+esc(s.t)+'</div><p>'+esc(s.d)+'</p></div>';
+  }).join("");
+  return '<div class="wrap sec-reference">'+head("Reference")+
+      '<div class="h2">Definitions</div>'+
+      '<p class="intro">John defines by accumulation, heaping clauses until the thing is surrounded. These are condensed to their load-bearing phrases.</p>'+
+      '<div class="stack" style="margin-bottom:46px">'+defs+'</div>'+
+      '<div class="h2">Distinctions Worth Holding</div>'+
+      '<div class="grid-auto" style="margin-bottom:46px">'+dist+'</div>'+
+      '<div class="h2">The Stories Worth Keeping</div>'+
+      '<p class="intro">Step Four carries John&rsquo;s field reporting from a monastery near Alexandria, where he stayed, watched, and asked questions of everyone.</p>'+
+      '<div class="stack">'+stories+'</div>'+
+    '</div>';
+}
+
+function viewQuick(){
+  var rungs = DATA.RUNGS.map(function(t,i){
+    return '<div class="rung"><div class="n">'+(i+1)+'</div><div class="t">'+esc(t)+'</div></div>';
+  }).join("");
+  var pr = DATA.PRINCIPLES.map(function(t,i){
+    return '<div class="principle"><div class="n">'+(i+1)+'</div><div class="t">'+esc(t)+'</div></div>';
+  }).join("");
+  return '<div class="wrap sec-quick">'+head("Quick Reference")+
+      '<div class="h2">The Thirty Rungs</div>'+
+      '<div class="rungs" style="margin-bottom:46px">'+rungs+'</div>'+
+      '<div class="h2">The Principles</div>'+
+      '<div class="stack">'+pr+'</div>'+
+    '</div>';
+}
+
+function viewImages(){
+  return '<div class="wrap sec-images">'+head("Illustrations")+
+      '<div class="strip big" id="strip2">'+PICS.map(figureHTML).join("")+'</div>'+
+      '<div class="gallery">'+PICS.map(figureHTML).join("")+'</div>'+
+    '</div>';
+}
+
+/* ── lightbox ───────────────────────────────────────── */
+function renderLight(){
+  var i = state.light;
+  if(i<0 || !PICS.length){ $("lb").innerHTML=""; return; }
+  var im = PICS[i];
+  $("lb").innerHTML =
+    '<div class="lightbox" data-close="1">'+
+      '<img src="images/'+im.f+'" alt="'+esc(im.title)+'">'+
+      '<div class="cap"><strong>'+esc(im.title)+'</strong> &mdash; '+esc(im.caption)+'</div>'+
+      '<div class="ctrls">'+
+        '<button class="lb-btn" data-step="-1" aria-label="Previous">&lsaquo;</button>'+
+        '<div class="lb-count">'+(i+1)+' / '+PICS.length+'</div>'+
+        '<button class="lb-btn" data-step="1" aria-label="Next">&rsaquo;</button>'+
+      '</div>'+
+      '<button class="lb-btn lb-close" data-close="1" aria-label="Close">&#10005;</button>'+
+    '</div>';
+}
+document.addEventListener("keydown",function(e){
+  if(state.light<0) return;
+  if(e.key==="Escape"){ state.light=-1; renderLight(); }
+  if(e.key==="ArrowRight"){ state.light=(state.light+1)%PICS.length; renderLight(); }
+  if(e.key==="ArrowLeft"){ state.light=(state.light-1+PICS.length)%PICS.length; renderLight(); }
+});
+
+/* ── events ─────────────────────────────────────────── */
+document.addEventListener("click",function(e){
+  var t = e.target;
+
+  var step = t.closest("[data-step]");
+  if(step){ state.light=(state.light+ +step.getAttribute("data-step")+PICS.length)%PICS.length; renderLight(); return; }
+  var close = t.closest("[data-close]");
+  if(close){ state.light=-1; renderLight(); return; }
+
+  var pic = t.closest("[data-pic]");
+  if(pic){ var n=+pic.getAttribute("data-pic"); if(n>=0){ state.light=n; renderLight(); } return; }
+
+  var scroll = t.closest("[data-scroll]");
+  if(scroll){
+    var parts = scroll.getAttribute("data-scroll").split(":"), el = $(parts[0]);
+    if(el) el.scrollBy({ left: (+parts[1]) * Math.min(el.clientWidth*0.85, 700), behavior:"smooth" });
+    return;
+  }
+
+  var pick = t.closest("[data-pick]");
+  if(pick){ state.filter = pick.getAttribute("data-pick"); render(); return; }
+
+  if(t.closest("[data-toggleall]")){
+    state.allOpen = !state.allOpen;
+    state.open = {};
+    if(state.allOpen) DATA.MOV.forEach(function(m,mi){ m.ins.forEach(function(c,ci){ state.open[mi+"-"+ci]=true; }); });
+    render(); return;
+  }
+
+  var op = t.closest("[data-open]");
+  if(op){ var id=op.getAttribute("data-open"); state.open[id]=!state.open[id]; render(); return; }
+
+  var ck = t.closest("[data-check]");
+  if(ck){
+    var cid = ck.getAttribute("data-check");
+    if(state.done[cid]) delete state.done[cid]; else state.done[cid]=1;
+    save("ladder.done", state.done); render(); return;
+  }
+  var ac = t.closest("[data-act]");
+  if(ac){ var aid=ac.getAttribute("data-act"); state.actOpen[aid]=!state.actOpen[aid]; render(); return; }
+
+  if(t.closest("[data-clear]")){ state.done={}; save("ladder.done",{}); render(); return; }
+
+  var mf = t.closest("[data-filter]");
+  if(mf){ state.filter = mf.getAttribute("data-filter"); }
+});
+
+/* ── render ─────────────────────────────────────────── */
+function render(){
+  renderNav();
+  var html;
+  switch(state.view){
+    case "start": html=viewStart(); break;
+    case "insights": html=viewInsights(); break;
+    case "actions": html=viewActions(); break;
+    case "reference": html=viewReference(); break;
+    case "quick": html=viewQuick(); break;
+    case "images": html=PICS.length?viewImages():viewHome(); break;
+    default: html=viewHome();
+  }
+  $("app").innerHTML = html;
+}
+
+state.done = load("ladder.done",{});
+syncHash();
+preflight(render);
+</script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consulting Frameworks — Working Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --stable:#21245C;
+  --fresh:#00ADED;
+  --energetic:#0045C2;
+  --passionate:#E34554;
+  --fireball:#F05A28;
+  --limitless:#FAB040;
+  --black:#000;
+  --gray:#EDEDED;
+  --white:#fff;
+  --body:#333;
+  --subtle:#666;
+  --font:'Poppins',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  color:var(--body);
+  background:var(--white);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px 96px}
+
+/* ---------- nav ---------- */
+nav{
+  max-width:880px;margin:0 auto;padding:28px 24px 0;
+  display:flex;gap:26px;flex-wrap:wrap;
+}
+nav a{
+  font-size:12.5px;font-weight:500;letter-spacing:.02em;
+  color:var(--subtle);text-decoration:none;
+}
+nav a:hover{color:var(--stable)}
+nav a.on{color:var(--stable)}
+
+/* ---------- home ---------- */
+.pagetitle{
+  font-size:19px;font-weight:500;color:var(--stable);
+  padding:44px 0 28px;
+}
+.tiles{display:flex;flex-direction:column;gap:16px}
+.tile{
+  display:block;text-decoration:none;color:var(--white);
+  min-height:170px;border-radius:22px;
+  padding:34px 38px;
+  display:flex;flex-direction:column;justify-content:center;
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.tile:hover{transform:translateY(-3px)}
+.tile .big{
+  font-size:33px;font-weight:600;line-height:1.15;letter-spacing:-.01em;
+}
+
+.g1{background:radial-gradient(circle at 22% 18%,var(--fresh),var(--stable));box-shadow:0 14px 34px -14px rgba(33,36,92,.55)}
+.g2{background:radial-gradient(circle at 22% 18%,var(--fresh),var(--energetic));box-shadow:0 14px 34px -14px rgba(0,69,194,.5)}
+.g3{background:radial-gradient(circle at 78% 22%,var(--stable),var(--black));box-shadow:0 14px 34px -14px rgba(0,0,0,.55)}
+.g4{background:linear-gradient(115deg,var(--passionate),var(--fireball));box-shadow:0 14px 34px -14px rgba(227,69,84,.5)}
+.g5{background:linear-gradient(115deg,var(--fireball),var(--limitless));box-shadow:0 14px 34px -14px rgba(240,89,41,.45)}
+.g6{background:radial-gradient(circle at 80% 80%,var(--fresh),var(--energetic));box-shadow:0 14px 34px -14px rgba(0,69,194,.5)}
+.g7{background:radial-gradient(circle at 80% 80%,var(--fresh),var(--stable));box-shadow:0 14px 34px -14px rgba(33,36,92,.55)}
+
+/* ---------- section ---------- */
+.sechead{
+  border-radius:22px;padding:34px 38px 36px;color:var(--white);
+  margin:40px 0 44px;
+}
+.sechead .big{font-size:34px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+
+h2{
+  font-size:20px;font-weight:600;color:var(--stable);
+  margin:46px 0 16px;letter-spacing:-.005em;
+}
+h2:first-of-type{margin-top:0}
+h3{
+  font-size:15px;font-weight:500;color:var(--stable);
+  margin:26px 0 10px;
+}
+p{margin:0 0 14px;font-size:15.5px}
+ul{margin:0 0 18px;padding-left:0;list-style:none}
+li{
+  position:relative;padding-left:20px;margin-bottom:9px;font-size:15.5px;
+}
+li::before{
+  content:"";position:absolute;left:2px;top:11px;
+  width:5px;height:5px;border-radius:50%;background:var(--fresh);
+}
+li ul{margin:9px 0 0}
+li li::before{background:#b9bccc}
+strong{font-weight:600;color:var(--stable)}
+
+.callout{
+  background:var(--gray);border-left:4px solid var(--stable);
+  border-radius:0 12px 12px 0;padding:20px 24px;margin:22px 0 26px;
+}
+.callout .lbl{
+  font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--stable);margin-bottom:8px;
+}
+.callout p:last-child,.callout ul:last-child,.callout li:last-child{margin-bottom:0}
+
+.lushin{
+  background:var(--white);border:2px solid var(--fresh);
+  border-radius:14px;padding:20px 24px;margin:22px 0 26px;
+}
+.lushin .lbl{
+  font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--fresh);margin-bottom:8px;
+}
+.lushin p:last-child,.lushin ul:last-child{margin-bottom:0}
+
+.view{display:none}
+.view.on{display:block}
+
+@media(max-width:640px){
+  .tile{min-height:150px;padding:26px 26px}
+  .tile .big{font-size:26px}
+  .sechead{padding:28px 26px 30px}
+  .sechead .big{font-size:27px}
+  h2{font-size:18px}
+  .wrap{padding:0 18px 72px}
+  nav{padding:22px 18px 0;gap:18px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#positioning">Positioning</a>
+  <a href="#gig">Getting the gig</a>
+  <a href="#proposals">Proposals and fees</a>
+  <a href="#discovery">Discovery</a>
+  <a href="#teaching">Teaching and presenting</a>
+  <a href="#facilitating">Facilitating</a>
+  <a href="#closing">Closing the loop</a>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= HOME ================= -->
+<div class="view" id="v-home">
+  <div class="pagetitle">Consulting Frameworks — Working Guide</div>
+  <div class="tiles">
+    <a class="tile g1" href="#positioning"><span class="big">Positioning and personal brand</span></a>
+    <a class="tile g2" href="#gig"><span class="big">Getting the gig</span></a>
+    <a class="tile g3" href="#proposals"><span class="big">Proposals, scope, and fees</span></a>
+    <a class="tile g4" href="#discovery"><span class="big">Discovery</span></a>
+    <a class="tile g5" href="#teaching"><span class="big">Teaching and presenting</span></a>
+    <a class="tile g6" href="#facilitating"><span class="big">Facilitating and difficult people</span></a>
+    <a class="tile g7" href="#closing"><span class="big">Closing the loop</span></a>
+  </div>
+</div>
+
+<!-- ================= 1. POSITIONING ================= -->
+<div class="view" id="v-positioning">
+  <div class="sechead g1"><span class="big">Positioning and personal brand</span></div>
+
+  <h2>Narrow the niche on purpose</h2>
+  <p>The instinct when you go out on your own is to stay broad so you don't turn away work. That instinct costs money. Specificity wins for three separate reasons, and they stack.</p>
+  <ul>
+    <li><strong>Credibility.</strong> Nobody is an expert in all of marketing or all of leadership. Claiming the whole category reads as claiming none of it.</li>
+    <li><strong>Pricing power.</strong> Depth commands more than breadth. If someone wants a better tennis swing, they hire a tennis coach, not a personal trainer — and they pay the specialist rate without arguing.</li>
+    <li><strong>Findability.</strong> Buyers search by their problem, not by your category. They type the symptom. You want to be one of ten results for the exact symptom, not one of four hundred for the category.</li>
+  </ul>
+  <p>The specificity that feels too narrow usually isn't. A data analytics consultant who works only with rural hospitals — and only on modernizing their records so they have data worth analyzing, not on the analytics itself — has more work than she can take.</p>
+
+  <h2>The three questions that define the niche</h2>
+  <ul>
+    <li><strong>What do you have experience being successful at?</strong> Note the wording. Not what you're good at, and not what you're passionate about. Demonstrable professional success is the only thing a buyer will pay for.</li>
+    <li><strong>What does the market tell you?</strong> Expertise with no demand is a hobby. The target is the intersection of what you've proven you can do and a gap somebody is actively trying to close.</li>
+    <li><strong>What can you offer that no one else can?</strong> This is the value proposition, and it has to be written from the buyer's side of the table.</li>
+  </ul>
+  <p>If you can't answer the first one cleanly, ask colleagues. Not "what am I good at" — ask what problems of theirs you solved, and what stood out. People outside your head can name your niche faster than you can.</p>
+
+  <h2>Value proposition, mission, vision, purpose</h2>
+  <p>These get used interchangeably and shouldn't be.</p>
+  <ul>
+    <li><strong>Purpose</strong> is why you do it. Optional. If it isn't crystal clear to you already, don't manufacture one.</li>
+    <li><strong>Mission</strong> is what you do and for whom, described from your side.</li>
+    <li><strong>Value proposition</strong> is why a buyer would choose you, described from theirs. Same facts, opposite vantage point.</li>
+    <li><strong>Vision</strong> is what the world looks like if you succeed — bigger than your firm, not a revenue target.</li>
+  </ul>
+  <div class="callout">
+    <div class="lbl">The two you have to be able to say cold</div>
+    <p>Mission and value proposition. Anytime, no warm-up, no notes. Everything else is optional.</p>
+  </div>
+  <p>The strongest value propositions name a problem the buyer didn't know they had. Decluttering a house is a service. Decluttering the emotional attachment underneath the stuff is a value proposition — and it's why one of those businesses became a category and the other stayed a service.</p>
+
+  <h2>You are always representing the brand</h2>
+  <p>When you're the product, there's no off switch. A few things that matter more than they should:</p>
+  <ul>
+    <li><strong>Consistency with everyone, not just buyers.</strong> The organizational development consultant who bullies his own colleagues and charms his clients gets found out. Reputation travels faster than a sales cycle.</li>
+    <li><strong>Social media.</strong> Personal side is fine and even helpful — people want to see a human. Skip political posts, skip negative commentary on anyone else's work, skip editorializing generally.</li>
+    <li><strong>Handwritten thank-you notes.</strong> After a first meeting. After an engagement. For a referral, send something better than a note.</li>
+    <li><strong>Conservative on appearance.</strong> Not because it's fair, but because it's free. Nothing about how you're dressed should compete with what you're saying.</li>
+  </ul>
+
+  <h2>Traits worth scoring yourself against</h2>
+  <p>Write ten traits you'd honestly ascribe to yourself, then compare against this list. The gaps are the development plan.</p>
+  <ul>
+    <li><strong>Confident.</strong> Two specific tells: no pre-emptive apology before a question, and no rambling after asking one. Ask, then stop talking.</li>
+    <li><strong>Curious and persistent.</strong> When a client says they've tried everything and nothing works, that's the beginning of the conversation, not the end. They're too close to it — that's why you're there.</li>
+    <li><strong>Big-picture.</strong> Everything in an organization is connected to everything else. A sales team that starts fighting may not have a comp problem or a personality problem. One owner bought the empty floor upstairs and didn't say why, and three teams filled the silence with a rumor about new hires. Without the curiosity to reach the actual cause, you solve the wrong problem confidently.</li>
+    <li><strong>Flexible.</strong> Have frameworks, don't be captive to them. A consultant lost an engagement because she insisted on one specific personality instrument the buyer didn't believe in. There were ten other ways to get the same read. That's not a hill.</li>
+    <li><strong>Self-aware and realistic.</strong> Your work is not a cure for everything wrong in the organization. Don't claim impact outside what you actually do.</li>
+  </ul>
+</div>
+
+<!-- ================= 2. GETTING THE GIG ================= -->
+<div class="view" id="v-gig">
+  <div class="sechead g2"><span class="big">Getting the gig</span></div>
+
+  <h2>Point of contact is not the decision maker</h2>
+  <p>The right person is whoever can say yes. That is frequently not the person you'd actually work with day to day. Treat your contact as a partner, not an obstacle — but get in the room with the decision maker before a proposal exists.</p>
+  <p>Questions that surface who decides without making it an interrogation:</p>
+  <ul>
+    <li>Who is affected by this?</li>
+    <li>Who has the authority to approve it?</li>
+    <li>If you and I agree today on the approach, can we start — or does someone else sign off?</li>
+  </ul>
+  <p>Two things go wrong when you never meet the decision maker:</p>
+  <ul>
+    <li><strong>Your contact oversells you.</strong> Enthusiasm is flattering right up until you're accountable for a promise that never came out of your mouth.</li>
+    <li><strong>Your contact undersells the process.</strong> Something surprises the decision maker later, and now your credibility — and possibly your payment — is the thing in question.</li>
+  </ul>
+  <div class="callout">
+    <div class="lbl">Do not go around your contact</div>
+    <p>Reaching the decision maker by circumventing the person who let you in the door buys one meeting and costs the relationship. Make the case to your contact instead: everyone in the room now means no surprises later. If access truly isn't available, over-invest in the proposal, offer to answer questions at any time, and put the process in writing in more detail than feels necessary.</p>
+  </div>
+
+  <h2>Frame by role, not by service</h2>
+  <p>Same capability, different pitch. A development officer wants to know how this helps them raise money. A CFO wants cost and return. Both are legitimate framings of one service, and picking the wrong one loses the room.</p>
+  <p>The underlying rule holds everywhere: buyers do not care what you do. They care how you help. Lead with outcomes. Process only matters to the buyers who care about process, and you find that out by knowing who you're talking to.</p>
+  <p>Do the homework. Most cold outreach fails on this alone — pitching enrollment services to someone whose job has nothing to do with enrollment wastes their time and yours, and kills the chance of a referral to the right person.</p>
+
+  <h2>Length discipline</h2>
+  <ul>
+    <li><strong>Formal pitch:</strong> thirty to forty-five minutes.</li>
+    <li><strong>Inside a normal meeting:</strong> five minutes, maximum.</li>
+  </ul>
+  <p>Five minutes that covers everything is a written and rehearsed thing, not an improvised thing. Script it once by role, then tweak per situation. The script is reusable; the improvisation isn't.</p>
+
+  <h2>Do not discuss cost in the first meeting</h2>
+  <p>The first meeting exists so both sides can identify fundamentals: their need, your service, and whether there's a fit. Naming a number before you understand scope guarantees you're wrong in one direction or the other. Tell them plainly you need time to analyze and put a proposal together. That answer is itself a credibility signal.</p>
+
+  <h2>The needs assessment question set</h2>
+  <p>Keep these in your back pocket so you can run the assessment inside the first meeting if that's all the time you get.</p>
+  <ul>
+    <li><strong>What's the problem?</strong> Then five whys on whatever they say. Never accept the first answer as the real one.</li>
+    <li><strong>What's the impact, and on whom?</strong> On staff, on customers, on the number. What are people doing that they shouldn't, and not doing that they should?</li>
+    <li><strong>When did it start and how long has it been running?</strong></li>
+    <li><strong>Where does it show up?</strong> Which department, which process, which handoff.</li>
+    <li><strong>What have you already tried, and why didn't it work?</strong> The most-skipped question in the set, and usually the most productive. Five whys here too.</li>
+    <li><strong>What haven't I asked that I should have?</strong></li>
+  </ul>
+  <div class="lushin">
+    <div class="lbl">Where this lands for us</div>
+    <p>This is the pain funnel with a slightly different sequence and one addition worth stealing: the closing question. "What haven't I asked that I should have" hands them the pen and regularly surfaces the thing they were waiting to see whether you'd find.</p>
+    <p>The other thing worth noticing — asking all six of these often forces the decision maker to connect you with other people, because they can't answer them all. That's how you earn discovery without having to sell discovery.</p>
+  </div>
+
+  <h2>Resistance and the three-times rule</h2>
+  <p>Overt resistance is easy. The useful pattern is the quiet kind: when a buyer asks the same question or makes the same statement a third time, that's not a question anymore. Answer the first two in good faith. The third time, stop answering and start asking.</p>
+  <p>Sequence:</p>
+  <ul>
+    <li><strong>Reframe it internally first.</strong> Resistance is about something inside them, not about you. Stewardship of a budget. Fear of change — which people feel even when they know the current state is broken, because change is scarier than dysfunction.</li>
+    <li><strong>Then name it out loud.</strong> "That's the third time you've raised that, so I don't think my answer landed. What's underneath the concern for you?"</li>
+  </ul>
+  <p>The analogy that makes this stick: a teacher asks a question, nobody answers, and the teacher — uncomfortable with silence — answers it themselves. No learning happens. The better move is curiosity about the silence. Ask whether the question was clear. Almost every time it wasn't. Same in a sales meeting: answer your own objection and nothing gets resolved, so nothing gets bought.</p>
+  <p>Rehearse this. Pick an account you want, name two concerns they'd raise, then work through answering twice and naming it the third time. Visualization builds the pathway, so the real version feels like something you've done before.</p>
+
+  <h2>The persuasion levers that actually apply</h2>
+  <p>Of the six classic principles, three carry the weight in consultative selling:</p>
+  <ul>
+    <li><strong>Liking.</strong> People buy from people they want to be around.</li>
+    <li><strong>Authority.</strong> Credibility earned, demonstrated, and specific.</li>
+    <li><strong>Reciprocity.</strong> Add value in the meeting whether or not you get the work. The buyer who remembers your integrity refers you later — including the buyer who told you no.</li>
+  </ul>
+  <p>Which is a long way of saying the sale is trust plus a real relationship. The best salespeople are rarely the sharpest ones in the room. They're the ones who put the buyer's actual need first and got a reputation for it.</p>
+</div>
+
+<!-- ================= 3. PROPOSALS ================= -->
+<div class="view" id="v-proposals">
+  <div class="sechead g3"><span class="big">Proposals, scope, and fees</span></div>
+
+  <h2>A proposal confirms; it doesn't persuade</h2>
+  <p>If the concept isn't already agreed before you write, no amount of writing saves it. The proposal's job is to make the agreement precise, not to make the case. Which is why the first meeting and the needs assessment carry so much weight — the proposal is downstream of them.</p>
+
+  <h2>What goes in it</h2>
+  <p>Build this once as a template and fill it in from then on.</p>
+  <ul>
+    <li><strong>Situation summary.</strong> The problem as you understand it, plus its current and likely impact. Then a general statement of your approach — a four-session series, a five-year plan — without the process detail yet. Brief reminder of relevant expertise; point to your site for the rest.</li>
+    <li><strong>Outcomes or deliverables.</strong> Outcomes are looser and frame what becomes possible. Deliverables name tangible work products and dates. Which one you use depends on how much discovery has to happen first — if the answer genuinely isn't knowable yet, commit to methodology and timing instead of naming a specific artifact you may need to change.</li>
+    <li><strong>Impact per outcome.</strong> Every item paired with what it changes: people, process, budget, the number. Tie each one back to what they actually said in the meeting.</li>
+    <li><strong>How success gets measured.</strong> Agreed in advance, in writing.</li>
+    <li><strong>Who is responsible for what.</strong> See below — the most-skipped section in every proposal.</li>
+    <li><strong>How you'll work together.</strong> Especially if a partner or an employee of yours will be in front of them instead of you.</li>
+    <li><strong>The debrief, built in.</strong> Put it in the proposal so it's expected rather than requested later.</li>
+    <li><strong>Terms and conditions.</strong> Fee, expenses, mileage, travel parameters, deposit, printing, licensing of your materials. Be explicit about what will and won't be billed.</li>
+    <li><strong>Agreement page.</strong> You sign before you send. Signature line for them. Language stating that first payment constitutes agreement to the specifications.</li>
+  </ul>
+
+  <h2>The accountability map</h2>
+  <p>It sounds obvious — you deliver, they pay. It isn't. A consultant and a client agreed to meet off-site for a strategy session. Neither one had booked anything, because each assumed the other was doing it, and the discovery came a week out. It got resolved, and it still poisoned the first impression.</p>
+  <p>Think through the small logistics before you write, and assign every one of them: room, materials, printing, scheduling, who reaches out to stakeholders, who supplies data. Some you negotiate. Some you insist on.</p>
+
+  <div class="callout">
+    <div class="lbl">Edit like it's binding, because it is</div>
+    <p>A consultant wrote into her own proposal that she would schedule the discovery interviews, when she and the buyer had agreed the buyer would. The buyer preferred the new version and held her to it — three dozen outreach emails she hadn't priced. Nobody argued, and she still ate the hours. Proofread for meaning, not just typos.</p>
+  </div>
+
+  <h2>Fee structures</h2>
+  <ul>
+    <li><strong>Hourly or daily — avoid.</strong> It puts you and the buyer on opposite sides of the clock. The harder you work, the more it costs them. That's a structurally adversarial arrangement.</li>
+    <li><strong>Performance-based — avoid harder.</strong> You control your work. You do not control the twenty other variables that move an organization's numbers. Tying your fee to an outcome you can't control assumes causation where you can only demonstrate correlation.</li>
+    <li><strong>Project-based — use.</strong> Priced against the time and energy the scope requires.</li>
+    <li><strong>Value-based — use.</strong> Priced against the value delivered. Both of these are agreed up front, which frees you and the buyer to focus on the work instead of the meter.</li>
+  </ul>
+  <p>Set the actual number off market research rather than a formula. Find what comparable people charge, or back into it by asking organizations what they typically pay for this. Adjust for geography and for industry — a consultant whose work touches the whole enterprise commands more than one whose work touches one function.</p>
+
+  <h2>Should you answer the RFP</h2>
+  <p>Honest accounting first. The upside is that you might win. The downsides are real and they compound.</p>
+  <ul>
+    <li>Ten to twenty hours per response.</li>
+    <li>Compressed margin by design — the format exists to make you compete on price.</li>
+    <li>No control over contract terms.</li>
+    <li>You have to name a number before you understand scope, which is exactly what you'd refuse to do in a first meeting.</li>
+    <li>Winning rarely produces a durable client. An organization structured to run RFPs runs one every time.</li>
+  </ul>
+  <p>It can still be worth it when you're building a portfolio, or when you've won with that buyer before and have the response down to a repeatable process. Filter on:</p>
+  <ul>
+    <li><strong>Real niche fit.</strong> If your internal read is "might as well try," don't.</li>
+    <li><strong>A relationship inside.</strong> Someone who can speak to your work. Name them in the response.</li>
+    <li><strong>Language tells.</strong> If the document names a competitor's product, the decision is already made. One person noticed exactly that, submitted anyway, and lost to the vendor whose product was named.</li>
+    <li><strong>A workable deadline.</strong> A rushed response is a wasted response.</li>
+  </ul>
+  <p>If you go: templatize the reusable parts, customize the rest, follow the format instructions exactly, articulate your understanding of their problem, state your differentiator without giving away how you do it, and ask good questions if questions are allowed. Ask about their requirements, not about your own eligibility — "what certifications are preferred" rather than anything that reveals what you lack.</p>
+
+  <h2>Unsolicited pitch letters</h2>
+  <p>Low yield, and the low yield is structural: you can't tailor a letter to a buyer you've never met, and an untailored letter can't show them their own problem. A form letter sent widely is worse than sending nothing.</p>
+  <p>If you send one:</p>
+  <ul>
+    <li>Targeted and researched. Show you understand their market position and how they operate.</li>
+    <li>Name a specific problem you can solve. If you can't name one, there's no letter to write.</li>
+    <li>Open with something that earns the next sentence. It's a persuasive speech in writing.</li>
+    <li>Subject line with their company name and an action verb. Don't promise anything the email doesn't deliver.</li>
+    <li>Ask for a meeting, not for the business. Do not put the strategy in the letter.</li>
+  </ul>
+</div>
+
+<!-- ================= 4. DISCOVERY ================= -->
+<div class="view" id="v-discovery">
+  <div class="sechead g4"><span class="big">Discovery</span></div>
+
+  <h2>Needs assessment and discovery are different phases</h2>
+  <ul>
+    <li><strong>Needs assessment</strong> happens before the proposal, usually with the decision maker and your contact only.</li>
+    <li><strong>Discovery</strong> happens after signature, with multiple stakeholders, and produces a picture neither of those two people could have given you.</li>
+  </ul>
+  <p>Skipping discovery is the single most common way a competent engagement goes sideways. Prescribing a solution off symptoms alone is a surgeon prepping you for an operation without knowing what's wrong — and running the same procedure regardless.</p>
+  <div class="callout">
+    <div class="lbl">Why insisting on it protects you</div>
+    <p>A consultant was hired by a manager to fix his team, which he described as in crisis. Needs assessment gave her his version. She walked in to find a highly cohesive team whose only real problem was him. She had to deliver that upward with no process to hold it, chose to soften it, he refused to be involved, and they parted. Discovery wouldn't have changed the finding — it would have changed who looked competent while delivering it. Feedback inside a contracted phase is expected. Feedback you stumble into looks like you missed something.</p>
+  </div>
+  <p>Buyers resist discovery because it costs their people time, and they resist hardest when they've bought training — training feels content-specific to them, not problem-specific. Insist anyway, and frame it as due diligence rather than as extra scope.</p>
+
+  <h2>The word choice matters</h2>
+  <p>Call it discovery, not diagnosis. Diagnosis implies you find the illness and hand back a cure. Discovery implies you build understanding and then build a workable solution with them. That distinction sets the expectation for who owns the outcome, and it's easier to set now than to correct in month three.</p>
+
+  <h2>Frame the goal narrowly</h2>
+  <p>The goal of discovery is not to understand the organization. It isn't even to understand the problem, stated that broadly. It is to understand <strong>the factors that specifically feed the problem at hand.</strong></p>
+  <p>That sounds like splitting hairs until you're four interviews deep and every person has handed you a different grievance. The narrow framing is what keeps you out of the rabbit holes.</p>
+
+  <h2>The research plan</h2>
+  <p>Three questions belong in every plan. Others get added with the client.</p>
+  <ul>
+    <li><strong>What is the problem as the client defines it?</strong></li>
+    <li><strong>What is the problem as you define it?</strong> These are almost never the same, and you can't fix something you've mislabeled. A company can't hire for a role and assumes pay isn't competitive; discovery finds a badly written posting and a search committee asking the wrong questions.</li>
+    <li><strong>How is the problem being managed right now?</strong> The hardest of the three. What workarounds exist. What it's costing relationships and processes. How people talk about it. Where leadership's account diverges from the front line's.</li>
+  </ul>
+  <p>Then: what data answers those questions, and how will you get it. Review existing process documents. Run the numbers you can get raw. Passive observation. Informal conversations. Structured or semi-structured interviews. Surveys, online or paper, when anonymity helps. Competitive information if the problem touches the market.</p>
+  <p>Present the plan to the client before you execute it. They should be part of deciding how discovery happens, not just subject to it.</p>
+
+  <h2>Artifacts are data</h2>
+  <p>Culture is observable, and what you can observe tells you things nobody will say in an interview. Walk in and read the room:</p>
+  <ul>
+    <li><strong>Dress.</strong> Formal, casual, uniformed. Different levels for different tiers of the hierarchy — and what that does to how those tiers talk to each other.</li>
+    <li><strong>Space and upkeep.</strong> Clean and ordered or cluttered. Whether people are allowed to personalize.</li>
+    <li><strong>Physical organization.</strong> Open floor, closed doors, cubicles, or something between.</li>
+    <li><strong>Where communication happens.</strong> Break room and hallway, or only in meetings and email. Open and easy, or clipped and tense.</li>
+    <li><strong>Language.</strong> Which words repeat. Whether people say them with energy or with contempt. Whether everyone uses the same term for the same thing — divergent vocabulary for one process is a reliable flag for discord.</li>
+  </ul>
+  <div class="callout">
+    <div class="lbl">The meaning is subjective, not the artifact</div>
+    <p>Two companies can have the same motivational poster on the wall. In one it reads as an honest expression of a culture people feel part of. In the other it reads as proof that leadership talks about something it does nothing to build. You're not cataloguing what's present. You're reading what the people there have decided it means.</p>
+  </div>
+  <div class="lushin">
+    <div class="lbl">Where this lands for us</div>
+    <p>This is a structure and staff read you can run in the first hour on site, before anyone has told you anything. Cheap, fast, and it usually confirms or contradicts whatever the OMG data says about how the team actually operates day to day.</p>
+  </div>
+
+  <h2>Delivering what you found</h2>
+  <ul>
+    <li><strong>Report findings, not opinions about findings.</strong> Summarize, analyze, prepare recommendations — and don't give the recommendations until they've seen the data. Then work out what it means together. Leave the editorializing out.</li>
+    <li><strong>Do separate presenting problem from underlying problem.</strong> That's not editorializing, that's the job. Redefining the problem is often the single most valuable thing you hand a client, because nothing moves until the definition changes.</li>
+    <li><strong>Keep recommendations feasible and inside their control.</strong> A nonprofit can't stand up a new department. Nobody can recommend a market upturn.</li>
+    <li><strong>Watch two failure modes in yourself.</strong> By this point you may genuinely like your contact — don't drift into telling them what they want. And if the data points somewhere you've been burned before, that's still where the data points. Go back and figure out what went wrong last time, then handle it better this time.</li>
+    <li><strong>Stand your ground.</strong> Challenging feedback is what they hired you for.</li>
+  </ul>
+
+  <h3>When the news is hard</h3>
+  <ul>
+    <li>Direct and honest, and also kind.</li>
+    <li><strong>Address your contact's own exposure first.</strong> One consultant was fired twice for correctly identifying an underlying problem, and concluded she'd spent no time on what the news would cost the person she was telling. Build the trust by caring about their concerns as they define them, then deliver.</li>
+    <li>The sandwich still works.</li>
+    <li>Never by email. In person, or at minimum live.</li>
+    <li>Ask for their reaction and talk it through. Don't deliver and hope it settles.</li>
+  </ul>
+
+  <h2>Ask for the setup in specifics</h2>
+  <p>Assurances aren't specifications. "We have AV" turned out to mean a projector with no screen aimed at a white wall, and a giveaway speaker that didn't work. "Sure, bring your own flip charts" turned out to mean there was no free wall to hang them on. "Room to move around" meant chairs too big to move.</p>
+  <p>Ask for dimensions, wall space, breakout space, and confirm the equipment by name. Then build a plan B anyway. Improvising in the moment is visible from the back row.</p>
+</div>
+
+<!-- ================= 5. TEACHING ================= -->
+<div class="view" id="v-teaching">
+  <div class="sechead g5"><span class="big">Teaching and presenting</span></div>
+
+  <h2>Nothing lands unless it attaches to something already there</h2>
+  <p>The mechanism, briefly: when new information arrives, the brain checks it against what it already holds. If there's a match, the signal is strong and a connection forms. If there's nothing to match, the signal fades and the information is simply gone. Strong connections become memory. Weak ones become nothing.</p>
+  <p>The practical consequence is that <strong>comprehension is your job, not theirs.</strong> You don't get to explain something correctly and hold them responsible for not getting it. You have to find where they already are and start there.</p>
+  <p>The failure looks like this: someone tries to explain how a retirement account works by saying "imagine you have a thousand dollars." Told that using money to explain money doesn't help, they try again with "imagine you have twenty dollars." Same concept, smaller number, still nothing to attach to.</p>
+
+  <h2>Analogies are the working tool</h2>
+  <ul>
+    <li><strong>Use them constantly.</strong> Examples, metaphors, stories, comparisons. This is the cheapest, most reliable way to connect new to known.</li>
+    <li><strong>Have them build their own.</strong> Ask what a concept means to them and what story sits behind that. Their analogy will hold better than yours because it's already attached.</li>
+    <li><strong>Layer the channels.</strong> Spoken plus visual beats spoken alone. More modes means more ways for the thing to catch.</li>
+  </ul>
+  <p>Compare: reciprocity is a mutual exchange of goods, services, or intangibles like trust. Versus: a server who brings a mint with the check raises the tip a few percent — but a server who walks away, turns back, and says "for such a great couple, here's an extra one" raises it more than twenty. Same concept. Only one of them lodges, and it lodges because it also carries the actual insight, which is that the delivery matters more than the gift.</p>
+
+  <h2>Presentation structure</h2>
+  <ul>
+    <li><strong>Lead with the point.</strong> Then the evidence. Never build to a reveal.</li>
+    <li><strong>Every sub-point visibly tied to the main point,</strong> and flowing in order.</li>
+    <li><strong>Repetition, built into the structure.</strong> Say what's coming, say it, remind them what you said.</li>
+  </ul>
+  <p>Why leading matters: if your partner walks in and starts with "we've been together a long time and things feel stale, I'm bored and unhappy," you stop hearing anything while you brace for the ending. She wanted to book an interesting vacation. She now has to say all of it again, because you processed none of it. Reverse the order and the same facts land cleanly.</p>
+  <p>The "tell a story" advice is over-applied. If you're presenting survey results, inventing a narrative arc just confuses people. Clear structure is the real requirement. Stories and concrete examples go inside that structure — most valuable, not least, when the content is dry.</p>
+
+  <h2>Visuals</h2>
+  <ul>
+    <li><strong>Use them.</strong> They measurably increase the odds the content connects.</li>
+    <li><strong>Proofread like your credibility depends on it,</strong> because it does.</li>
+    <li><strong>Don't echo your words.</strong> A slide that repeats what you're saying is noise. Slides should add.</li>
+    <li><strong>Relevance over decoration.</strong> To show a goal being exceeded, draw two lines. Not a stock photo of someone crossing a finish line.</li>
+    <li><strong>Simple charts only.</strong> If it isn't readable at a glance, it's hiding your point rather than making it.</li>
+    <li><strong>Overflow goes in appendix slides or a separate report.</strong> They're getting the deck anyway. Supplemental material is allowed to exist outside the presentation.</li>
+  </ul>
+
+  <h2>Preparation and nerves</h2>
+  <ul>
+    <li><strong>Know the room.</strong> Who they are, what they already know, what they do.</li>
+    <li><strong>Rehearse out loud.</strong> In your head is not rehearsing. On video is better — it's the only way you'll catch the verbal filler and the distracting mannerism, and one distracting mannerism is all anyone will remember.</li>
+    <li><strong>Anticipate questions and prepare the answers.</strong> Have colleagues generate them; they'll produce ones you wouldn't.</li>
+    <li><strong>Memorize only if you're actually good at memorizing.</strong> Otherwise use notes with main points, sub-points, and the facts that are hard to hold — never the full script. A full script is unusable the moment you lose your place, and walking up with a stack of paper loses the room before you start.</li>
+    <li><strong>Practice is the nerve management.</strong> You're building the path so the real version feels familiar. Visualize the whole thing going well, start to finish.</li>
+    <li><strong>Manage the visible symptoms.</strong> One presenter's neck flushes when she's nervous, so she wears a scarf and removes one thing to be nervous about.</li>
+    <li><strong>Keep reactions in proportion.</strong> A joke that doesn't land means they didn't like that joke. It isn't a verdict on the session or on you.</li>
+  </ul>
+
+  <h2>Reading the room and pivoting</h2>
+  <p>Skip slides that aren't earning their place. Ask what they were hoping to hear that you haven't covered. Offer to move to questions.</p>
+  <p>What not to do: never tell the room you're reading them as bored or restless. Your read may be wrong, and saying it out loud makes everyone uncomfortable. Pivot without narrating why. "I'm curious whether there's anything I haven't covered that you want" does the same work and costs nothing.</p>
+</div>
+
+<!-- ================= 6. FACILITATING ================= -->
+<div class="view" id="v-facilitating">
+  <div class="sechead g6"><span class="big">Facilitating and difficult people</span></div>
+
+  <h2>Assume the room doesn't want you there</h2>
+  <p>You're the outsider, and some of them are doing the math on what you cost versus what that money could have done for them. That's the starting position, not a sign anything's wrong.</p>
+  <ul>
+    <li><strong>Close the distance with language.</strong> Trust comes from recognizing something of yourself in the other person. Learn their vernacular and describe their problems in their words. Needs assessment and discovery should have given you this; if not, do more homework. The candidate who talked about our adult professional students got the job. The one who kept saying "the kids" and selling the liberal arts did not.</li>
+    <li><strong>Partners, not students.</strong> They are not there to learn from you. You are there to build something with them.</li>
+    <li><strong>Don't arrive with the answer.</strong> You may have one. Hold it. Ask instead, repeatedly and in different ways: what can we create together? When a group decides what it wants to build, it becomes emotionally invested in the organization's future — and that investment is the thing that makes the work survive your departure.</li>
+    <li><strong>Invite dissent explicitly.</strong> Say up front that all views are welcome, then meet the dissenting ones with curiosity instead of defense. Openness that only tolerates agreement isn't openness.</li>
+  </ul>
+  <div class="callout">
+    <div class="lbl">The habit underneath all of it</div>
+    <p>Never answer a question directly. Answer by asking for more. "Say more about that." "What informs that question for you?" It positions you as the facilitator and them as the expert, which is both the more productive arrangement and the one that wins the room.</p>
+  </div>
+
+  <h2>Running the session</h2>
+  <ul>
+    <li><strong>Prepare, and prepare a backup.</strong> Something unexpected will happen. Flexibility is a function of preparation, not a substitute for it.</li>
+    <li><strong>Meeting hygiene.</strong> Welcome everyone including the latecomers. Agenda sent in advance and reviewed at the top. Start and stop on time. Rapport before content. Close every item, even if closing it means naming it as tabled. Clear next steps. Thank people.</li>
+    <li><strong>Set norms with the group,</strong> not for them. Get agreement on expectations and behavior. You'll want that agreement later.</li>
+    <li><strong>Unambiguous instructions.</strong> Confusion about the task reads as frustration with you.</li>
+    <li><strong>Watch behavior and energy.</strong> Be willing to break when the room needs it. A facilitator who noticed a mid-afternoon collapse, called an unscheduled ten minutes, and came back with something quick to reset the room lost no time at all — time with a room that isn't present is the actual waste.</li>
+  </ul>
+
+  <h2>Three check-ins, each with its own trigger</h2>
+  <ul>
+    <li><strong>Check progress</strong> — is the goal of this discussion being met? Use it when ideas have stopped coming.</li>
+    <li><strong>Check process</strong> — is the approach we're using working? Offer to try another. Use it when the current tool isn't producing. Don't use it when the tool is working.</li>
+    <li><strong>Check people</strong> — how is everyone feeling? Use it when the room has gone quiet, or looks frustrated, bored, or lost.</li>
+  </ul>
+
+  <h2>Active listening, mechanically</h2>
+  <ul>
+    <li><strong>Open posture.</strong> Crossed arms read as unapproachable at best. Being cold is not an explanation anyone hears.</li>
+    <li><strong>Eye contact across the whole room.</strong> Presenters routinely address half a room without noticing. The other half notices, and reads it as disinterest or bias.</li>
+    <li><strong>Paraphrase and repeat back</strong> so people know they were heard.</li>
+    <li><strong>Multiple channels for input.</strong> Not everyone will speak up. A jar for anonymous notes, a shared online board for things people think of afterward — anything that gives a second route in.</li>
+  </ul>
+
+  <h3>Record feelings, not just facts</h3>
+  <p>Write down that the group proposed cutting a word from the mission statement. Also write down that half of them were visibly uncomfortable with it. You will not remember the second part, and if you walk back in next session and say "so we discussed removing that word, shall we go deeper," you look either inattentive or like you're pushing something most of the room didn't want.</p>
+  <p>Use their words, not your interpretation. When someone can't find the word, offer one and check it: "it sounds like the policy feels redundant to you — am I capturing that?"</p>
+
+  <h2>Neutrality</h2>
+  <p>While facilitating, focus on process, not content. Your opinion isn't relevant yet. This is the hardest instruction for a subject matter expert to follow, because you were hired for the opinion — but its turn comes later.</p>
+  <ul>
+    <li><strong>Say "okay" or "noted,"</strong> not "great idea." The moment you rate one contribution, you've rated all the others.</li>
+    <li><strong>When the group stalls,</strong> introduce an idea and ask them to work the pros and cons. You can put something on the table without endorsing it.</li>
+    <li><strong>One exception.</strong> If the group is heading for a real mistake and questioning isn't moving them, say out loud that you're stepping out of the facilitator role for a moment. Announcing it is what preserves the trust; doing it silently is what spends it.</li>
+  </ul>
+
+  <h2>Questioning as a skill you drill</h2>
+  <p>Never assume the first answer is the deepest one available. Someone prefers option one — ask why. Maybe he doesn't understand option two. Maybe option one is less work for him. Neither makes it the right option.</p>
+  <p>Give people time to think, and give them a way to answer other than immediately out loud, especially on anything sensitive.</p>
+  <div class="callout">
+    <div class="lbl">The one-day drill</div>
+    <p>Go an entire day without answering a question or giving an opinion directly. Every question gets a question back — and not "why do you ask," which comes across as defensive. Asked what you want for dinner: what did we have last night, what are you in the mood for. Asked what you thought of something: did you see all of it, who stood out to you. The point is to build a reflex for questions that move a conversation without putting you on the wrong side of it.</p>
+  </div>
+
+  <h2>Difficult people</h2>
+  <p>Someone will challenge you — why you're there, your approach, your goal. Have the playbook before you need it.</p>
+  <ul>
+    <li><strong>Point at the norms you all agreed to.</strong> Now it isn't you against him. It's the agreement against him, which is indirect peer pressure and far more effective.</li>
+    <li><strong>Give a likely challenger a job, before there's a problem.</strong> Keeper of the agenda, or resident expert on one topic. Their role becomes incompatible with derailing. If you do this, you must actually use them, or you've made it worse.</li>
+    <li><strong>Stay neutral.</strong> Don't take a side. Editorializing costs you the room.</li>
+    <li><strong>Humor, honesty, curiosity.</strong> One facilitator handled a challenger with: you win the award for creativity, I've never heard that particular concern, and seriously, I do want to understand what's behind it — can we take it offline at the break so I'm respecting everyone's time? Humor without sarcasm. Sarcasm is a different tool and it doesn't work here.</li>
+    <li><strong>Legitimize the point.</strong> Let them be heard. Time-box it, name the follow-up, return to the agenda.</li>
+    <li><strong>Parking lot.</strong> Some people aren't challenging you, they're stuck on something off-topic. Write it somewhere visible and move on.</li>
+    <li><strong>Private before public.</strong> Take a break and talk to them alone. Open with questions that don't assign blame: what am I missing here, help me understand the resistance, is there something I could do differently.</li>
+  </ul>
+  <p>The private conversation almost always works, which is why almost nobody ends up confronting someone in front of a group. One consultant's most disruptive participant turned out to have been ordered to attend by his supervisor and was furious about wasting a day on material he already knew. The consultant told him he was free to go as far as he was concerned — and then offered to use his expertise, since it was a big group and he could use the help. The man engaged for the rest of the day.</p>
+  <p>There is nearly always an underlying fear or frustration, and it usually has nothing to do with you. Get to it and you get a collaborator.</p>
+</div>
+
+<!-- ================= 7. CLOSING ================= -->
+<div class="view" id="v-closing">
+  <div class="sechead g7"><span class="big">Closing the loop</span></div>
+
+  <h2>Debrief while the work is winding down</h2>
+  <p>Not after it ends. Two reasons, and both are practical.</p>
+  <ul>
+    <li><strong>They're still engaged.</strong> Once it's finished, their attention has moved and you're asking a favor.</li>
+    <li><strong>Scheduling it signals the transition.</strong> It tells them the engagement is closing and it's time to look at you a little more objectively — which is exactly the perspective you want them in.</li>
+  </ul>
+  <p>Most consultants don't ask for feedback at all, so asking is itself a differentiator. Clients read it as conscientiousness and as evidence you're still developing.</p>
+
+  <h2>Who, and how</h2>
+  <ul>
+    <li><strong>Your main contact, plus any stakeholders you worked with.</strong> The stakeholders are where the useful material is.</li>
+    <li><strong>Meeting, paper survey, or electronic survey.</strong> Negotiate the format.</li>
+    <li><strong>If they already have an instrument, use theirs.</strong> Organizations that bring in trainers usually do. Ask for a copy of the results, and ask to discuss them. Most say yes — including the ones who don't plan to rehire you, if you frame it as wanting to learn.</li>
+  </ul>
+
+  <h2>What to ask</h2>
+  <ul>
+    <li><strong>Why did you choose me?</strong> Underrated. "You were the most affordable" tells you something about your pricing. "You gave us confidence in the first meeting" tells you what to lean on next time.</li>
+    <li><strong>How did the proposal and discovery feel in hindsight?</strong> Was it worth their time, and if not, where did it lose them.</li>
+    <li><strong>Did we hit the objective?</strong> What happened, what worked, what didn't, what would we do differently.</li>
+    <li><strong>Any surprises?</strong> Ask for the good ones too. Value often showed up somewhere you weren't looking.</li>
+  </ul>
+
+  <h2>Turn the client-centered tenets into questions</h2>
+  <p>The premise: the client owns the outcome, their needs and their uniqueness govern the work, learning is the point, and they are capable of solving their own problems. Which converts cleanly into three debrief questions worth asking out loud:</p>
+  <ul>
+    <li><strong>Did I build a sense of ownership</strong> in you and the other stakeholders for these outcomes?</li>
+    <li><strong>To what extent did I address your specific situation</strong> rather than running a standard play?</li>
+    <li><strong>Do you feel equipped to apply what we built</strong> without me?</li>
+  </ul>
+  <p>These are uncomfortable questions. Ask them anyway. The alternative is what one consultant did — assume it went well, skip the debrief, and ask for a written recommendation weeks later. The client wrote back honestly, including the parts he hadn't appreciated, and by then wasn't willing to discuss fixing any of it. A completed project, no recommendation, and no referrals.</p>
+
+  <h2>What to do with what you hear</h2>
+  <ul>
+    <li><strong>Thank them for the honesty.</strong></li>
+    <li><strong>Fix what you can, at no charge.</strong> A consultant learned her succession plan felt like a template that ignored the family-owned nature of the business. She reflected, agreed she'd underweighted it, and asked to make it right for free — then built an advisory role for the owners' children and wove the family ethos into the culture so it would outlast family ownership. Better result than the original, and a client who will say so.</li>
+    <li><strong>If it's positive, say what you'll carry forward.</strong> It tells them the next engagement will be at least as good.</li>
+  </ul>
+
+  <h2>Self-reflection is the part that changes anything</h2>
+  <p>Experience alone doesn't produce improvement. Follow effective action with quiet reflection and the next action gets better; skip the reflection and you just accumulate repetitions. Reflection is the hinge between learning and doing.</p>
+  <p>The failure mode is familiar from course evaluations — the instructor who waves off a bad review because that student earned a bad grade, or because it's just one of those classes, or because of the time slot. Everyone's seen it. The question that actually helps is: what did I contribute to this, and how do I do it differently.</p>
+
+  <h3>Post-engagement checklist</h3>
+  <ul>
+    <li>In hindsight, what would I have done differently?</li>
+    <li>What role did I play in any negative perception?</li>
+    <li>Did I drift into executing a solution I'd already decided on, instead of following what assessment and discovery told me?</li>
+    <li>Where should I have challenged them and didn't? What did that cost?</li>
+    <li>Did we hit <strong>their</strong> goals? That's the definition of success — not contract size, not revenue.</li>
+    <li>Did I teach them to apply and maintain the change without me?</li>
+    <li>Should I have taken this at all? If the honest answer is no, the usual reason is fear that nothing else was coming. Note it, and ask whether it points at a niche or scope that needs narrowing.</li>
+    <li>Was I realistic about timeline and budget?</li>
+    <li>Did I concede on budget, timing, resources, or approach where I shouldn't have?</li>
+    <li>Was the proposal concrete enough?</li>
+    <li>Did I keep them in the loop, including on problems? Was I responsive?</li>
+    <li>Did I allow scope creep?</li>
+    <li>Did I stay humble about who owns the solution, or did I overplay expert and underlisten?</li>
+    <li>Did I address conflict directly, or avoid it?</li>
+    <li>Did I collect feedback throughout, or only at the end?</li>
+    <li>Is the relationship strong enough to produce a referral or a rehire?</li>
+    <li>Did I stop prospecting while I was delivering? Or take on too much at once?</li>
+  </ul>
+  <div class="lushin">
+    <div class="lbl">Where this lands for us</div>
+    <p>This is a session audit turned on the coach instead of the content. The two items with the most teeth: whether they can maintain the change without you, and whether you were running your own play instead of theirs. Both are easy to fail while getting good reviews.</p>
+  </div>
+
+  <h2>Name the gap and close it now</h2>
+  <p>Pull the pattern from the reflection: what are the blind spots, and what would it take to fix them. Then act on the short-term ones immediately rather than filing them. Presentation skills, visual design, financial fluency, a specific conversational move you keep fumbling — those are things you can start on this month.</p>
+  <p>Longer-term credentials are a return-on-investment call, not an urgency call. They're expensive, so it's reasonable to wait until the work has paid for them. What you can do now is decide which ones matter, get on the mailing lists, and let a discount tell you when the timing is right.</p>
+  <p>One habit worth keeping permanently: look back at two times you grew, personally or professionally, and ask what caused it. Patterns in how you've grown before are the most reliable guide to how you'll grow next. Organizations keep changing. If you stop reflecting, you go stale, and clients notice before you do.</p>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var views = {
+    'home':'v-home',
+    'positioning':'v-positioning',
+    'gig':'v-gig',
+    'proposals':'v-proposals',
+    'discovery':'v-discovery',
+    'teaching':'v-teaching',
+    'facilitating':'v-facilitating',
+    'closing':'v-closing'
+  };
+  function show(){
+    var key = (location.hash || '#home').replace('#','');
+    if(!views[key]) key = 'home';
+    Object.keys(views).forEach(function(k){
+      var el = document.getElementById(views[k]);
+      if(el) el.classList.toggle('on', k === key);
+    });
+    document.querySelectorAll('nav a').forEach(function(a){
+      a.classList.toggle('on', a.getAttribute('href') === '#' + key);
+    });
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange', show);
+  show();
+})();
+</script>
+
+</body>
+</html>

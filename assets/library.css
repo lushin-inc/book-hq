@@ -1,0 +1,275 @@
+/* Study Library design system ------------------------------------------- */
+
+:root{
+  --bg:#F4F5F7; --surface:#FFFFFF; --surface-2:#F0F2F5;
+  --ink:#171A21; --muted:#697386; --line:#E6E8EE;
+  --chip-bg:#EDF0F4; --chip-ink:#4A5568;
+  --cover:#EAEEF3; --ring:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+  --cover-brightness:1;
+  --ease:cubic-bezier(.32,.72,0,1);
+}
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --surface-2:#1E222A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --line:#262B33;
+  --chip-bg:#222732; --chip-ink:#B7BFCC;
+  --cover:#1C212A; --ring:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
+  --cover-brightness:.86;
+}
+
+/* fonts shipped with the page ------------------------------------------- */
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:block;
+  src:url("fonts/inter-400.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:block;
+  src:url("fonts/inter-500.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:600;font-display:block;
+  src:url("fonts/inter-600.woff2") format("woff2")}
+@font-face{font-family:"Poppins";font-style:normal;font-weight:500;font-display:block;
+  src:url("fonts/poppins-500.woff2") format("woff2")}
+@font-face{font-family:"Poppins";font-style:normal;font-weight:600;font-display:block;
+  src:url("fonts/poppins-600.woff2") format("woff2")}
+
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+  padding-left:env(safe-area-inset-left); padding-right:env(safe-area-inset-right);
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+:focus-visible{outline:2px solid var(--ring);outline-offset:2px;border-radius:8px}
+svg{display:block}
+
+.wrap{max-width:1080px;margin:0 auto;padding:26px 28px 80px}
+@media(max-width:600px){.wrap{padding:18px 16px 64px}}
+
+/* header ----------------------------------------------------------------- */
+.topbar{
+  position:sticky; top:0; z-index:20; height:56px;
+  display:flex; align-items:center; gap:10px;
+  padding:0 28px;
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:saturate(1.1) blur(8px);
+  -webkit-backdrop-filter:saturate(1.1) blur(8px);
+}
+@media(max-width:600px){.topbar{padding:0 16px}}
+.topbar-inner{max-width:1080px;margin:0 auto;width:100%;display:flex;align-items:center;gap:10px}
+.mark{
+  width:30px;height:30px;border-radius:9px;flex:none;
+  display:grid;place-items:center;color:#fff;
+}
+.brand{font-family:"Poppins";font-weight:600;font-size:15.5px;letter-spacing:-.01em}
+.spacer{flex:1}
+.iconbtn{
+  width:36px;height:36px;border-radius:9px;display:grid;place-items:center;
+  color:var(--muted);
+  transition:background-color .14s, color .14s;
+}
+.iconbtn:hover{background:var(--surface-2);color:var(--ink)}
+
+/* page header ------------------------------------------------------------ */
+.eyebrow{
+  font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);
+}
+h1.page-title{
+  font-family:"Poppins";font-weight:600;font-size:clamp(24px,4vw,32px);
+  line-height:1.14;margin:6px 0 0;letter-spacing:-.015em;
+}
+.page-head{margin-bottom:26px}
+
+/* search ----------------------------------------------------------------- */
+.search{
+  position:relative;display:flex;align-items:center;gap:10px;
+  background:var(--surface-2);border:1px solid transparent;border-radius:10px;
+  padding:0 14px;height:48px;margin-bottom:22px;
+  transition:border-color .14s;
+}
+.search:focus-within{border-color:var(--line)}
+.search svg{color:var(--muted);flex:none}
+.search input{
+  flex:1;border:none;background:none;outline:none;color:var(--ink);
+  font-size:15px;height:100%;
+}
+.search input::placeholder{color:var(--muted)}
+.search .clear{display:none;color:var(--muted);width:26px;height:26px;border-radius:7px;
+  place-items:center}
+.search.has-value .clear{display:grid}
+.search .clear:hover{background:var(--chip-bg);color:var(--ink)}
+
+/* grid ------------------------------------------------------------------- */
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:18px;
+}
+@media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}}
+
+.book{
+  display:flex;flex-direction:column;gap:12px;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:15px 16px 16px;box-shadow:var(--shadow);
+  transition:transform .16s, box-shadow .16s, border-color .16s;
+}
+.book:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.book .art{
+  aspect-ratio:1/1;border-radius:11px;overflow:hidden;background:var(--cover);
+  display:grid;place-items:center;
+}
+.book .art img{
+  width:100%;height:100%;object-fit:contain;display:block;
+  filter:brightness(var(--cover-brightness));
+}
+/* No cover supplied yet: a calm plate, not a gradient block. The gradient
+   survives only as the small identity mark, per the accent rules. */
+.book .art.placeholder,
+.bookhead .cover.placeholder{
+  background:var(--cover) !important;
+  position:relative;display:flex;align-items:flex-end;
+  padding:16px;text-align:left;color:var(--ink);
+  font-family:"Poppins";font-weight:600;line-height:1.25;
+  overflow-wrap:anywhere;
+}
+.book .art.placeholder{font-size:15px}
+.book .art.placeholder::before,
+.bookhead .cover.placeholder::before{
+  content:"";position:absolute;top:16px;left:16px;width:30px;height:30px;
+  border-radius:9px;background:var(--grad);
+}
+.book .meta{display:flex;flex-direction:column;gap:6px}
+.book .t{font-family:"Poppins";font-weight:600;font-size:15.5px;line-height:1.25;letter-spacing:-.01em}
+.book .a{font-size:13px;color:var(--muted);line-height:1.35}
+@media(max-width:600px){
+  .book{padding:12px 12px 14px;gap:10px}
+  .book .t{font-size:14.5px}
+  .book .a{font-size:12.5px}
+}
+
+.empty{
+  text-align:center;padding:64px 20px;
+}
+.empty .et{font-family:"Poppins";font-weight:600;font-size:18px;color:var(--ink)}
+.empty .es{color:var(--muted);margin-top:6px}
+
+/* book page -------------------------------------------------------------- */
+.bookhead{display:flex;flex-direction:column;align-items:flex-start;margin-bottom:28px}
+.bookhead .cover{
+  width:min(13rem,64%);aspect-ratio:1/1;border-radius:11px;overflow:hidden;
+  background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);
+  margin-bottom:18px;display:grid;place-items:center;
+}
+.bookhead .cover img{width:100%;height:100%;object-fit:contain;
+  filter:brightness(var(--cover-brightness))}
+.bookhead .cover.placeholder{font-size:19px;border:1px solid var(--line)}
+.bookhead h1{
+  font-family:"Poppins";font-weight:600;font-size:clamp(24px,4vw,32px);
+  line-height:1.14;margin:0;letter-spacing:-.015em;
+}
+.bookhead .by{color:var(--muted);margin-top:6px;font-size:15px}
+
+.buttons{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:28px}
+@media(min-width:620px){.buttons{grid-template-columns:repeat(3,1fr)}}
+.btn{
+  min-height:52px;display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:0 16px;box-shadow:var(--shadow);
+  transition:transform .16s, box-shadow .16s, border-color .16s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.btn .bl{flex:1;font-family:"Poppins";font-weight:600;font-size:14px}
+.btn .bs{font-size:12px;color:var(--muted);font-family:"Inter";font-weight:400}
+.btn .arw{color:var(--accent);flex:none}
+
+/* mode bar --------------------------------------------------------------- */
+.modes{position:relative;display:flex;gap:22px;margin:0 0 24px;
+  border-bottom:1px solid var(--line)}
+.modes button{
+  font-family:"Poppins";font-weight:600;font-size:14px;letter-spacing:.005em;
+  color:var(--muted);padding:10px 2px 12px;min-height:44px;
+  transition:color .14s;
+}
+.modes button[aria-selected="true"]{color:var(--ink)}
+.modes .ind{position:absolute;bottom:-1px;height:2px;background:var(--accent-solid);
+  transition:transform .24s var(--ease), width .24s var(--ease);border-radius:2px}
+.mode-panel[hidden]{display:none}
+
+/* entries ---------------------------------------------------------------- */
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;
+  transition:transform .16s, box-shadow .16s, border-color .16s;
+}
+.entry:hover{box-shadow:var(--shadow-hover)}
+.entry > .head{
+  width:100%;display:flex;align-items:flex-start;gap:14px;text-align:left;
+  padding:16px;min-height:56px;
+}
+.entry .head .ttl{flex:1;font-family:"Poppins";font-weight:600;font-size:16px;line-height:1.25}
+.entry .head .num{
+  font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:4px;
+}
+.plus{position:relative;width:16px;height:16px;flex:none;margin-top:4px}
+.plus::before,.plus::after{
+  content:"";position:absolute;background:var(--muted);border-radius:1px;
+  transition:transform .24s var(--ease), opacity .24s var(--ease);
+}
+.plus::before{left:0;top:7.5px;width:16px;height:1.5px}
+.plus::after{top:0;left:7.25px;width:1.5px;height:16px}
+.entry[data-open="true"] .plus::after{transform:rotate(90deg);opacity:0}
+.entry .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .24s var(--ease)}
+.entry[data-open="true"] .body{grid-template-rows:1fr}
+.entry .body > div{overflow:hidden}
+.entry .body .inner{padding:0 16px 18px}
+.entry .body p{margin:0 0 12px;font-size:14.5px;line-height:1.55;color:var(--muted)}
+.entry .body p.lede{color:var(--ink)}
+.entry .body p.demo{
+  border-left:4px solid var(--accent-solid);padding-left:14px;
+  color:var(--muted);font-size:14px;
+}
+.entry .body p.close{
+  font-family:"Poppins";font-weight:600;font-size:14.5px;color:var(--ink);margin-bottom:0;
+}
+/* the drawing sits on the page, not in a tile */
+.entry .plate{margin:0 0 16px;max-width:420px}
+.entry .plate img{width:100%;display:block}
+:root[data-theme="dark"] .entry .plate img{filter:invert(1)}
+
+.section-head{
+  font-family:"Poppins";font-weight:600;font-size:14px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--accent-solid);margin:28px 0 12px;
+}
+.section-head:first-child{margin-top:0}
+.prose{max-width:760px}
+.prose p{font-size:15px;line-height:1.6;margin:0 0 14px}
+.lead{font-size:18px;line-height:1.6}
+
+.def{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);padding:15px 18px;margin-bottom:12px}
+.def .dt{font-family:"Poppins";font-weight:600;font-size:15.5px;margin-bottom:4px}
+.def .dd{font-size:14.5px;color:var(--muted);margin:0}
+
+.qr{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:620px){.qr{grid-template-columns:1fr 1fr}}
+.qr .row{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  box-shadow:var(--shadow);padding:13px 16px}
+.qr .rl{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:4px}
+.qr .rt{font-size:14.5px}
+
+.plates{display:grid;grid-template-columns:1fr;gap:26px}
+@media(min-width:620px){.plates{grid-template-columns:1fr 1fr}}
+.plates figure{margin:0}
+.plates img{width:100%;display:block}
+:root[data-theme="dark"] .plates img{filter:invert(1)}
+.plates figcaption{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
+
+.chip{display:inline-block;background:var(--chip-bg);color:var(--chip-ink);
+  border-radius:999px;padding:4px 11px;font-size:12px;font-weight:500}
+
+@media(prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}

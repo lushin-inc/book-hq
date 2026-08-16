@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Endometriosis — Working Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2A2438;
+  --plum:#5B4B7C;
+  --indigo:#3D4A7A;
+  --rose:#B85C7A;
+  --clay:#C4634F;
+  --amber:#D89448;
+  --teal:#3B6E78;
+  --body:#3A3644;
+  --subtle:#7A7488;
+  --wash:#F2EFF4;
+  --white:#fff;
+  --font:'Poppins',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--body);background:var(--white);
+  -webkit-font-smoothing:antialiased;line-height:1.62;}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px 96px}
+
+nav{max-width:880px;margin:0 auto;padding:28px 24px 0;display:flex;gap:24px;flex-wrap:wrap}
+nav a{font-size:12.5px;font-weight:500;letter-spacing:.02em;color:var(--subtle);text-decoration:none}
+nav a:hover,nav a.on{color:var(--ink)}
+
+.pagetitle{font-size:19px;font-weight:500;color:var(--ink);padding:44px 0 28px}
+.tiles{display:flex;flex-direction:column;gap:16px}
+.tile{text-decoration:none;color:var(--white);min-height:170px;border-radius:22px;
+  padding:34px 38px;display:flex;flex-direction:column;justify-content:center;
+  transition:transform .16s ease}
+.tile:hover{transform:translateY(-3px)}
+.tile .big{font-size:32px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+
+.g1{background:radial-gradient(circle at 22% 18%,var(--plum),var(--indigo));box-shadow:0 14px 34px -14px rgba(61,74,122,.5)}
+.g2{background:radial-gradient(circle at 78% 22%,var(--plum),var(--ink));box-shadow:0 14px 34px -14px rgba(42,36,56,.55)}
+.g3{background:radial-gradient(circle at 22% 80%,var(--teal),var(--indigo));box-shadow:0 14px 34px -14px rgba(59,110,120,.5)}
+.g4{background:linear-gradient(115deg,var(--plum),var(--rose));box-shadow:0 14px 34px -14px rgba(184,92,122,.45)}
+.g5{background:linear-gradient(115deg,var(--rose),var(--clay));box-shadow:0 14px 34px -14px rgba(196,99,79,.45)}
+.g6{background:radial-gradient(circle at 80% 80%,var(--rose),var(--ink));box-shadow:0 14px 34px -14px rgba(42,36,56,.5)}
+.g7{background:linear-gradient(115deg,var(--clay),var(--amber));box-shadow:0 14px 34px -14px rgba(216,148,72,.45)}
+.g8{background:radial-gradient(circle at 22% 22%,var(--teal),var(--plum));box-shadow:0 14px 34px -14px rgba(91,75,124,.5)}
+
+.sechead{border-radius:22px;padding:34px 38px 36px;color:var(--white);margin:40px 0 44px}
+.sechead .big{font-size:33px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+
+h2{font-size:20px;font-weight:600;color:var(--ink);margin:46px 0 16px;letter-spacing:-.005em}
+h2:first-of-type{margin-top:0}
+h3{font-size:15.5px;font-weight:600;color:var(--plum);margin:28px 0 10px}
+p{margin:0 0 14px;font-size:15.5px}
+ul{margin:0 0 18px;padding-left:0;list-style:none}
+li{position:relative;padding-left:20px;margin-bottom:9px;font-size:15.5px}
+li::before{content:"";position:absolute;left:2px;top:11px;width:5px;height:5px;
+  border-radius:50%;background:var(--rose)}
+li ul{margin:9px 0 0}
+li li::before{background:#c2bcd0}
+strong{font-weight:600;color:var(--ink)}
+
+.callout{background:var(--wash);border-left:4px solid var(--plum);border-radius:0 12px 12px 0;
+  padding:20px 24px;margin:22px 0 26px}
+.callout .lbl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--plum);margin-bottom:8px}
+.callout p:last-child,.callout ul:last-child,.callout li:last-child{margin-bottom:0}
+
+.flag{background:var(--white);border:2px solid var(--clay);border-radius:14px;
+  padding:20px 24px;margin:22px 0 26px}
+.flag .lbl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--clay);margin-bottom:8px}
+.flag p:last-child,.flag ul:last-child,.flag li:last-child{margin-bottom:0}
+
+.view{display:none}
+.view.on{display:block}
+
+@media(max-width:640px){
+  .tile{min-height:140px;padding:26px}
+  .tile .big{font-size:25px}
+  .sechead{padding:28px 26px 30px}
+  .sechead .big{font-size:26px}
+  h2{font-size:18px}
+  .wrap{padding:0 18px 72px}
+  nav{padding:22px 18px 0;gap:16px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#what">What it is</a>
+  <a href="#treatment">Treatment</a>
+  <a href="#advocacy">Advocating</a>
+  <a href="#toolkit1">Endo and stress</a>
+  <a href="#toolkit2">Food and movement</a>
+  <a href="#mental">Mental health</a>
+  <a href="#relationships">Relationships</a>
+  <a href="#other">Other therapies</a>
+</nav>
+
+<div class="wrap">
+
+<!-- HOME -->
+<div class="view" id="v-home">
+  <div class="pagetitle">Endometriosis — Working Guide</div>
+  <div class="tiles">
+    <a class="tile g1" href="#what"><span class="big">What endometriosis is</span></a>
+    <a class="tile g2" href="#treatment"><span class="big">Treatment and the medical system</span></a>
+    <a class="tile g3" href="#advocacy"><span class="big">Advocating for yourself</span></a>
+    <a class="tile g4" href="#toolkit1"><span class="big">The toolkit: knowing your endo and stress</span></a>
+    <a class="tile g5" href="#toolkit2"><span class="big">The toolkit: food, movement, and products</span></a>
+    <a class="tile g6" href="#mental"><span class="big">Mental health</span></a>
+    <a class="tile g7" href="#relationships"><span class="big">Relationships and support</span></a>
+    <a class="tile g8" href="#other"><span class="big">Other therapies to explore</span></a>
+  </div>
+</div>
+
+<!-- 1. WHAT IT IS -->
+<div class="view" id="v-what">
+  <div class="sechead g1"><span class="big">What endometriosis is</span></div>
+
+  <div class="flag">
+    <div class="lbl">The framing that governs everything below</div>
+    <p>Everything in the management sections is a <strong>management practice, not a treatment.</strong> None of it is a cure and none of it stops lesions from growing. It can still change how someone lives day to day — but it works alongside medical care, not instead of it, and checkups continue regardless of how good someone feels. That is the author's own first caveat, and it's the load-bearing one.</p>
+  </div>
+
+  <h2>The definition</h2>
+  <p>An inflammatory condition in which endometrial-like tissue — similar to the tissue lining the uterus and shed during menstruation — is found in other places in the body. Usually the ovaries, the bowel, or the tissue lining the pelvis. Sometimes beyond the pelvic region entirely: appendix, diaphragm, lungs.</p>
+
+  <h2>Symptoms</h2>
+  <ul>
+    <li>Very painful periods; pelvic pain; cramping; lower back and abdominal pain</li>
+    <li>Pain during ovulation, or roughly two weeks after a period</li>
+    <li>Leg pain or nerve sensations tied to the cycle; hip or back pain</li>
+    <li>Shoulder or chest pain, or shortness of breath, tied to the cycle</li>
+    <li>Pain during or after sex</li>
+    <li>Thick, often dark blood clots</li>
+    <li>Painful bowel movements or painful urination</li>
+    <li>Excessive bleeding; fatigue; chronic pain</li>
+    <li>Diarrhea and constipation; bloating, nausea, vomiting</li>
+    <li>Urinary frequency, retention, or urgency</li>
+    <li>Allergies and other immune-related issues</li>
+    <li>Infertility and pregnancy loss</li>
+  </ul>
+  <p>Two things that get missed. <strong>Not everyone has painful periods</strong> — some have pain-free periods and symptoms the rest of the month. And <strong>the number of symptoms doesn't correlate to the stage of disease or to how disruptive it is.</strong> Symptoms can start at a first period or appear years later, and people who took birth control as contraception sometimes don't notice anything until they stop.</p>
+  <p>The reason the list matters: people carry these individually for decades without connecting them. One woman had struggled with fatigue for years and only learned it was a symptom by chance — and that alone was validating, because it made everything else make sense.</p>
+
+  <h2>Diagnosis</h2>
+  <p><strong>A diagnostic laparoscopy with a biopsy of the tissue is the only definitive diagnosis.</strong> A pathologist has to see endometrial glands and stroma under a microscope.</p>
+  <ul>
+    <li><strong>Imaging is not diagnosis.</strong> An ultrasound or MRI can produce a high index of suspicion. It isn't proof. Many people believe they were diagnosed by ultrasound, exam, or blood test — none of those is a diagnosis.</li>
+    <li><strong>Endometrioma, or "chocolate cysts,"</strong> are visible on imaging and are a strong suspicion signal. Even with good imaging, cyst fluid occasionally turns out not to be endometriotic.</li>
+    <li><strong>Sizable cysts shouldn't be watched indefinitely.</strong> They can leak, cause adhesions, and cause damage later — bowel becoming adherent to ovary, ovary attaching to uterus or tubes, dense adhesions. A straightforward cyst removal becomes a much deeper surgery. And a rupture is severely painful. Some patients with 6 to 8 centimeter cysts have been told it's fine to leave them and that a rupture wouldn't hurt much. That is not accurate.</li>
+  </ul>
+  <p>The delay is the norm, not the exception: an estimated 176 million people worldwide have endometriosis, and the average time from symptom onset to diagnosis is <strong>eight to ten years.</strong> Around 75% are misdiagnosed first — appendicitis, ovarian cancer, IBS, sexually transmitted infections. Some go through years of infertility treatment and never get a diagnosis at all.</p>
+
+  <h2>Stages, and why they mislead</h2>
+  <ul>
+    <li><strong>Stage 1</strong> — minimal, few superficial implants</li>
+    <li><strong>Stage 2</strong> — mild, more and deeper implants</li>
+    <li><strong>Stage 3</strong> — moderate, deep implants, small cysts on one or both ovaries, filmy adhesions</li>
+    <li><strong>Stage 4</strong> — severe, many deep implants, large cysts, many dense adhesions</li>
+  </ul>
+  <p>The stage does not predict pain. Someone at stage 2 can hurt more than someone at stage 4, purely because of where the lesions sit. The Endometriosis Foundation of America has proposed replacing these with more descriptive classifications, since the current ones account for neither lesion location nor patient pain.</p>
+
+  <h2>Cause and genetics</h2>
+  <ul>
+    <li><strong>Cause is unsettled and probably multifactorial.</strong> Theories in play include genetic origins or mutations, embryonic development abnormalities, retrograde menstruation, stem cell metaplasia, environmental toxins, and immune dysfunction. The surgeon quoted throughout the book believes it's likely a combination. If there were one mechanism, targeting it with a drug would be far easier.</li>
+    <li><strong>Genetic factors are real but not definitive.</strong> People with a relative who has endo are five to seven times more likely to have it. Worth remembering that mothers, grandmothers, and aunts largely went undiagnosed — which is a reason to talk to older family members rather than assume there's no history.</li>
+  </ul>
+
+  <h2>Adenomyosis</h2>
+  <p>Not endometriosis, but a sister condition. Endometrial tissue growing within the muscle wall of the uterus rather than only in the endometrial cavity. It causes extremely painful cramping and dysfunctional bleeding with dark thick clots, which looks very like endo.</p>
+  <ul>
+    <li>People with adenomyosis are more likely to have endometriosis. If you have adenomyosis you most likely have endo elsewhere; the reverse doesn't follow.</li>
+    <li>A solitary location of it is often confused with fibroids on imaging — which is why a specialist with adenomyosis knowledge matters.</li>
+  </ul>
+
+  <h2>Comorbidities</h2>
+  <p>Higher risk of more than one condition at once. Reported: overactive bladder, interstitial cystitis (painful bladder syndrome), irritable bowel syndrome, nickel sensitivity, celiac, menstrual migraines, anxiety and depression, sexual dysfunction, fibromyalgia, and other autoimmune conditions including Sjögren's and Hashimoto's. Also an increased risk of ovarian and other gynecological cancers.</p>
+  <div class="callout">
+    <div class="lbl">The practical warning</div>
+    <p>It's easy to attribute everything to endo and miss something else entirely. Multiple conditions need a team — an endo specialist plus a thorough internist, not one person carrying all of it.</p>
+  </div>
+
+  <h2>Why the specific symptoms happen</h2>
+  <h3>GI problems</h3>
+  <p>One study found <strong>90% of people with endo have GI symptoms</strong> — bloating, constipation, diarrhea, gassiness. Which explains the volume of IBS misdiagnoses. The mechanism is proximity: the bowel and bladder immediately surround the uterus, so when disease causes scar tissue and inflammation, the neighbors get it too. Endo also tends to come with a more inflammatory bowel system and more sensitivity generally. Gut dysbiosis and SIBO are common.</p>
+
+  <h3>The bloating</h3>
+  <p>Same mechanism, plus inflammation of the appendix, colon, or abdominal lining causing swelling. Looser clothing helps with the physical pressure, but the harder part is often not physical — being asked about a pregnancy repeatedly can produce body dysmorphia and weight preoccupation, and it lands especially badly on someone with endo-related fertility issues. Sometimes it's simply out of your control no matter how well you're managing.</p>
+
+  <h3>The fatigue</h3>
+  <p>Not the period or ovulation itself — a systemic inflammatory and immune response. The body recruits immune help around the lesions, similar to fighting a virus, and that wears you down. It may not be fully beatable, but knowing why helps, and low-inflammatory food, stress management, and movement can lessen the load for some people.</p>
+
+  <h2>Fertility</h2>
+  <p>Endo can affect fertility, and it isn't a doomsday diagnosis. Both are true and the second gets said less.</p>
+  <ul>
+    <li><strong>Up to 50% of patients with unexplained infertility have endometriosis</strong> — potentially more, given most aren't having a laparoscopy.</li>
+    <li>Mechanisms: endometrioma in the ovary suppressing ovarian function; inflammation; lesions causing physical scarring; adhesions altering transport from the fallopian tubes or blocking the tube outright; adenomyosis raising risk. And painful sex making conception attempts traumatic and extremely difficult, which is rarely counted.</li>
+    <li>Endo can also cause subfertility — reduced rather than absent fertility.</li>
+  </ul>
+  <div class="flag">
+    <div class="lbl">Pregnancy is not a treatment</div>
+    <p>It gets recommended as one constantly, often on diagnosis day. Pregnancy suppresses symptoms because periods stop for a year or more, and breastfeeding can extend that — but it does not make the disease go away. It's also a recommendation that assumes everyone wants and is positioned to have a biological child.</p>
+  </div>
+  <p>If a biological child is the goal, being proactive is the advice: meet a fertility specialist, take a fertility hormone test, get a management plan in place, get proper treatment. Growing evidence suggests excision surgery can improve the ability to conceive. Egg freezing has advanced considerably and can take pressure off in your twenties — it carries a cost, though some financial assistance programs exist.</p>
+
+  <h2>Menopause</h2>
+  <ul>
+    <li><strong>Perimenopause can get worse before it gets better.</strong> Periods may come every two weeks rather than every four, and may be heavier first. With endo, those symptoms can be more intense.</li>
+    <li><strong>After menopause, ovulatory pain generally improves</strong> and many people get complete relief, because there's less hormonal stimulation.</li>
+    <li>But lesions in areas like the bowel, around the uterus, or around the bladder can stay symptomatic through perimenopause and beyond. Management tools still apply.</li>
+  </ul>
+</div>
+
+<!-- 2. TREATMENT -->
+<div class="view" id="v-treatment">
+  <div class="sechead g2"><span class="big">Treatment and the medical system</span></div>
+
+  <h2>Excision versus ablation</h2>
+  <p>This is the single most consequential distinction in the book.</p>
+  <ul>
+    <li><strong>Excision</strong> cuts out the inflammatory tissue at the root. The surgeon can also reconstruct organs and restore their function. It's considered the gold standard for both diagnosis and treatment.</li>
+    <li><strong>Ablation</strong> burns the most superficial layers. It isn't excising the disease.</li>
+  </ul>
+  <p>Why that matters practically: with ablation, surgeons frequently can't burn along the ureter, or around the ovary, bowel, or bladder — so they treat only what's safe to burn and can leave <strong>60 to 70% of lesions untreated.</strong> The book calls this an incomplete surgery, and it's the explanation for the enormous number of people who say their surgery didn't work.</p>
+  <p>Ablation can also make pain worse. When lesions overlie small nerves running under the peritoneal layer, burning the outer layer creates fibrotic scar tissue and can damage the nerve underneath.</p>
+  <p>Excision isn't a guarantee that pain and symptoms vanish permanently. It improves the odds of relief and tends to lengthen the interval between surgeries.</p>
+  <div class="callout">
+    <div class="lbl">If you had ablation and you feel great</div>
+    <p>You didn't do anything wrong. This condition isn't one size fits all — some people have minor areas of disease, get a few lesions burned off by a local gynecologist, and do genuinely well. The patient advocate quoted in the book is direct about it: a lot of privilege goes into excision care, and people have to do the best they can with what they have.</p>
+  </div>
+
+  <h2>Why excision is hard to get</h2>
+  <p>The obstacle is billing, not medicine. In the US, endometriosis surgery has <strong>one billing code</strong> — the same code whether a doctor spends 30 minutes burning a few lesions or six hours excising 30 of them, repairing and reconstructing organs, and bringing in other specialists. Both are reimbursed identically.</p>
+  <ul>
+    <li>Excision can be highly complex, carries much higher risk than typical laparoscopic gynecological surgery, and raises the surgeon's malpractice premiums accordingly.</li>
+    <li>A skilled excision surgeon might manage one to three surgeries a day. The reimbursement for that doesn't sustain a practice.</li>
+    <li>Which is why skilled excision specialists are generally out of network. Some do pro bono cases or help navigate payment plans and reimbursement, but it's a systemic problem.</li>
+    <li>It is moving. More surgeons are pushing back, there's coordinated work on coding and guidelines, and the AMA and ACOG are reported to be taking notice.</li>
+  </ul>
+
+  <h2>What is not a cure</h2>
+  <h3>Hormonal prescription medications</h3>
+  <p>Widely misrepresented as treatments. They are designed to manage pain and symptoms, not treat the disease. They can put the body in a menopausal state, which stops hormonal stimulation of the lesions — but that doesn't guarantee stopping the spread. The book cites patients who, despite ten years on these medications, developed bowel obstruction and required two or three bowel resections in that period.</p>
+  <p>Side effects to know: bone loss, vaginal dryness, suicidal thoughts, and menopausal symptoms that many people — especially young people — don't tolerate well. Long-term effects haven't been evaluated. Track how you feel and raise anything that seems wrong immediately.</p>
+
+  <h3>The birth control pill</h3>
+  <p>Also not a treatment, and it's a choice rather than a requirement. It has a suppressive effect on the ovaries, the hormone system, and the bleeding — but it doesn't remove lesions or cure anything, and most people still have symptoms. Many find real relief and use it to extend the interval between surgeries, or when surgery isn't affordable.</p>
+  <ul>
+    <li><strong>Symptoms can break through it.</strong> Someone can use the pill successfully for ten years and then have symptoms exceed its ability to suppress them.</li>
+    <li><strong>The mental health side effects are a real consideration</strong> — extreme mood shifts, suicidal thoughts, libido changes, not feeling like yourself. Patients with severe anxiety or depression, or on medication for either, may not be good candidates.</li>
+    <li>The long-term risk-benefit picture for endometriosis specifically, in terms of disease progression, is still unsettled.</li>
+    <li>If it helps and you feel good on it, carry on. The problem is people being told it will get rid of their endo, or enduring the mental effects because it's the only option offered.</li>
+  </ul>
+
+  <h3>Hysterectomy</h3>
+  <p>Not a cure, though some major medical institutions have still listed it as a treatment. People get diagnosed with endometriosis <em>after</em> a hysterectomy. If disease is left behind and not excised, those implants keep causing pain.</p>
+  <ul>
+    <li>It can genuinely help when most of the pain is central — uterine cramping and the period itself.</li>
+    <li>For many people with adenomyosis it can be close to curative: no more painful periods, possibly no further surgery.</li>
+    <li>It should never be first-line, and if chosen it should include deep excision of all visible disease where possible.</li>
+  </ul>
+
+  <div class="callout">
+    <div class="lbl">Questions to ask if medication is presented as the only option</div>
+    <ul>
+      <li>Are you willing to discuss excision surgery and lifestyle management as well?</li>
+      <li>What are the side effects?</li>
+      <li>What happens after I stop taking this?</li>
+      <li>What are the long-term effects on my body?</li>
+    </ul>
+    <p>If they can't answer these and the medication is the only thing on the table, get a second opinion.</p>
+  </div>
+
+  <h2>Finding a doctor</h2>
+  <ul>
+    <li><strong>Start with the community.</strong> Ask which doctors other people with endo have had good experiences with — online groups, or people you already know.</li>
+    <li><strong>If budget is the obstacle,</strong> contact an endometriosis foundation to ask about financial assistance or doctors working on a sliding scale.</li>
+    <li><strong>Then ask enough questions</strong> to establish that the doctor is honest about their own skill level and will make decisions with you, based on your goals.</li>
+  </ul>
+  <div class="callout">
+    <div class="lbl">The reframe worth carrying into the room</div>
+    <p>Recognize the power dynamic and change it. Walk in treating the doctor as a partner rather than the final authority on your health. Don't take everything said as settled. If they shut you down or aren't listening, that's a reason to find a different partner.</p>
+  </div>
+
+  <h2>After surgery</h2>
+  <ul>
+    <li><strong>The discharge timeline is usually not generous enough.</strong> That sheet is a general guideline, not tailored to your body, and it accounts for none of your stressors at home or work, the pressure to bounce back, or the medical trauma of having had surgery.</li>
+    <li><strong>What may be different for a while:</strong> appetite, tolerance for being touched or hugged at all, energy, periods, bowel movements. Not feeling like yourself for a stretch is normal.</li>
+    <li><strong>Ask where they found and removed lesions — and whether they left any behind.</strong> This is the question that answers future problems. If bowel or urinary pain persists and you know lesions were left in those areas, you know why. If you've had side pain for years, learning that lesions were removed from your appendix is an answer.</li>
+    <li><strong>Ask for the imagery taken during surgery.</strong> You should have access to it. If it isn't offered, request it.</li>
+    <li><strong>Keep getting checkups regardless of how well you feel.</strong> With a cyst history, request an ultrasound every six to twelve months.</li>
+  </ul>
+  <div class="flag">
+    <div class="lbl">Why the checkup point is stated so hard</div>
+    <p>Over five years and three different doctors, the author asked for an ultrasound referral at her annual exams because she had a cyst history. All three declined on the grounds that she wasn't in pain. She eventually decided she was being high maintenance and stopped asking. She grew a 10 centimeter cyst that ruptured and had to be removed immediately — the most painful experience of her life. She now states the requirement up front as a condition of being someone's patient, and hasn't been refused since.</p>
+  </div>
+  <p>And the broader point: surgery alone may not be enough. The question is what happens next — how the progress gets maintained, whether care stays a priority, whether other options get explored.</p>
+
+  <h2>Who gets diagnosed, and who doesn't</h2>
+  <p>Endometriosis is not a cisgender white woman's disease, though the media and medical institutions have long presented it that way. Until 2020, one of the top hospitals in the US stated on its website that white women had an increased risk. No current studies support that, and it was removed only after an advocate campaigned for it.</p>
+  <p>The mechanism of harm is specific: someone in pain searches online, lands on a hospital website because hospital websites read as credible, sees that white women are more prone to it, and concludes it probably isn't them. So they don't ask, don't push their doctor, stay silent, and live with the pain — which lengthens diagnosis time and can produce fertility and self-esteem consequences later.</p>
+  <ul>
+    <li>In a meta-analysis of race and ethnicity in time-to-diagnosis, <strong>Black and Hispanic women were nearly half as likely to be diagnosed</strong> with endometriosis as white women.</li>
+    <li>A 2016 study found <strong>nearly half of medical students and residents believed Black patients feel less pain</strong> than white ones. Another found 29% of Black patients and 22% of Hispanic and Latino patients were less likely to receive opioid treatment for the same condition.</li>
+    <li>A Lambda Legal survey found roughly <strong>56% of lesbian, gay, or bisexual respondents and 70% of transgender and gender-nonconforming respondents</strong> had experienced at least one of: being refused needed care, professionals refusing to touch them or using excessive precautions, harsh or abusive language, being blamed for their health status, or professionals being physically rough or abusive.</li>
+  </ul>
+  <p>The book's illustration is worth keeping because it's concrete: a queer patient with a shaved head who dressed in men's clothes found that, unlike essentially every other endo patient, no doctor ever raised pregnancy or fertility with her — though having children was what she wanted most. A different doctor told her painful sex wouldn't apply to her because she was queer.</p>
+</div>
+
+<!-- 3. ADVOCACY -->
+<div class="view" id="v-advocacy">
+  <div class="sechead g3"><span class="big">Advocating for yourself</span></div>
+
+  <h2>Dropping the self-blame first</h2>
+  <p>Most people who've been through the diagnosis process blame themselves — for not asking more questions, for not pushing harder, for not understanding their own condition sooner. The book's exercise for this is genuinely effective and worth running.</p>
+  <p>Think of someone you love. Imagine them suffering for years and being told the pain is in their head, that they're being dramatic, that they need to toughen up. Imagine them struggling to work, canceling plans, feeling hopeless. Imagine them getting through a handful of doctors before one agrees to investigate. Then imagine them sitting on an exam table or lying in a hospital bed, hearing from a doctor they may never have met that they have an incurable condition, that the disease was removed as best it could be but will probably come back, that birth control might help — and in the same breath, that they should think about getting pregnant sooner rather than later if they ever want children. Options run through quickly, without side effects explained, without any mention of lifestyle management, without anyone actually explaining what the condition is or why they have it. Then the doctor leaves for the next patient, repeating the advice about pregnancy on the way out.</p>
+  <p>You wouldn't call that person weak for not asking more questions, or stupid for not understanding. The point of the exercise is that this is most people's diagnosis day, and the compassion you'd extend automatically to someone else applies to you.</p>
+  <p>The counselor quoted in the book is direct about the cause: the current standard of care and the gynecological community's ignorance of endometriosis <strong>is itself producing medical trauma</strong> — physical, emotional, delayed diagnosis, dismissal of pain, misdiagnosis, and repeated ineffective treatment.</p>
+  <p>And the reason isn't malice. Most doctors are trying to do a good job. The education hasn't been there, because women's health has not historically been a priority in medical school or in practice — so doctors aren't taught to identify the real symptomatic profile, and after diagnosis they aren't taught how to help you find treatment either.</p>
+  <div class="callout">
+    <div class="lbl">The dividing line</div>
+    <p>You can't change how long the diagnosis took, how you were treated, whether your family believed you, or that you have endometriosis. What happens next is the part that's available.</p>
+  </div>
+
+  <h2>Concrete moves with a care provider</h2>
+  <ul>
+    <li><strong>State requirements as conditions, not requests.</strong> The ultrasound example is the model: lead with what you need at a first appointment, and treat a refusal as information about whether that's the right doctor.</li>
+    <li><strong>Ask directly about skill level</strong> — specifically about excision versus ablation, and about the doctor's own experience with it.</li>
+    <li><strong>Ask for findings and imagery</strong> after any surgery, including what was left behind.</li>
+    <li><strong>Get a second opinion</strong> when hormonal medication is presented as the only option, or when a hysterectomy is presented as a cure.</li>
+    <li><strong>Track symptoms so you're arguing from data,</strong> not from memory. This is the thing that changes the tenor of every conversation, medical and otherwise.</li>
+  </ul>
+
+  <h2>Work</h2>
+  <p>The scale of the problem, because it reframes the ask as reasonable rather than exceptional:</p>
+  <ul>
+    <li>In a study of over 500 women with endometriosis across three countries, over the course of a month, <strong>78.1% took no sick leave at all.</strong> People use vacation days to recover and ration their free time outside work to conserve energy for the job.</li>
+    <li>At their worst symptoms, people with endo lose an average of roughly <strong>seven to ten hours of productivity a week.</strong></li>
+    <li>The framing from the researcher quoted: it's a <strong>third shift.</strong> Full-time employment, plus the domestic and social load, plus managing a full-time illness that fluctuates constantly.</li>
+    <li>The career consequences are measurable — lower likelihood of working in the profession you wanted, greater chance of unemployment. Many change jobs, take a pay cut, or move to part-time because it's the only way to earn while managing the condition.</li>
+  </ul>
+
+  <h3>The specific-ask technique</h3>
+  <p>This is the most directly usable thing in the chapter. A general request invites a general refusal. A specific request built on tracked data invites a plan.</p>
+  <ul>
+    <li><strong>Instead of:</strong> "I have really bad periods, can I work from home?"</li>
+    <li><strong>Try:</strong> "This job is really important to me and I always want to give you my best. I've tracked the days I struggle most with my endometriosis, and I'd like to work from home, or come in later, on those two days each month."</li>
+  </ul>
+  <p>Which requires the tracking first — a month or two of noting where symptoms actually interfere. Fatigue in the days before a period is a different accommodation than difficulty sitting in a chair on day one.</p>
+  <p>Where working from home isn't possible — factory floor, waitressing, ER nursing — the question becomes whether a more administrative role or a different set of tasks is available on those specific days. It won't always be perfect, and it's worth asking.</p>
+
+  <h3>The disclosure question</h3>
+  <p>The book presents both sides honestly rather than picking one.</p>
+  <ul>
+    <li><strong>Disclosing with evidence:</strong> print studies about how endometriosis affects the workplace and send them to HR or your supervisor before the conversation. This takes pressure off if you're anxious, and it matters because women are demonstrably less likely to discuss symptoms if they think others believe the cause is emotional. Facts remove some of that.</li>
+    <li><strong>Not disclosing at all:</strong> one interviewee didn't tell her employer, and her point stands on its own — if you don't ask, they'll never give it to you, and when you do ask you don't have to say why.</li>
+  </ul>
+  <p>The larger argument in the chapter is that this shouldn't be individual negotiation at all — that menstrual policies need to exist, that the culture has to come from employers down, and that the goal is people having the autonomy to restructure work around symptoms rather than concealing them.</p>
+
+  <h2>Talking to people who don't know</h2>
+  <p>Advocacy also runs sideways, into family and community.</p>
+  <ul>
+    <li>Share the symptom list. Knowing the symptoms is a major component of getting people diagnosed sooner, and the list is what produces recognition.</li>
+    <li>Talk to older women in your family regardless of age. Many suffered for years without a name for it, and sharing can get them answers and make them feel less alone.</li>
+    <li>The fact that tends to land with people who aren't getting it: in more severe cases, lesions have spread to people's lungs. It reframes the condition from "a bad period" instantly.</li>
+    <li>Beyond the personal: learn more, create awareness, educate your community, vote on these issues, donate, write letters, and ask your own doctor what policies they have for providing equal care.</li>
+  </ul>
+</div>
+
+<!-- 4. TOOLKIT 1 -->
+<div class="view" id="v-toolkit1">
+  <div class="sechead g4"><span class="big">The toolkit: knowing your endo and stress</span></div>
+
+  <h2>How the program is structured</h2>
+  <ul>
+    <li><strong>One tool per week, for five weeks.</strong> Deliberately one. The book notes that people with endo are often high-achievers who've gotten very good at pushing through and doing everything at once, and that this is exactly the instinct to resist.</li>
+    <li><strong>Non-consecutive is fine.</strong> Jump back in when you can. If a tool needs more than a week, stay on it.</li>
+    <li><strong>The five weeks:</strong> know your endo, stress management, good food, movement, kinder home and body. Additional therapies come after, deliberately outside the core, because access to them is unequal.</li>
+    <li><strong>Expect the mix to be uneven.</strong> Some become daily non-negotiables and some take a back seat. For the author, food is the non-negotiable because it manages her pain best; movement and her calming hobbies aren't available while travelling or on day one of a period. The tools stay in the belt either way.</li>
+  </ul>
+
+  <h2>Two mindset prerequisites</h2>
+  <h3>Care as the priority, defined narrowly</h3>
+  <p>The claim is that if you're living with endometriosis, caring for yourself has to be the first priority — and the book is careful about what that does and doesn't mean.</p>
+  <ul>
+    <li><strong>Not the industry version.</strong> Self-care has drifted from a single act of kindness toward yourself into a market of products, services, and experiences that don't fit most budgets or schedules — and which can read as intimidating, confusing, or too strange to try. The result is people doing nothing at all and concluding it isn't for them.</li>
+    <li><strong>The version being proposed</strong> mostly requires two things: your body and an open mind.</li>
+    <li><strong>The answer to "isn't this selfish."</strong> Consider how much the pain and symptoms currently cost your relationships, your work, and what you give to other people. Then consider what's available if you felt better. It isn't selfish to want to get out of bed.</li>
+  </ul>
+
+  <h3>Define what your best actually is</h3>
+  <p>The failure mode here is real and the book is unusually honest about it. The author made her initial changes, felt better than she had in twenty years, was thriving — and then pushed for zero inflammation, zero cramps, and a fatigue-free life. Hundreds of books and documentaries, stool tests, cleanses and colonics, twenty different workouts, more than twenty supplements. She calls the result <strong>wellness fatigue</strong>: obsessively refining diet, supplements, workouts, and products every week, until she hit a wall and cried about how sick she was of trying so hard.</p>
+  <p>The correction: define your best for your own body, not benchmarked against anyone else's and certainly not against someone who doesn't have endo.</p>
+  <ul>
+    <li>Getting rid of all inflammation was unrealistic. Lowering it to where her joints didn't hurt was achievable.</li>
+    <li>Never having a cramp again wasn't happening. Managing cramps enough to work, cook, and move during her period was — and was significant.</li>
+    <li>A fatigue-free life, no. Being more tired some days because of endo, and allowing herself twenty extra minutes of sleep without judgment, yes.</li>
+  </ul>
+  <div class="callout">
+    <div class="lbl">Acceptance is not defeat</div>
+    <p>It isn't permission to stop trying or an excuse to give up. It's permission to define success for one specific body, to be kinder about it, to drop the perfectionism, and to name how far you've already come. The parallel practice is tracking wins — the author's include picking her son up from school on the first day of her period, and no longer crying on the bathroom floor.</p>
+  </div>
+
+  <h2>Week one: know your endo</h2>
+  <p>Counterintuitive as the first tool, and the book argues it's foundational because everything else builds on it. The move is from <em>recognizing a symptom on a list</em> to <em>articulating how it actually shows up</em> — what it feels like in your body, what it has cost you, and what it has made you believe about yourself.</p>
+  <p>Two payoffs:</p>
+  <ul>
+    <li><strong>It connects dots people have carried unexplained for decades.</strong> The author's example is urinary urgency — years of near-misses and accidents that she'd reframed as a personal quirk or a planning failure, and that family, friends, and a doctor had variously attributed to waiting too long or not drinking enough water. Seeing it on a symptom list changed how she saw herself: not a gross person, not disorganized. A symptom. Another interviewee had been labelled an all-or-nothing friend and a sporadic planner for years before learning her fatigue was the cause.</li>
+    <li><strong>It gives you language.</strong> If you don't fully understand how your symptoms affect your life, you can't expect anyone around you to, and you can't advocate precisely with a care provider.</li>
+  </ul>
+  <p>Two warnings the book attaches:</p>
+  <ul>
+    <li><strong>This isn't a competition.</strong> One symptom, however severe, is enough to affect your life and your sense of self-worth. The count doesn't matter.</li>
+    <li><strong>This isn't a list to prove you're a mess.</strong> It's not permission to give up.</li>
+  </ul>
+  <p>Expect big emotions. Old sadness, anger, or an unexpected sense of empowerment. The week's work is largely sitting with that and adding to the notes as more surfaces.</p>
+
+  <h2>Week two: stress</h2>
+  <h3>The loop</h3>
+  <p>Stress isn't a symptom of endo, and they compound each other. Summarizing the published evidence: endometriosis is associated with poor quality of life and high stress perception; endometriosis is an inflammatory disease; and stress and poor quality of life may cause inflammation. Which puts people inside a cycle of high stress perception, inflammation, and disease progression.</p>
+  <div class="callout">
+    <div class="lbl">Enter the cycle rather than break it</div>
+    <p>The integrative physician quoted specifically rejected "breaking" as the framing. It's about deciding where to <em>enter</em> the cycle and start soothing the immune, endocrine, and stress response systems so they come down together.</p>
+  </div>
+
+  <h3>Why endo stress goes unspoken</h3>
+  <ul>
+    <li><strong>Other stressors come with social permission.</strong> People are fine hearing about money, work, and relationships. Periods and endo get facial expressions and interruptions, so people stop sharing and the stress never gets a voice.</li>
+    <li><strong>Other stressors come with agency.</strong> You can talk to HR, spend less, work on communication. You can't switch bodies. That lack of control is part of what binds the two together.</li>
+    <li><strong>Don't grade it against other people's.</strong> The brain compares stress and trauma to others' and then decides whether yours qualifies. It's your stress regardless of how it ranks.</li>
+  </ul>
+
+  <h3>Self-compassion, defined properly</h3>
+  <p>Not affirmations, and not becoming your own hype man to boost self-esteem. The working definition: <strong>applying to yourself the kindness you extend to others</strong> — building awareness of what you need in moments of stress and pain, and giving yourself those things without judgment.</p>
+  <p>The mechanism, as the self-compassion teacher in the book describes it: the nervous system is designed to eavesdrop on everything happening in your brain and how you take in the world. Judgment is the brain's default and it's what kept us alive — good or bad, safe or dangerous. The problem is when overwhelm makes that intense judgment a <em>fixed</em> state, which is what tends to happen with anything chronic, because the brain conditions itself around the nature of being chronic.</p>
+  <p>The practical version is two questions, run as a habit:</p>
+  <ul>
+    <li><strong>What am I experiencing?</strong></li>
+    <li><strong>What do I need?</strong></li>
+  </ul>
+  <p>Which activates an internal caregiver and explicitly messages the nervous system that something aware and supportive is present. The author's first attempt at it is a good illustration of the scale involved: a bloated, achy first day of her period, solo parenting, back-to-back meetings, no possibility of rest. Before, she'd have interrogated what she did wrong and pushed through hard enough to be wiped out by evening. Instead she found her loosest underwear, put her legs up against a wall for a few minutes while her son ate breakfast, and wore her flowiest dress and conspicuously colorful shoes. Small acts, and a different signal to a nervous system that had been receiving catastrophizing ones for years.</p>
+  <p>One thing worth holding onto: the compassion centers of the brain are effectively inexhaustible. For everything unsustainable about chronic illness, this is a well that doesn't run dry.</p>
+
+  <h3>Mindfulness without meditation</h3>
+  <div class="flag">
+    <div class="lbl">Why breath-based meditation isn't the default recommendation</div>
+    <p>People assume the sensations of breathing are neutral. For anyone with a history of prolonged chronic stress or trauma, bringing attention to the breath can tap unresolved material — which is why some people experience restlessness, anxiety, panic attacks, shallow breathing, or nausea while trying to meditate. Endo is itself a chronic stressor and may have caused significant trauma via miscarriage, surgery, ER visits, or pain severe enough to black out, on top of any unrelated trauma. If meditation has gone badly, nothing is wrong with you.</p>
+  </div>
+  <p>The alternative is choosing intentional targets that are neutral for you:</p>
+  <ul>
+    <li><strong>Everyday attention.</strong> Washing dishes and feeling the suds and warm water. Brushing your teeth and noticing the bristles and the taste. Becoming fully present in specific ordinary moments.</li>
+    <li><strong>Grounding.</strong> Focusing on the physical — the weight of your body, your feet on the floor, your head against a pillow. It works by cueing the survival brain to appraise the situation as safe, which turns stress arousal off. Thirty seconds is a real starting dose; it often extends on its own.</li>
+    <li><strong>Mindful walking.</strong> Not the monastery version. Walk at a normal pace, outside, with the phone left behind or silenced and no podcast or music. Rotate attention roughly every thirty seconds: what you can see, then what you can hear, then the movement of your arms, then how your feet meet the ground. Any bit of nature works — a block, a neighborhood, a local park. Nature is regulating, which is what makes this the go-to for people who aren't ready to sit down.</li>
+  </ul>
+  <p>If breath-based practice has been a problem specifically, the book suggests Kundalini chanting and Ziva meditation as gentler entries into more traditional practice.</p>
+
+  <h3>Hobbies that occupy the hands</h3>
+  <p>The suggestion is to revisit what you loved as a child, before you were creating with any fear of judgment. Puzzles, knitting, crochet, painting, doodling, coloring, sculpting, playing an instrument. The mechanism is single-tasking: focusing on one thing for at least fifteen minutes produces meditative-like benefits, and over time it becomes difficult to stay focused on your pain while focused on the task.</p>
+  <p>The practical answer to "I don't have time": the minutes currently spent on your phone first thing in the morning and last thing at night.</p>
+
+  <h3>Solitude</h3>
+  <p>Defined usefully — not physical separation from other people, but time free from input from other minds. A remote cabin while checking social media isn't solitude. A crowded subway with no phone and no headphones is.</p>
+  <p>Constant connectivity produces what one author calls solitude deprivation, a state of spending close to zero time alone with your own thoughts. It's associated with anxiety and depression, and can leave you feeling <em>less</em> connected. Part of the difficulty is that many people don't want to be alone with their thoughts, which is precisely why the distraction is there.</p>
+  <p>Concrete versions: walks without a phone. Fifteen minutes alone in a bathroom with the door locked. Cooking without anything playing. Sitting in a waiting room or in traffic without reaching for the phone. The physical therapist quoted suggests stopping in front of your house for five minutes at the end of the day before going in and letting the tension go — which, done daily, is thirty-plus minutes a week.</p>
+
+  <h3>Finding people</h3>
+  <p>The line the chapter turns on: the sense of being alone in your suffering is one of the biggest barriers to transforming stress. And you can have the most supportive family in the world and still feel alone in the disease.</p>
+  <ul>
+    <li><strong>Large online groups work for a lot of people</strong> and don't work for everyone. If you're empathic, absorbing everyone's stories can be heavy. And there's no guarantee anyone sees you post — the author describes missing a member's posts entirely during a busy course, and that person finishing the experience feeling more alone than when she started.</li>
+    <li><strong>Alternatives:</strong> local meetup groups and events, marches and conferences you can attend or volunteer for, or using the online groups instrumentally — putting the word out for people in your city, then meeting for dinner or coffee. If nobody's nearby, find the one person you connect with best and set up monthly calls, or just text each other.</li>
+    <li><strong>Your people don't have to have endo.</strong> Sometimes endo is the last thing you want to think about. Groups organized around a shared interest — reading, gardening, cooking, hiking, video games, whatever — can be freeing precisely because nobody there knows your health history.</li>
+  </ul>
+
+  <h3>Sleep</h3>
+  <p>Three diagnostic questions rather than a protocol:</p>
+  <ul>
+    <li><strong>What are you actually doing once you're in bed?</strong> The advice isn't to stop watching TV in bed. It's to start the routine earlier, cap the number of episodes, turn off autoplay so the decision stays yours, and set a rule about social media in bed.</li>
+    <li><strong>If you have children, can any of it be shared or traded?</strong> Alternating mornings or night wake-ups. If that's not possible, asking a partner to take the first few days of your period specifically. For single parents or night-shift workers, getting creative — a trusted family member or friend covering one night a month, or a sleep swap with another single parent.</li>
+    <li><strong>Is the room set up for it?</strong> Eye mask for light, white noise or a sound machine for noise, clothes off the floor. The author's own version was less about the room than about fear — years of insomnia and chairs pushed against the bedroom door, resolved by finally installing an actual alarm system, which she describes as the best sleep investment she ever made.</li>
+  </ul>
+  <p>Two additions. Don't stress about optimizing sleep, because that produces less of it — the working rule is to get as much as you can, when you can, however you can. And watch what you consume: violent or distressing content, real or fictional, affects stress levels and sleep, more so for sensitive people. You may not notice how much until you cut it out.</p>
+
+  <h3>Therapy</h3>
+  <p>Stated emphatically, and specifically as someone <em>outside</em> friends and family who is trained for this — for the shame around sex, the anxiety about infertility, or simply having somewhere to put the why-me. It provides a framework for coping with physical and emotional pain, and a consistent, reliable source of help, which many people with endo struggle to find anywhere.</p>
+  <p>On cost: check what your insurance covers for mental health and choose in-network; some therapists work on a sliding scale; some online services offer free sessions.</p>
+</div>
+
+<!-- 5. TOOLKIT 2 -->
+<div class="view" id="v-toolkit2">
+  <div class="sechead g5"><span class="big">The toolkit: food, movement, and products</span></div>
+
+  <h2>Week three: food</h2>
+  <h3>The framing shift</h3>
+  <p>The book drops the term "endo diet" entirely, on the grounds that there's no consistent definition — versions disagree about caffeine, eggs, and grains, layered on top of hundreds of general nutrition influencers contradicting each other about meat, veganism, and coconut oil.</p>
+  <p>The replacement is <strong>good foods</strong>, defined as two things: foods that nourish and energize you, and foods that don't hurt you or worsen your symptoms.</p>
+  <p>Explicitly <em>not</em>: a restrictive diet, a static plan, a weight-loss protocol, a cure, or a universal standard. The stated aim is adding more of what makes you feel good and less of what makes you feel bad — and the author is clear that after finding her good foods she still eats things that don't serve her, and that this doesn't make her or the food bad.</p>
+
+  <div class="flag">
+    <div class="lbl">Two caveats the book puts up front, and they matter</div>
+    <ul>
+      <li><strong>Labels can do harm.</strong> Eating one "forbidden" food on a labelled diet can trigger a shame spiral, which is stress, which is counterproductive here. And it can produce real anxiety for anyone with a history of disordered eating.</li>
+      <li><strong>The reframe offered instead of elimination:</strong> don't think about taking foods out — think about crowding new ones in. And the book explicitly recommends working with a coach or a nutritionist who specializes in disordered eating if this change is difficult.</li>
+    </ul>
+  </div>
+
+  <h3>The evidence situation, stated honestly</h3>
+  <p>At the time of writing there were <strong>no large peer-reviewed studies proving diet helps endometriosis.</strong> The studies the author found — some conducted on rats — concluded that no clear recommendations can be given about what to eat or avoid, and that evidence for a role of diet in endometriosis risk is equivocal.</p>
+  <p>Her position is that it's a decade of her own experience plus the substantial evidence on low-inflammatory eating generally, and the inference that if endometriosis is fundamentally inflammatory, reducing inflammatory load should plausibly help a chronically inflamed body. She's upfront that this is reasoning rather than proof.</p>
+  <p>One piece of context worth having when a doctor dismisses it: most doctors receive very little nutrition training. A report found that <strong>86 of 121 participating US medical schools failed to provide the recommended minimum 25 hours</strong> of nutrition education, and 43 provided less than half that. Doctors also generally need data before recommending something, and the data isn't there yet. Both of those things can be true at once.</p>
+
+  <h3>The inflammation frame</h3>
+  <p>Two kinds. Acute is a response to a specific stressor — surgery, trauma, infection. Chronic is low-level ongoing activation of the immune system, and the gastroenterologist quoted says people with endometriosis are living with chronic inflammation.</p>
+  <p>His analogy is the useful one: inflammation is like a stereo. There's no off switch. You can have it loud enough to hurt, or quiet. The goal isn't zero — it's not disruptive. Which is why the book says <strong>low-inflammatory</strong> rather than anti-inflammatory.</p>
+
+  <h3>What's commonly implicated</h3>
+  <ul>
+    <li>Processed and packaged foods</li>
+    <li>Dairy — milk, cheese, yogurt</li>
+    <li>Red meat</li>
+    <li>Refined sugars and synthetic sweeteners</li>
+    <li>Fried foods, soda</li>
+    <li>Refined carbohydrates — cookies, cakes, pretzels</li>
+    <li>Alcohol and caffeine</li>
+    <li>Variable by person: eggs, grains, corn, and nightshades (eggplant, peppers, tomatoes, potatoes)</li>
+  </ul>
+  <p>The distinction the book draws on that last group: these aren't necessarily inflammatory for everyone. They're things people can be sensitive to, or that a particular gut struggles to process, producing digestive issues, bloating, gas, and stomach pain.</p>
+
+  <h3>The foundation</h3>
+  <ul>
+    <li><strong>Low-inflammatory</strong> — reducing or limiting the list above.</li>
+    <li><strong>Plant-heavy</strong> — vegetables, fruit, grains, nuts, seeds, legumes, with little to no animal products. The actual ask is one to two fully plant-based meals a day, not veganism. The rationale for testing animal products specifically: many people with endo find eggs increase symptoms, dairy causes digestive issues, and they feel better without meat — but you won't know which of those applies to you until they're off the plate individually. The author's own discovery came from removing the bread, cheese, and bacon she ate alongside eggs, which left plain eggs, at which point their effect became obvious.</li>
+    <li><strong>Whole foods</strong> — minimally processed, without additives and artificial ingredients. In practice this means learning to read labels. Two of the book's examples: one of the most popular pancake syrup brands contains no maple syrup at all, and sugar is the second ingredient in most big-name peanut butters, including many marketed as natural.</li>
+  </ul>
+  <div class="callout">
+    <div class="lbl">The single most practical tip in the chapter</div>
+    <p>Build a <strong>top-ten pantry list</strong> — ten staples whose ingredients you know by heart, that anchor your recipes, and that reliably make you feel good. Shopping stops being a research project, and the combination of those ten plus vegetables means you can make something quickly without deciding anything.</p>
+  </div>
+
+  <h3>Gluten, honestly</h3>
+  <p>Three groups shouldn't eat it: people with celiac disease, a wheat allergy, or non-celiac gluten sensitivity with extra-intestinal symptoms. For everyone else, the gastroenterologist's argument is that most gluten-containing foods are highly processed — baked goods, snack foods — so the question is whether the problem is the gluten, the other ingredients, or processed food generally.</p>
+  <p>And gluten-free packaged products aren't the answer: he's blunt that most of what's on the market is poor, and that ten years ago going gluten-free meant eating very clean because those products didn't exist. Now they can make you feel just as bad as what you removed.</p>
+  <p>So: remove processed gluten-containing foods first, then test tolerance with whole grains, a good sourdough, or a sprouted bread — not with pizza and donuts. Naturally gluten-free grains are also available: buckwheat, amaranth, millet, oats, rice.</p>
+
+  <h3>Caffeine and alcohol</h3>
+  <ul>
+    <li><strong>Caffeine</strong> is worth a couple of weeks off to test. It can increase inflammation in some people and elevate cortisol, and it can aggravate GI symptoms and anxiety — both of which people with endo may already have. But the response varies enormously: in one course, one person felt dramatically better without it and another noticed nothing at all. The tweaks preserve the ritual: less of it, swap the cream for a nut milk, drop the sweetener, or move to an herbal alternative.</li>
+    <li><strong>Alcohol</strong> is inflammatory, and a hangover is already the body reporting on it. What's less obvious, and worth tracking specifically, is the effect on cramps, next-day fatigue, and digestion. The line worth keeping, from Ruby Warrington's work on drinking: using alcohol to dim the darkness can also dim the light, and you don't get to choose which it dims.</li>
+  </ul>
+  <div class="flag">
+    <div class="lbl">The serious note on drinking</div>
+    <p>As many as 28% of people with chronic pain use alcohol to try to cope with it. And withdrawal from chronic use often <em>increases</em> pain sensitivity — which motivates people to keep drinking, or drink more, to reverse it. If that's the pattern, the book's advice is to talk to a doctor, a counselor, or a friend who can help you find local resources, because self-management tools aren't the right instrument for it.</p>
+  </div>
+
+  <h3>Soy and sugar</h3>
+  <ul>
+    <li><strong>Soy:</strong> studies support both positions and sensitivity varies. The practical line is avoiding the processed and genetically modified soy that shows up as filler in packaged foods, and using organic non-GMO tempeh, edamame, miso, tofu, and tamari in moderation while tracking your response.</li>
+    <li><strong>Sugar:</strong> one of the biggest inflammatories and among the hardest to reduce, because it's in everything from pasta sauce to peanut butter. Sugar is sugar regardless of what the bag calls it. Even high-sugar fruit matters for some people at some points in the cycle — one coach describes a mango before or during her period as decisive. Natural sweeteners like dates, maple syrup, and honey are still sugars, and can make the transition workable.</li>
+  </ul>
+
+  <h3>Water</h3>
+  <p>Worth its own note because the overlap is exact: <strong>even mild dehydration can cause brain fog, mood swings, and headaches</strong> — three things endo may already be producing. So it's not a generic wellness instruction, it's removing a compounding factor. Whatever accountability mechanism works: a visible tracker you fill in, an hourly timer, a jug to finish by end of day, an app.</p>
+
+  <h3>The social logistics, which are the hard part</h3>
+  <p>The book is realistic that food is entangled with tradition, ritual, family, and identity, and that changing it will produce friction.</p>
+  <ul>
+    <li><strong>Ease the household in rather than cooking twice.</strong> Serve food they already like without announcing what it is or isn't — the observation being that if there were a giant "vegan" sign over the produce section, nobody would buy an apple. Talk about it after everyone's had seconds, if at all.</li>
+    <li><strong>Use toppers.</strong> Build one base dish for the table that fits your foods, and let everyone add their own cheese or stir in their own meat.</li>
+    <li><strong>Choose the restaurant.</strong> Not one that only serves your needs — one where you can find something and so can everyone else.</li>
+    <li><strong>Always bring a dish to gatherings.</strong> And bring your own dessert. At an event where you can't bring food, you can usually request a special meal in advance, but rarely a special dessert — hence carrying one. She keeps dessert in her bag at weddings.</li>
+    <li><strong>Swap traditions rather than deleting them.</strong> Non-dairy substitutions in a family recipe. A new birthday tradition that's still fun.</li>
+    <li><strong>Have something on your plate.</strong> An empty plate draws questions and can genuinely hurt a host's feelings, which makes the meal about you.</li>
+    <li><strong>Travel deliberately.</strong> Two or three snacks in your bag. Shop when you arrive. Scout restaurants in advance on road trips, and bring food when you know there won't be options.</li>
+  </ul>
+  <p>And expect resistance, including from people who feel a shared tradition changing or who are quietly envious of a change they wanted to make themselves. Sometimes it needs a direct conversation: this isn't a fad or a weight thing, it's long-term, and the point is being able to enjoy life with you instead of being in pain.</p>
+
+  <div class="callout">
+    <div class="lbl">The caveats attached to this week</div>
+    <ul>
+      <li><strong>One week isn't the experiment.</strong> Give it at least thirty days. This isn't a cleanse you come off. Perfection isn't required — there are thousands of meals ahead.</li>
+      <li><strong>If you're bloated regardless of what you eat,</strong> or sensitive to many foods, see a doctor or a GI specialist. Some people have success with a low-FODMAP approach, which is complicated enough to warrant a nutritionist or a proper book. There may also be allergies, gastrointestinal disease, or autoimmune conditions in play that need diagnosing.</li>
+      <li><strong>Existing conditions take precedence.</strong> Celiac means no gluten, always. Medication restrictions stand.</li>
+      <li><strong>Food will not cure endometriosis.</strong> Keep the checkups.</li>
+    </ul>
+  </div>
+
+  <h2>Week four: movement</h2>
+  <h3>Why the word changes</h3>
+  <p>The book stops saying exercise and says movement, on the grounds that exercise implies exhaustion and a standard set by people who can meet it, while movement implies something scalable day to day. Not because intensity is wrong — some people with endo thrive on weightlifting and boxing — but because reframing it opens up what's possible on a given day.</p>
+  <p>The emotional context is worth keeping, because it explains why the standard advice fails. Reading over and over that exercise resolves period pain, while unable to get off the couch to shower, produced not motivation but shame — a suspicion that she was a wimp, or that her symptoms weren't real. It culminated in asking for workout clothes for Christmas, opening them, and leaving the room to cry, because the clothes didn't produce energy. They just itemized what she couldn't do.</p>
+
+  <h3>The mechanism, which is the part usually omitted</h3>
+  <p>Fascia. A band of elastic connective tissue running throughout the body, covering organs and muscles and supporting the pelvis and spine. The abdominal and pelvic area has a great deal of it, and it's the central core of the body — and the region that causes people with endo some of their worst pain.</p>
+  <p>The analogy from the physical therapist: fascia is normally smooth, like plastic wrap. With endo it gets scrunched — from inflammation, from lesions, or simply from clenching your abdomen month after month curled up in bed. And if the central core is scrunched, the rest of the body follows.</p>
+  <div class="callout">
+    <div class="lbl">The sentence that changes the frame</div>
+    <p><strong>Neglecting movement can put you at risk of increased pain.</strong> Not "movement is good for you" — not moving is actively costing something. The purpose here isn't weight or fitness. It's keeping muscles and connective tissue lengthening, letting nerves slide freely within the tissue, and creating more calm in the body.</p>
+  </div>
+  <ul>
+    <li><strong>Abdominal massage</strong> is described as non-negotiable by the therapist quoted — it improves range of movement, helps digestion, and helps the pelvic floor relax. With an important caveat: many people with endo have experienced trauma in that area and may not be able to touch themselves there. The starting point in that case is simply resting hands over the area with a light touch.</li>
+    <li><strong>It isn't only the pelvis.</strong> With a chronic condition you look up and down the whole body. The nerves in your feet connect to the pelvic floor, so rolling a massage ball under a foot assists fascial release. A foam roller works like a giant rolling pin across multiple muscle groups. And tight calf and tibial muscles are common with chronic pelvic pain — releasing those produces a synergistic release of the pelvic floor, because they're connected.</li>
+    <li><strong>Start where it isn't sore.</strong> Find the right density and texture for your sensitivity — firm or soft, spiky or smooth — and work up. If your legs are painful right now, roll your shoulders first.</li>
+  </ul>
+
+  <h3>The two failure patterns</h3>
+  <ul>
+    <li><strong>Fear avoidance.</strong> Anticipating pain makes you avoid movement. That produces hypervigilance about bodily sensation, then withdrawal from recreation and family activity, then depression, physical disuse, deconditioning, and disability — a feedback loop that compounds physical decline. Concretely: you don't move today, don't tomorrow, your period arrives and you certainly don't, and a month later moving is harder and hurts more than it would have. The catastrophizing version runs: if I work out my pain might be worse, it might rupture a cyst, I won't get out of bed, I'll miss work, I'll be seen as weak, I'll be fired.</li>
+    <li><strong>Boom and bust.</strong> A good day triggers doing as much as possible, then a crash and nothing for a stretch, then another boom. A mental and physical rollercoaster.</li>
+  </ul>
+
+  <h3>Pacing</h3>
+  <p>The fix for both. Start with small achievable goals, deliberately, to change the internal signal from <em>this hurts</em> to <em>I can do this much and I feel okay.</em> Which means checking in honestly about what's actually possible today rather than what's possible in general.</p>
+  <ul>
+    <li>Too fatigued to lift weights — a gentle foam rolling routine at home.</li>
+    <li>First day of a period, everything too much — legs up the wall, which is literally putting your backside against a wall and resting your legs up it.</li>
+    <li>Other points in the cycle — a kickboxing video, or a dance in the kitchen while cooking.</li>
+  </ul>
+  <p>Pacing also means approaching a feared movement differently rather than abandoning it. The author's example: she joined a high-intensity gym across the street, drawn to the community, and learned within a few sessions that those classes were wrong for her body — inflammation and fatigue both spiked. She already knew high-endurance work can spike cortisol and inflammation for some people, and had assumed wanting it enough would override that. She quit, felt like a failure walking past it for a year, and then asked one of the owners whether they offered one-on-one sessions tailored to her capacity. She explained the endo, the fatigue pattern, and her actual goals — getting stronger and feeling more confident — and got an enthusiastic yes. Her body not doing the group version didn't mean quitting.</p>
+
+  <h3>Finding what your body wants</h3>
+  <p>The trap is importing someone else's answer. An Australian survey on endometriosis management found <strong>15.9% of participants reported increased pelvic pain doing yoga or Pilates</strong> — which doesn't put either off the table. A physical therapist and Pilates teacher with endo thrives on it and says it's what lets her feel challenged without feeling like she's missing out. The author's sister, who also has endo, runs marathons and triathlons. An Olympic swimmer with endo describes deliberately stopping reading about what she could and couldn't do, and letting her body tell her when it was done.</p>
+  <p>Diagnostic questions worth answering honestly:</p>
+  <ul>
+    <li>Are you avoiding movement because you're afraid of worsening the pain?</li>
+    <li>Are you pushing too hard, or not at all?</li>
+    <li>Are you deprioritizing it even though you know it helps?</li>
+    <li>Would you swap something that doesn't feel good for something new?</li>
+    <li>Are you open to something you didn't think you could do?</li>
+    <li>If budget or fear is the barrier, can you find free community classes or things you'd do at home?</li>
+  </ul>
+
+  <h3>Two multipliers</h3>
+  <ul>
+    <li><strong>Accountability.</strong> Group movement has been shown to decrease perceived stress and help emotional wellbeing, plus it addresses being alone in it. Where group isn't possible, a text buddy works — the author texted a friend in another state every time she moved, and the message could be as short as "did it."</li>
+    <li><strong>Music, specifically.</strong> Not a podcast, not the screen on the gym equipment. Music can help people transcend apparent physical limits and reduces perceived effort, which makes the work feel easier and more enjoyable. Worth trying even for stretching in bed.</li>
+  </ul>
+
+  <h2>Week five: kinder home and body</h2>
+  <h3>Endocrine disruptors</h3>
+  <p>Chemicals that mimic and disrupt the body's hormones. The women's health physician quoted extends it further: certain environmental chemical exposures, especially estrogenic ones, change how the immune system functions, and that reprogramming also alters epigenetics — changing how genes manifest.</p>
+  <p>Studies suggest endocrine disruptors are involved in the development and severity of endometriosis, alongside links to cancer, infertility, developmental and behavioral problems in children, and asthma.</p>
+  <p>The main ones and where they hide:</p>
+  <ul>
+    <li><strong>PBDE</strong> — flame-retardant home products and clothing</li>
+    <li><strong>Parabens</strong> — makeup, lotions, hair products</li>
+    <li><strong>PFAS</strong> — nonstick pans, food packaging, stain- and water-resistant products</li>
+    <li><strong>Phthalates</strong> — plastics, hair care, air fresheners, fragrance, makeup</li>
+    <li><strong>Triclosan</strong> — body wash, antibacterial soaps</li>
+    <li><strong>BPA</strong> — plastic products, the lining of some cans</li>
+  </ul>
+  <div class="flag">
+    <div class="lbl">Why you can't just read the label</div>
+    <p>Brands frequently don't disclose. "Fragrance" alone is a catch-all covering thousands of chemicals. The FDA does not require menstrual product manufacturers to disclose ingredients — and a 2020 study published in <em>Environment International</em> tested seven categories of feminine hygiene products and found <strong>24 endocrine-disrupting chemicals</strong> across them, including phthalates, parabens, bisphenols, and triclocarban. These are products used on some of the most absorbent tissue in the body, every month.</p>
+  </div>
+
+  <h3>The honest caveat</h3>
+  <p>The book includes this rather than skipping it, which is to its credit. The science is contested. There are studies linking parabens to health risks, and the FDA's stated position is that parabens in cosmetics are not a danger. Cotton is heavily treated with glyphosate, which is believed carcinogenic, and the EPA's position is that glyphosate is unlikely to be carcinogenic to humans.</p>
+  <p>The activist quoted puts it plainly: there's no single source of truth here — as with any health and wellness consumer category — so you make your own decision. Some people are noticeably sensitive to a synthetic ingredient in a tampon and some aren't, and there are people with chronic bacterial vaginosis who stop having it entirely after switching products.</p>
+
+  <h3>Menstrual products</h3>
+  <ul>
+    <li><strong>100% organic cotton pads and tampons.</strong> Once expensive and hard to find, now stocked by most major stores and pharmacies at reasonable prices, with subscription options. Anything not 100% organic has been sprayed with pesticides and may carry the disruptors found in that 2020 study. Look for brands that disclose ingredients.</li>
+    <li><strong>Reusable pads and period underwear.</strong> Softer, often less irritating, no shifting, no worry about toxic shock from an unchanged tampon. Reusable, so cheaper over time and much lower waste. Some reusable pads hold several tampons' worth. You rinse them and wash them with your clothes. Practical note from the author: she can't use period underwear alone on a heavy first day and still needs a pad, but can use it alone from day three onward.</li>
+    <li><strong>Menstrual cups.</strong> Collect rather than absorb, last up to twelve hours, and a single cup lasts years — which one estimate puts at roughly 720 tampons' worth of savings and 720 fewer in landfill. Not a good option if tampons irritate or hurt you; a reasonable one if you can wear a tampon comfortably.</li>
+  </ul>
+
+  <h3>How to approach the rest without doing everything at once</h3>
+  <ul>
+    <li><strong>Use the EWG guides.</strong> "Natural" and "organic" on a label don't guarantee anything, and ingredient lists are hard to interpret even when present. The Environmental Working Group has guides covering cleaning supplies, water, and home products including mattresses, paint, and carpet. Their Skin Deep database covers over 80,000 personal care products — nail polish, toothpaste, sunscreen, perfume — and rates safety from 1 to 10. You can search a product, brand, or ingredient.</li>
+    <li><strong>Start with a big swap.</strong> The health coach quoted reasons from surface area: your skin is your largest organ and your cells absorb what you put on your body, so cover the biggest areas first — body wash, body oils, lotions. Then armpits, because the breasts sit adjacent and whatever goes there has direct access to the lymph nodes: natural deodorants without endocrine disruptors or aluminum, and soap or oil instead of shaving cream. In the home, cookware — cast iron, ceramic, or stainless steel instead of nonstick.</li>
+    <li><strong>Use your pantry.</strong> There's a real stigma that low-toxin means unaffordable, and $100 face masks exist. But coffee grounds and olive oil make an exfoliant, raw honey makes a moisturizing mask, olive or coconut oil works as a body moisturizer, vinegar and water makes an all-purpose cleaner, and simmering orange peel and cinnamon works as an air freshener.</li>
+    <li><strong>Get to know your skin.</strong> Document past and present irritations, rashes, discomfort, or headaches and look for connections to products. Take a questionable product out for a week. The author's own history is instructive: severe teenage acne, treated with harsh chemicals, scrubs, brushes, and pads that made it worse and damaged her self-esteem, until she threw everything away and declared she'd never put anything on her face again — at which point it cleared. More isn't more for sensitive skin, and tolerances differ. A natural deodorant everyone recommends may give you a rash, in which case look for brands without baking soda made for sensitive skin.</li>
+    <li><strong>Take a product-free day once a week.</strong> Water only in the shower, no deodorant, no face routine. It may feel strange, and even once a week can be balancing and regulating. Document what changes.</li>
+  </ul>
+</div>
+
+<!-- 6. MENTAL HEALTH -->
+<div class="view" id="v-mental">
+  <div class="sechead g6"><span class="big">Mental health</span></div>
+
+  <h2>The scale</h2>
+  <p>A 2019 BBC survey of over 13,500 women found that <strong>nearly every respondent said endometriosis had negatively affected their mental health, almost half reported suicidal thoughts because of it,</strong> and the majority used prescription painkillers to cope.</p>
+  <p>People with endometriosis have an elevated risk of developing depression and anxiety disorders because of the condition, with phobic anxiety and sensitivity also higher than in people without it. Depression isn't a symptom of endo, but for many people it functions like a byproduct of it.</p>
+  <p>The psychotherapist quoted throughout is direct about why: it's close to impossible to go through not understanding what's happening in your body, and not getting good answers from doctors, and come out without some form of trauma, anxiety, or depression.</p>
+
+  <h2>The attribution problem</h2>
+  <p>One of the harder parts is that you can't cleanly separate the endo from the mental health, and the questions loop. Is the fatigue from the endo, or am I depressed? Am I depressed because of the endo, and is that depression producing more fatigue? Birth control can cause depression in some people — is it the pill making me sad? But I'm taking the pill to manage the endo, so do I stop?</p>
+  <p>The book doesn't resolve this, and naming it as a known loop rather than a personal failure of clarity is itself useful.</p>
+
+  <h2>Pain catastrophizing</h2>
+  <p>Defined as flooding your brain with negative and catastrophic responses to anticipated pain, or to pain that's actually happening.</p>
+  <p>The illustration is worth carrying because it's recognizable. You feel a small cramp in the morning. The thinking starts: this will become bigger cramps; by tonight they'll be bad enough that I miss my best friend's birthday; she'll be annoyed about another cancellation and will have finally hit her limit; everyone at the party will ask where I am and roll their eyes when they hear I'm sick again; eventually nobody will want to see me — why would they, when I can't even show up to my best friend's birthday. Within minutes, one small cramp has produced a future with no friends.</p>
+  <p>Someone without a pain history feels the same cramp and reads it as gas, or a hard workout the day before, and moves on. Their brain doesn't go there.</p>
+  <div class="callout">
+    <div class="lbl">Why this isn't a character flaw</div>
+    <p>The best predictor of future pain is past pain. If a small cramp once became an ER visit and a ruptured cyst, or a painful miscarriage, or the worst period of your life that nobody believed, the brain is doing protective prediction. It's trying to prepare you.</p>
+  </div>
+  <p>The problem is what it costs. Catastrophizing has been shown to increase depression, and in people with chronic conditions it produces hopelessness and an inability to shift attention away from the negative thoughts in order to cope with the pain itself. <strong>And it can make the pain worse.</strong></p>
+  <p>The mechanism, from the physical therapist quoted: when you're stressed or thinking negatively you send fear-driven messages into the brain. The limbic system — which handles fear, memory, and emotional and physical response — goes into overdrive and sends further messages that you're in danger, which can create more pain and worsen symptoms.</p>
+  <p>The book is emphatic on one point: none of this means the original pain isn't real. Endometriosis is a genuinely painful condition. The catastrophizing sits on top of real pain, not in place of it.</p>
+  <p>What to do about it: build awareness of your own pattern, get help from a therapist or a support group, and build coping tools that calm the body down — which is the stress management material.</p>
+
+  <h2>Chronic pain and personality</h2>
+  <p>Research shows chronic illness and pain can affect personality, mood, and how you connect with people. The explanation offered: in the period leading up to diagnosis you don't understand what's happening in your body and you're being dismissed by doctors and the medical system, so you start feeling unsafe in your body and unsafe in the world — and that shapes everything. Some people retreat and go internal. Some lash out. Some get more anxious. It varies, and it can change every aspect of a personality.</p>
+  <p>The analogy she uses: imagine someone walking around with an acutely broken arm every day for the rest of their life. Of course it affects their mood, patience, and irritability. There's no way for it not to.</p>
+  <div class="callout">
+    <div class="lbl">Where the anger goes</div>
+    <p>Because you can't direct anger at endometriosis, it gets misdirected. Anger, sadness, and hopelessness get projected outward — and specifically into <em>safe</em> places, where you know they'll be received. Road rage in the car. Husbands, wives, partners, parents. Most people aren't fully aware they're doing it, because waking up grouchy, sensitive, or irritable becomes the norm and it's easy to take it out on whoever you see first. Over time it damages relationships and ends some of them.</p>
+  </div>
+  <p>The author's own illustration: more than twenty years of a hostile relationship with her sister, who also has endometriosis. Neither knew how much pain the other was in because they barely spoke. It repaired in the year they both changed their diets and started managing their pain — at which point they could see that most of the anger between them had been a function of it. She's careful to say pain isn't an excuse for how she behaved, and also that it was clearly a factor.</p>
+
+  <h2>Infertility grief</h2>
+  <p>The book argues this is systematically underweighted — that the statistics get cited while the experience behind them rarely does, and that people are carrying substantial grief, shame, and a sense of failure.</p>
+  <p>What the survey responses describe: that the mental devastation of infertility exceeds the physical pain, and is the hardest symptom to talk about. Feeling less of a woman. Not understanding why a partner stays. Building a wall against everyone who reminds you you're not getting younger. Losing faith while everyone around you conceives easily. Withdrawing from friends unintentionally because you feel you have nothing in common. IVF experienced as traumatic, and the point where risk to health outweighs the chance of success. The effect on dating confidence, and the difficulty of watching friends hit milestones you assumed you'd reach alongside them.</p>
+  <p>Fertility issues have been shown to cause depression, anxiety, loss of self-esteem, hopelessness, and grief.</p>
+  <p>The sequence the psychotherapist recommends:</p>
+  <ul>
+    <li><strong>Sit with the grief first, without judgment.</strong> Before anything else. People with endo live in survival mode — head down, pushing forward — and often don't make space to experience what's actually happening.</li>
+    <li><strong>Then move to solutions, without rushing toward them.</strong> Give the process time. Different paths for different people is fine.</li>
+    <li><strong>Don't carry it alone.</strong> A therapist if possible, or other people who've been through it. Partners often can't understand it the same way, and friends and family who haven't experienced it frequently can't either.</li>
+  </ul>
+  <p>One thing worth knowing: a good outcome doesn't erase it. The surgeon quoted throughout the book went through multiple rounds of IVF and has a healthy daughter. She was repeatedly told that once she had a baby she wouldn't remember what she went through. She says she will never forget the grief or the struggle, and that it makes her grateful for every moment.</p>
+  <p>And it's fine not to be able to move on, and fine to want to yell at the well-meaning person telling you everything happens for a reason. Losing a child through miscarriage is a real loss. Not creating your family the way you imagined is a real loss. Discovering you can't carry a child is a real loss. They need grieving rather than reframing.</p>
+
+  <h3>Alternative paths</h3>
+  <ul>
+    <li><strong>Talk to families who've done it</strong> — adoption, foster-to-adopt, surrogacy, egg donation. There's a lot of misinformation, and the media concentrates on worst-case stories. People who've been through the process will give you the obstacles, what they wish they'd known, and the good parts.</li>
+    <li><strong>Expect invasive questions and prepare for them.</strong> Real examples the author was asked: aren't you scared what kind of baby you're going to get; what if the birth mother keeps the baby; are you doing this because you don't want to gain weight; is there something wrong with your husband's sperm. Two routes: shut it down ("this isn't something I feel comfortable talking about right now"), or use it to educate, which may stop that person asking someone else the same thing.</li>
+  </ul>
+
+  <div class="flag">
+    <div class="lbl">A note on this section</div>
+    <p>This material covers suicidal thoughts, medical trauma, and grief because the source does, and because it's part of an accurate picture of the condition. If any of it is close to home for whoever reads it, talking to a professional is the book's own repeated recommendation — and I can help find appropriate support or resources if that's useful.</p>
+  </div>
+</div>
+
+<!-- 7. RELATIONSHIPS -->
+<div class="view" id="v-relationships">
+  <div class="sechead g7"><span class="big">Relationships and support</span></div>
+
+  <h2>The one communication move</h2>
+  <p>Check in before you share. The framing from the psychotherapist: <em>I really want to share how I'm feeling with you right now — are you in a place to receive it?</em></p>
+  <p>The author's own versions are deliberately less polished, which is the point. Calling from another room: can you come in here, I want to tell you about something, is that cool? Or a text before unloading: I'm struggling a little today, got time to talk today or tomorrow?</p>
+  <p>Two things attached to it:</p>
+  <ul>
+    <li><strong>Close the loop.</strong> After sharing, say you're there for them too if they're ever struggling. It's a reminder that the support runs both directions.</li>
+    <li><strong>It isn't always possible,</strong> and holding it as a permanent standard is unrealistic. But when it is possible it matters, because watching someone you love be in pain and being helpless to fix it is genuinely hard — something the psychotherapist notes can be especially hard for men.</li>
+  </ul>
+
+  <h2>What a supportive partner actually does</h2>
+  <p>The most useful piece in this chapter is an interview with the husband of someone with endo, because it's specific rather than sentimental.</p>
+  <ul>
+    <li><strong>He researched it before she raised it.</strong> He'd seen her mention endometriosis publicly, figured it must matter to her, and read up so he'd be ready — and admits he also wanted to impress her. When she did bring it up, he had notes. She gave him the introductory version rather than the full picture.</li>
+    <li><strong>The turning point wasn't a conversation.</strong> She was in so much pain she could barely move, reached for tissue, and he offered to get it since he was already up. She refused — she didn't need his pity. He told her he wasn't pitying her, he was right there. She cried, and he realized it had never been about the tissue.</li>
+    <li><strong>What he said to her:</strong> if we're going to be together, you're going to have to let me help sometimes. We'll have to learn to balance it, because you can't do this on your own. You had to before, because you had no choice. Now you have help — don't refuse it just to prove something you've already proven.</li>
+    <li><strong>On caregiver fatigue, asked directly:</strong> the help isn't the issue. The fatigue comes from the balance of when to help and when not to. There are moments where you're limited, and you do what you can, because you love the person more than you get frustrated with the illness.</li>
+    <li><strong>The framing he chose:</strong> you don't have endo alone. We have endo. It affects both of us now.</li>
+  </ul>
+
+  <h2>When support isn't there</h2>
+  <p>Being dismissed by doctors is one thing. Being dismissed by family and friends can be more devastating — not believing the pain, getting upset about cancellations, not supporting the changes you're making to feel better.</p>
+  <p>The pattern the book documents through one interviewee: her family thought she was being difficult and high-maintenance about the diet changes she'd made, and it was a sore subject for two years. What closed the gap was them hearing the diagnosis from a doctor. Her mother and sisters cried, said they hadn't realized what she'd been telling them for years was as bad as it was, and her mother carried real guilt about not believing her — something they had to work through as a family. Now her mother cooks for her diet and her sisters respect it when she's too fatigued to leave the house.</p>
+  <p>For other people it's taken ER visits, counseling, or the loss of a pregnancy before empathy arrived.</p>
+  <div class="callout">
+    <div class="lbl">The nuance the book insists on</div>
+    <p>The instinct when someone isn't being supported is to say cut that person out. It isn't always that simple and can be an unfair response. Relationships are complicated, and unless you're inside one you don't have the full picture. Someone not understanding your condition doesn't mean they don't love you or don't want to support you. Sometimes they don't know how.</p>
+  </div>
+
+  <h3>Ways to bring people along</h3>
+  <ul>
+    <li>Watch a documentary about endometriosis together.</li>
+    <li>Send medical journal links, or print articles you've found.</li>
+    <li>Take them to a doctor's appointment.</li>
+    <li>Show surgery photos. It's a visual for how endo has affected different parts of the body, and it makes clear this isn't a bad period.</li>
+    <li>Bring them to an endometriosis event so they hear experts and can talk to other people.</li>
+    <li>Mention that in more severe cases lesions have spread to people's lungs. It reliably wakes people up, because they'd be frightened if something were growing on theirs.</li>
+  </ul>
+  <p>And the counterweight: it isn't solely your job to educate the people around you. The internet exists. Sometimes a nudge is what's available and appropriate.</p>
+
+  <h2>When it isn't workable</h2>
+  <p>The other story in the chapter is the one that matters for anyone reading this trying to assess a relationship. Everything was fine until her symptoms escalated. She started wearing loose dresses because of her endo belly, and her boyfriend criticized her clothes and tried to control what she wore. The criticism spread to other parts of her life. She absorbed it, reasoning that her illness was hard on him and that she just wasn't a fun girlfriend. She adopted a posture of apologizing for existing and taking up space, and became so tense waiting for the next criticism that she couldn't be intimate at all — and concluded sex was permanently over for her.</p>
+  <p>She left. Her symptoms improved dramatically, and she understood that being constantly tense had been contributing to her pelvic pain. Her own summary: she'd blamed everything on endometriosis and hadn't registered that he was simply a bad partner. In her next relationship she was so surprised and overly grateful when a boyfriend asked whether she needed anything that he had to point out that being kind to your partner is normal.</p>
+  <p>The book's position: you know best how the people in your life make you feel, and if someone is making you feel unsafe, unsupported, or worse, that's grounds for reevaluating the relationship — alongside the separate work of having hard conversations and, sometimes, letting go of pride and accepting help that's being offered.</p>
+
+  <h2>Sex</h2>
+  <p>Specifically penetrative sex. Painful sex is one of the most predominant symptoms of endometriosis and one of the hardest to talk about — partly because everything anyone is taught about sex assumes it's pain-free after the first time. So when it isn't, it reads as confusing and shameful rather than as a symptom.</p>
+  <p>Worth noting: some people with endo also have vulvodynia, a chronic pain condition of the vulva producing burning, itching, and stinging. That's worth raising with a doctor separately.</p>
+  <p>And it isn't only pain. Fatigue, cramping, a bloated belly, and fear or embarrassment about surgery scars all complicate intimacy. Studies show painful sex and avoidance of intimacy because of endometriosis can lower self-esteem and produce guilt and inadequacy, on top of relationship tension.</p>
+
+  <h3>Why people don't speak up in the moment</h3>
+  <p>Because it's genuinely hard to ask a partner to stop. You don't want to make them feel bad for hurting you, or be the reason they don't get to enjoy something. It's equally hard to say you're not in the mood because of symptoms, because nobody wants to put a partner in the position of feeling rejected. So people endure it and absorb the consequences.</p>
+  <p>The author's own version: enduring severe pain, going to the bathroom afterward to cry, then returning to bed and lying in her husband's arms feeling uneasy and anxious because she felt she was deceiving him. He had no idea he was hurting her, and she knew it would break his heart, so she kept it secret. Eventually she couldn't keep lying, and sharing lifted an enormous weight and brought them closer.</p>
+  <p>The reframe worth keeping, from a pelvic health therapist: <strong>penetration is not the gold standard of sex.</strong></p>
+
+  <h3>Practical</h3>
+  <ul>
+    <li><strong>Pleasure mapping,</strong> alone or with a partner — exploring which parts of your body produce pleasure and which don't, outside the genitals. Inner thigh, neck, breast, places you hadn't considered. The therapist's caveat: feel safe and secure first, before sensitizing anything to sexual pleasure.</li>
+    <li><strong>Track which times of the month hurt most</strong> so you can plan rather than discover.</li>
+    <li><strong>Tools.</strong> Lubricant. Buffers that limit depth of penetration.</li>
+    <li><strong>Set the conditions.</strong> Wear or don't wear what makes your body comfortable. Dim light or none. Body positivity is fine and you don't have to love your body every day to be able to enjoy sex.</li>
+    <li><strong>These conversations aren't only for new relationships.</strong> Six months or six years, they're the same conversation. And they don't have to be formal sit-downs.</li>
+  </ul>
+
+  <h3>Bringing in the medical side</h3>
+  <p>Telling your doctor may help locate lesions or get you to a specialist. The physical therapist who specializes in this describes needing to understand the whole pain process — not just sexual function but how long it hurts and at what intensity — because you have to be able to measure change.</p>
+  <p>Short-term measurable goals are the method. If both tampon insertion and intercourse are painful, those are very different things, so an early goal might be inserting or removing a tampon pain-free, then working with dilators to build tolerance gradually. Intravaginal massage and neuromuscular stretching also feature. Where the barrier is emotional rather than physical, she brings in a sex therapist.</p>
+  <p>And the honest limit: depending on where lesions sit, it can still hurt. Pelvic physical therapy cannot remove endometriosis — only surgery excises it, and research shows excision has helped patients with painful sex and improved their sex lives.</p>
+
+  <h2>Parenting</h2>
+  <p>You can't call in sick, and there are moments where pushing through isn't optional. Which is exactly why making your own care a priority is load-bearing rather than indulgent.</p>
+  <p>The author's version of that time is deliberately unglamorous: letting her son watch a show so she can move her body for twenty minutes; ordering a meal kit for the first two days of her period to take the pressure off cooking; sitting in an empty tub for ten minutes with her eyes closed or reading a chapter. She doesn't feel guilty about any of it, because she's a kinder and more engaged parent afterward.</p>
+  <p>From a mother of five with endo:</p>
+  <ul>
+    <li><strong>The hardest part when the children were young was physical</strong> — baths, playing, carrying them — plus having less patience because of pain, which felt unfair to them.</li>
+    <li><strong>Her most valuable lesson: be as open as possible about the condition so they understand it.</strong> Her children can now tell by looking at her when she isn't well, and they rally and help around the house.</li>
+    <li><strong>It became a lesson rather than only a burden.</strong> Her children have seen that a diagnosis can be met with action and control rather than defeat, and they reference it as an example of turning something negative into something positive.</li>
+  </ul>
+</div>
+
+<!-- 8. OTHER THERAPIES -->
+<div class="view" id="v-other">
+  <div class="sechead g8"><span class="big">Other therapies to explore</span></div>
+
+  <div class="callout">
+    <div class="lbl">Why these sit outside the core five weeks</div>
+    <p>They're foundational for some people the way food and movement are for others. They're also unevenly available — location, budget, body, and belief system all rule some of them out, either for now or permanently. The patient advocate's line captures the honest position: pelvic floor therapy is very important, but if you can't afford it, it doesn't matter how important it is.</p>
+    <p>Partial workarounds: clinical trials and studies for acupuncture and cannabis that you can look into joining; sliding scales at some pelvic floor and traditional Chinese medicine practices; telehealth if you have budget but no local providers.</p>
+  </div>
+
+  <h2>Pelvic floor therapy</h2>
+  <p>Physical therapy delivered by a licensed physical therapist with specialized training in pelvic floor dysfunction. The pelvic floor is a group of muscles attaching primarily from the pubic bone to the tailbone that support the abdominal organs, provide continence of urine and stool, participate in sexual function, and coordinate with other muscles for core stability.</p>
+  <p>What it can specifically address for endo:</p>
+  <ul>
+    <li>Painful trigger points in the pelvic floor</li>
+    <li>Central sensitization — an overstimulated nervous system</li>
+    <li>Tension in the pelvic floor muscles</li>
+    <li>Endo belly</li>
+    <li>Scar tissue management</li>
+  </ul>
+
+  <h3>What a first appointment looks like</h3>
+  <ul>
+    <li><strong>History.</strong> Your story, previous surgeries, past and current pain and symptoms, cycle length, and stressors. Some practitioners — not all — also ask about diet, sleep, digestion, and trauma including sexual trauma. The therapist interviewed sought extra nutrition training on the reasoning that endometriosis is complex and needs a multifactorial approach, because the pain, fatigue, bloating, digestive issues, anxiety, and depression involve much more than the musculoskeletal system.</li>
+    <li><strong>Standing assessment.</strong> Posture, balance, spine alignment, breathing patterns, muscle coordination — all of which can affect the pelvic floor or be altered by a weak one.</li>
+    <li><strong>Fascial and muscular assessment,</strong> lying down. Hands moving over the abdomen looking for trigger points, adhesions, or scar tissue, while feeling the abdominal fascia.</li>
+    <li><strong>An internal exam, if appropriate.</strong> A gloved finger to assess pelvic muscle tone, areas of pain, tightness or weakness, and the ability to relax.</li>
+    <li><strong>Findings, goals, and homework.</strong> In the author's case: a bladder diary recording water intake and urination frequency, breathing exercises, specific poses to do at home, and skin rolling and massage on scars and tight areas. Her therapist followed up with a video, which mattered because she'd forgotten half of it by the time she left.</li>
+  </ul>
+
+  <div class="flag">
+    <div class="lbl">The consent point, which the book emphasizes hardest</div>
+    <p>Not every patient receives an internal exam, and not every patient is ready for it mentally or physically. If someone isn't ready, a therapist may work first on calming the nervous system, breathing exercises, or dilator therapy. Some people can't tolerate a tampon, let alone someone else's fingers. The exam is meant to <em>assess</em> pain, not increase it, and it stops whenever you say so.</p>
+    <p>This is intimate work. For anyone with endo, and especially anyone with past sexual trauma, touching your own body — let alone being touched — can bring up a great deal. Credentials and reviews are irrelevant if you don't feel safe or cared for. Then that isn't your therapist.</p>
+  </div>
+
+  <h3>Logistics</h3>
+  <ul>
+    <li>Some states require a doctor's referral and some don't. If you need one and your own doctor won't provide it, the therapist may be able to refer you to a doctor who will.</li>
+    <li>Insurance coverage varies. Before booking, ask how much time you'll actually get and how many other clients they'll be seeing simultaneously. One-to-one matters more if you expect the sessions to be painful or emotional; some people are fine in a group setting.</li>
+    <li>A typical course is roughly six to eight sessions, sometimes more and sometimes fewer.</li>
+    <li>The home work is part of the investment. If you're paying for the sessions, doing the exercises between them is what makes them worth it.</li>
+  </ul>
+
+  <h2>Herbs and supplements</h2>
+  <p>The book is more skeptical here than anywhere else, and reasonably so — the industry makes large claims about powders, pills, and tinctures, packaging is persuasive, and most people end up with a cabinet of things and no idea whether any of it is doing anything.</p>
+  <div class="callout">
+    <div class="lbl">The mantra worth keeping</div>
+    <p><strong>Herbs work.</strong> Meaning they can have a powerful impact in either direction depending on who's taking them. Which is the argument for paying attention to side effects, your own sensitivity, dose, and interactions with any medication you're on — not the argument for taking more of them.</p>
+  </div>
+  <p>The sensible starting point is testing rather than guessing: annual blood work to find out what you're actually low in, then supplementing that.</p>
+  <ul>
+    <li><strong>B12.</strong> Deficiency can cause cognitive issues, fatigue, weakness, depression, numbness and tingling in the hands and feet, and anemia. It's essentially absent from plants — some algae, rare mushrooms, and fortified foods like dairy-free milks, nutritional yeast, and cereals exist, but typically aren't adequate sources. On a plant-based diet it's a must.</li>
+    <li><strong>Vitamin D.</strong> Deficiency can cause depression, fatigue, and muscle pain — which overlaps almost exactly with what endo already produces. One study put the overall deficiency rate at 41.6%, with markedly higher rates among people with darker skin: 69.2% of Hispanic and 82.1% of Black participants. Also harder to get from plants.</li>
+  </ul>
+  <p>The author deliberately declines to publish a long endo supplement list, on two grounds: there isn't much evidence for how specific supplements work for endometriosis, and long lists are overwhelming and expensive. The three named by the physician and herbalist she asked, for their anti-inflammatory properties: <strong>NAC (N-acetyl cysteine), curcumin (turmeric extract), and ginger root.</strong></p>
+  <p>With the framing that matters more than the list. The physician's own approach isn't sending someone home to try NAC for six months — it's part of a whole picture of diet and lifestyle. Supplements are supplemental. You cannot manage endometriosis on one.</p>
+  <p>Research anything you take, and consult a doctor or a herbalist.</p>
+
+  <h2>Lymphatic movement</h2>
+  <p>New studies suggest the lymphatic system may play a role in the progression of endometriosis. There isn't definitive proof yet — and supporting lymphatic drainage is beneficial to general health regardless of how much it turns out to matter for endo specifically.</p>
+  <p>What it is: a network of vessels, tissues, and organs that helps clear toxins and protect against infection. Unlike other systems, it needs help from you to keep moving. If it gets sluggish it can build up and produce fluid retention, chronic pain, and poor immunity — three things people with endo may already be dealing with.</p>
+  <p>The appeal is that most of it is already in the program, cheap, and pleasant:</p>
+  <ul>
+    <li>Foam rolling</li>
+    <li>Rebounding — jumping on a small trampoline</li>
+    <li>Dry skin brushing before a shower</li>
+    <li>General movement, yoga, or walking</li>
+    <li>Deep breathing and stress management practices</li>
+    <li>Staying hydrated</li>
+    <li>Lymphatic massage</li>
+  </ul>
+
+  <h2>Traditional Chinese medicine</h2>
+  <p>An ancient Chinese medical system made up of several healing modalities. For some people with endo it has produced less painful periods, reduced symptoms and inflammation, improved fertility, and help with the mental health side of the condition.</p>
+  <div class="callout">
+    <div class="lbl">The correction worth noting</div>
+    <p>People equate TCM with acupuncture. The practitioner interviewed is clear that it's the whole system that helps — looking for disharmony in the body, dietary advice, lifestyle adjustment, massage, moxibustion (burning mugwort), cupping, and herbal medicine. Acupuncture alone is a fraction of it.</p>
+  </div>
+  <p>Her framing of endo within that system is also interesting on its own terms: in Chinese medicine endometriosis isn't one disorder, because it isn't one biomedically either — there are different routes to it. And the system is fundamentally about how one symptom has meaning in relation to other symptoms.</p>
+  <h3>Choosing a practitioner and setting expectations</h3>
+  <ul>
+    <li><strong>Credentials:</strong> licensed and board certified in both acupuncture and Chinese herbs, with experience in gynecological issues.</li>
+    <li><strong>Comfort, for the same reason as pelvic floor therapy.</strong> Her position is that people heal when they feel safe — and endometriosis is central enough to your life that you can't get away from it or ignore the pain, so unwinding the strain around it requires safety. You're looking for someone who gives you that confidence.</li>
+    <li><strong>First visit</strong> goes deep into health history and lifestyle and produces a treatment plan.</li>
+    <li><strong>Goals should be quantifiable</strong> — less pain, fewer PMS symptoms, less or no spotting between periods. Measurable, realistic, tangible.</li>
+    <li><strong>Be wary of anyone promising to make your endo go away.</strong></li>
+    <li><strong>Timeline:</strong> give it two to three months, and expect to see improvement by around six weeks. Which is exactly why the measurable goals matter — they're how you know.</li>
+    <li><strong>Cost:</strong> many practitioners don't take insurance; some work on sliding scales; community clinics are less expensive.</li>
+  </ul>
+
+  <h2>Cannabis and CBD</h2>
+  <p>The mechanism: cannabis contains active components called cannabinoids, and the body is covered in cannabinoid receptors including in the pelvic area. They work like a lock and key — when they connect, it triggers a reaction. THC, the psychoactive compound, attaching to a receptor produces a reaction shown to help with pain, inflammation, anxiety, and sleep. CBD is another cannabinoid, found in both cannabis and hemp, which doesn't attach directly to the receptor and isn't psychoactive — it won't get you high unless THC has been added. Its benefits can include inflammation, sleep, and anxiety.</p>
+  <div class="flag">
+    <div class="lbl">Caveats</div>
+    <ul>
+      <li><strong>Cannabis helps anxiety for some people and increases it in others</strong> via the psychoactive effects. Talk to a doctor before using either.</li>
+      <li><strong>Legal status varies by state and changes.</strong> The book's snapshot describes states where recreational use is illegal but medicinal purchase with a card is legal, while hemp-based CBD is broadly available — worth verifying currently rather than relying on the book.</li>
+      <li><strong>Dosing is individual.</strong> Your body may process cannabinoids differently from someone else's, so you may need more or less than the recommendation. Comparing your experience to anyone else's isn't useful.</li>
+    </ul>
+  </div>
+  <ul>
+    <li><strong>Sourcing matters.</strong> Organic, cleanly processed, lab tested. Be wary of brands claiming to cure cancer or stop endo from growing — and of the cheap CBD spray at a grocery checkout promising to eliminate anxiety.</li>
+    <li><strong>Applications</strong> range from bath salts and oils to edibles. The cannabis expert interviewed names suppositories among her favorites for pelvic pain, on the reasoning that it's essentially applying a topical to the uterus. They can also work as a lubricant and help relax muscles for sex — with the specific warning that <strong>oil and suppositories can break latex,</strong> so don't combine them with latex.</li>
+    <li><strong>Same framing as supplements.</strong> Supplemental to food and lifestyle choices, not a quick fix and not a treatment for endometriosis.</li>
+  </ul>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var views={home:'v-home',what:'v-what',treatment:'v-treatment',advocacy:'v-advocacy',
+    toolkit1:'v-toolkit1',toolkit2:'v-toolkit2',mental:'v-mental',
+    relationships:'v-relationships',other:'v-other'};
+  function show(){
+    var key=(location.hash||'#home').replace('#','');
+    if(!views[key]) key='home';
+    Object.keys(views).forEach(function(k){
+      var el=document.getElementById(views[k]);
+      if(el) el.classList.toggle('on',k===key);
+    });
+    document.querySelectorAll('nav a').forEach(function(a){
+      a.classList.toggle('on',a.getAttribute('href')==='#'+key);
+    });
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange',show);
+  show();
+})();
+</script>
+
+</body>
+</html>
