@@ -1,19 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0D0F13" id="themeColor">
 <title>Book HQ</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%232563EB' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M12 6c-2-1.5-5-1.5-8 0v13c3-1.5 6-1.5 8 0 2-1.5 6-1.5 8 0V6c-3-1.5-6-1.5-8 0Z M12 6v13'/%3E%3C/svg%3E">
+<!-- Set the theme before first paint so a stored choice never flashes. Default: dark. -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F4F5F7; --surface:#FFFFFF; --cover:#EAEEF3;
-  --ink:#171A21; --muted:#697386; --line:#E6E8EE;
+  --ink:#171A21; --muted:#697386; --line:#E6E8EE; --field:#EDF0F4;
+  --ring:#2563EB;
   --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
   --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+}
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --cover:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --line:#262B33; --field:#1E222A;
+  --ring:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
@@ -21,23 +32,39 @@ body{
   background:var(--bg); color:var(--ink);
   font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  transition:background-color .3s ease, color .3s ease;
 }
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid #2563EB;outline-offset:3px;border-radius:12px}
+:focus-visible{outline:2px solid var(--ring);outline-offset:3px;border-radius:12px}
 
-/* header — quiet wordmark, no nav */
-.top{display:flex;justify-content:center;padding:34px 20px 6px}
+/* header — quiet wordmark, theme toggle top-right */
+.top{position:relative;display:flex;justify-content:center;padding:30px 56px 4px}
 .brand{font-family:"Poppins";font-weight:600;font-size:17px;letter-spacing:.01em;color:var(--ink)}
-
-/* shelf — centered, wraps as books are added */
-.wrap{max-width:1080px;margin:0 auto;padding:30px 24px 80px}
-.shelf{display:flex;flex-wrap:wrap;justify-content:center;gap:26px}
-
-/* book tile */
-.tile{
-  width:260px;display:flex;flex-direction:column;gap:11px;
-  transition:transform .16s ease;
+.theme-toggle{
+  position:absolute;top:22px;right:16px;width:40px;height:40px;border-radius:10px;
+  display:grid;place-items:center;border:none;background:transparent;color:var(--muted);cursor:pointer;
+  transition:background-color .15s ease,color .15s ease;
 }
+.theme-toggle:hover{background:var(--field);color:var(--ink)}
+.theme-toggle svg{width:20px;height:20px}
+
+/* search */
+.searchbar{display:flex;justify-content:center;padding:8px 20px 2px}
+.search-wrap{position:relative;width:100%;max-width:380px}
+.search-wrap .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted);pointer-events:none}
+#search{
+  width:100%;height:46px;padding:0 14px 0 40px;border-radius:12px;
+  background:var(--field);border:1px solid transparent;color:var(--ink);
+  font-family:inherit;font-size:15px;
+}
+#search::placeholder{color:var(--muted)}
+#search:focus{outline:none;border-color:var(--ring)}
+#search::-webkit-search-cancel-button{-webkit-appearance:none}
+
+/* shelf */
+.wrap{max-width:1080px;margin:0 auto;padding:22px 24px 80px}
+.shelf{display:flex;flex-wrap:wrap;justify-content:center;gap:26px}
+.tile{width:260px;display:flex;flex-direction:column;gap:11px;transition:transform .16s ease}
 .tile:hover{transform:translateY(-4px)}
 .tile-cover{
   border-radius:14px;overflow:hidden;background:var(--cover);
@@ -50,19 +77,32 @@ a{color:inherit;text-decoration:none}
 .tile-title{font-family:"Poppins";font-weight:600;font-size:18px;line-height:1.28}
 .tile-author{color:var(--muted);font-size:14px;margin-top:3px}
 
+.empty{text-align:center;color:var(--muted);padding:48px 8px;font-size:15px}
+
 @media(max-width:600px){
   .tile{width:min(72vw,260px)}
-  .top{padding-top:26px}
+  .top{padding-top:24px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
-<header class="top"><div class="brand">Book HQ</div></header>
+<header class="top">
+  <div class="brand">Book HQ</div>
+  <button class="theme-toggle" id="themeBtn" type="button" aria-label="Switch theme"></button>
+</header>
+
+<div class="searchbar">
+  <div class="search-wrap">
+    <span class="ic" id="searchIc" aria-hidden="true"></span>
+    <input id="search" type="search" placeholder="Search books" autocomplete="off" spellcheck="false" aria-label="Search books">
+  </div>
+</div>
 
 <main class="wrap">
   <div class="shelf" id="shelf"></div>
+  <p class="empty" id="empty" hidden>No books match that.</p>
 </main>
 
 <script>
@@ -83,9 +123,19 @@ const BOOKS = [
   { slug:"art-of-spending-money", title:"The Art of Spending Money", author:"Morgan Housel", cover:"art-of-spending-money/img/cover.jpg" },
 ];
 
-/* ---- render (you don't need to edit below) ---- */
+/* ---- icons ---- */
+const S='stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const ICON={
+  sun:`<svg viewBox="0 0 24 24"><circle ${S} cx="12" cy="12" r="4"/><path ${S} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${S} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`,
+  search:`<svg viewBox="0 0 24 24"><circle ${S} cx="11" cy="11" r="7"/><path ${S} d="m21 21-4.3-4.3"/></svg>`,
+};
+
+/* ---- render shelf, filtered by the search box ---- */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-document.getElementById('shelf').innerHTML = BOOKS.map(b => {
+const shelf=document.getElementById('shelf'), empty=document.getElementById('empty'), search=document.getElementById('search');
+
+function tileHTML(b){
   const href  = b.href  || (b.slug + '/');
   const cover = b.cover || (b.slug + '/img/cover.png');
   return `<a class="tile" href="${esc(href)}">
@@ -95,7 +145,33 @@ document.getElementById('shelf').innerHTML = BOOKS.map(b => {
       <div class="tile-author">${esc(b.author)}</div>
     </div>
   </a>`;
-}).join('');
+}
+function render(){
+  const q=(search.value||'').trim().toLowerCase();
+  const list=BOOKS.filter(b=>!q || (b.title+' '+b.author).toLowerCase().includes(q));
+  shelf.innerHTML=list.map(tileHTML).join('');
+  empty.hidden=list.length>0;
+}
+search.addEventListener('input',render);
+render();
+
+/* ---- theme: default dark, remembered on this device ---- */
+document.getElementById('searchIc').innerHTML=ICON.search;
+const themeBtn=document.getElementById('themeBtn'), themeColor=document.getElementById('themeColor');
+const THEME_BG={light:"#F4F5F7",dark:"#0D0F13"};
+function applyTheme(t){
+  document.documentElement.dataset.theme=t;
+  themeBtn.innerHTML = t==='dark'?ICON.sun:ICON.moon;
+  themeBtn.setAttribute('aria-label', t==='dark'?'Switch to light mode':'Switch to dark mode');
+  themeColor.setAttribute('content', THEME_BG[t]);
+}
+let theme='dark'; try{theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){}
+applyTheme(theme);
+themeBtn.addEventListener('click',()=>{
+  theme=theme==='dark'?'light':'dark';
+  applyTheme(theme);
+  try{localStorage.setItem('bookhq-theme',theme);}catch(e){}
+});
 </script>
 </body>
 </html>
