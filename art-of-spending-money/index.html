@@ -3,55 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f2f0ec" id="themeColor">
+<meta name="theme-color" content="#0D0F13" id="themeColor">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>The Art of Spending Money — Study Guide</title>
 <!-- Applied before first paint so a stored dark choice never flashes light. -->
-<script>try{if(localStorage.getItem('asom-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
-<link rel="preload" as="font" type="font/woff2" href="fonts/literata-latin-opsz-normal.woff2" crossorigin>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-wght-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/poppins-latin-600-normal.woff2" crossorigin>
 <style>
 /* ── Type ────────────────────────────────────────────────────────────
-   The faces ship with the page rather than being fetched from Google. It
-   opens the same on a plane as on wifi, and there is no flash of fallback
-   type on the way in — which is most of why a page feels considered. */
-@font-face{
-  font-family:Literata;src:url("fonts/literata-latin-opsz-normal.woff2") format("woff2");
-  font-weight:200 900;font-style:normal;font-display:swap;
-}
-@font-face{
-  font-family:Literata;src:url("fonts/literata-latin-opsz-italic.woff2") format("woff2");
-  font-weight:200 900;font-style:italic;font-display:swap;
-}
-@font-face{
-  font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");
-  font-weight:100 900;font-style:normal;font-display:swap;
-}
+   Same two faces as the shelf: Poppins carries titles and labels, Inter
+   carries everything you read. Both ship with the page, so it opens the
+   same offline and never flashes fallback type on the way in. */
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
 
 /* ── Tokens ──────────────────────────────────────────────────────────
-   Only --accent, --bg and --panel change between books; the ink/soft/rule
-   triple is nudged to match the paper temperature. --rule is --ink at 16%. */
-:root{
-  --bg:#f2f0ec;
-  --panel:#e5e4dc;
-  --ink:#161814;
-  --soft:#55594f;
-  --rule:rgba(22,24,20,.16);
-  --accent:#2f5d3a;
+   Lifted from the shelf so the two pages are one surface. Only --accent
+   would change per book if a book ever needed its own. */
+:root,:root[data-theme="light"]{
+  --bg:#F4F5F7; --surface:#FFFFFF; --field:#EDF0F4; --coverbg:#EAEEF3;
+  --ink:#171A21; --muted:#697386; --line:#E6E8EE;
+  --accent:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
   --plate:20rem;
-  --ui:Inter,ui-sans-serif,system-ui,sans-serif;
-  --serif:Literata,Georgia,serif;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:Poppins,var(--ui);
   color-scheme:light;
 }
-/* Dark paper. Same six tokens; the accent lifts so it still carries on a dark
-   ground, and --rule stays --ink at 16%. */
 :root[data-theme="dark"]{
-  --bg:#171713;
-  --panel:#22221c;
-  --ink:#eceade;
-  --soft:#a09a8a;
-  --rule:rgba(236,234,222,.16);
-  --accent:#84b98d;
+  --bg:#0D0F13; --surface:#171A20; --field:#1E222A; --coverbg:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --line:#262B33;
+  --accent:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
   color-scheme:dark;
 }
 
@@ -59,224 +46,232 @@
 html{scroll-behavior:smooth;scroll-padding-top:7.5rem}
 body{
   margin:0;background:var(--bg);color:var(--ink);
-  font-family:var(--serif);
-  font-optical-sizing:auto;        /* Literata carries an opsz axis — use it */
-  hanging-punctuation:first;
-  -webkit-font-smoothing:antialiased;
-  -webkit-text-size-adjust:100%;
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
   -webkit-tap-highlight-color:transparent;
-  padding-left:env(safe-area-inset-left);
-  padding-right:env(safe-area-inset-right);
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
 }
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
 
-/* ── Motion ──────────────────────────────────────────────────────────
-   One easing curve for everything that opens, moves or arrives. Motion
-   here only ever explains what happened; nothing moves for its own sake. */
+/* ── Motion ─────────────────────────────────────────────────────────
+   One easing curve for everything that opens, moves or arrives. */
 :root{ --ease:cubic-bezier(.32,.72,0,1); }
-
 @keyframes lift{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
 @keyframes fade{ from{opacity:0} to{opacity:1} }
 @keyframes rise{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-
-/* Arrival. The page settles in once, top down, and is done in half a second. */
 header{animation:lift .55s var(--ease) both}
-.bar{animation:fade .5s ease .1s both}        /* opacity only — a transform here would break sticky */
+.bar{animation:fade .5s ease .1s both}   /* opacity only — a transform breaks sticky */
 main{animation:lift .55s var(--ease) .16s both}
-
-/* Colour changes on the theme swap are eased, but only during the swap. */
 body.theming,body.theming *{
   transition:background-color .45s ease,color .45s ease,border-color .45s ease !important;
 }
-
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
 }
 p{margin:0}
 a{color:var(--accent);text-decoration:none}
-a:hover{color:var(--ink)}
 img{border:0}
-
 .wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem}
 
-/* ── Header ─────────────────────────────────────────────────────────── */
+/* ── Header ─────────────────────────────────────────────────────────
+   The jacket stacks above the title. Beside it the title breaks onto two
+   lines and the byline onto three. It carries the shelf tile's treatment —
+   same radius, same hairline, same shadow — so arriving here feels like the
+   tile you tapped got bigger. */
 header{padding:2.2rem 0 1.4rem}
-/* The jacket sits above the title rather than beside it — at this size a
-   side-by-side cover squeezes the title onto two lines and the byline onto
-   three. Stacked, both go back to their natural line count. */
 .masthead{display:block}
-/* The jacket keeps its own white ground in both themes — it is an object, not
-   ink, so it is neither multiplied nor inverted. Dimmed a touch on dark paper
-   so it sits in the page instead of glaring out of it. */
-.cover{width:min(13rem,64%);display:block;margin-bottom:1rem}
-.cover img{display:block;width:100%;height:auto}
+.cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
+  border-radius:14px;overflow:hidden;background:var(--coverbg);
+  border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+/* The jacket is an object, not ink — never inverted, only dimmed so it sits
+   in a dark page instead of glaring out of it. */
 :root[data-theme="dark"] .cover img{filter:brightness(.86)}
-.book-title{font-family:var(--ui);font-weight:600;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin:0}
-/* Author and subtitle are two different kinds of fact, so they get two lines
-   rather than a "·" splice — the subtitle smaller and softer beneath. */
-.byline{margin-top:.4rem;font-family:var(--ui);font-weight:400;font-size:.72rem;letter-spacing:.06em;color:var(--soft)}
-.subtitle{margin-top:.2rem;font-family:var(--ui);font-weight:400;font-size:.68rem;letter-spacing:.06em;color:var(--soft);opacity:.72}
-/* Companion links are things you go and get, so they read as buttons. One
-   column on a phone at full width, three across once there is room. */
-.links{margin-top:1.4rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.5rem}
+.book-title{margin:0;font-family:var(--display);font-weight:600;
+  font-size:1.62rem;line-height:1.22;letter-spacing:-.014em;color:var(--ink)}
+.byline{margin-top:.35rem;font-size:.94rem;color:var(--muted)}
+.subtitle{margin-top:.15rem;font-size:.88rem;color:var(--muted);opacity:.78}
+
+/* Companion files are things you go and get, so they read as buttons. */
+.links{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.55rem}
 .links:empty{display:none}
 .links a{
-  display:flex;align-items:center;gap:.6rem;
-  min-height:52px;padding:0 .9rem;
-  background:var(--panel);border:1px solid var(--rule);
-  font-family:var(--ui);font-weight:500;font-size:.78rem;letter-spacing:-.005em;
-  color:var(--ink);
-  transition:border-color .25s ease,opacity .2s ease;
+  display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  background:var(--field);border:1px solid var(--line);border-radius:12px;
+  font-weight:500;font-size:.86rem;color:var(--ink);
+  transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
 }
-.links a .mk{flex:none;color:var(--accent);font-size:.9rem;line-height:1}
-.links a:hover{color:var(--ink);border-color:var(--accent)}
+.links a .mk{flex:none;color:var(--accent);font-size:.95rem;line-height:1}
+.links a:hover{border-color:var(--accent);box-shadow:var(--shadow)}
 .links a:active{opacity:.6}
 
-/* ── Mode bar ───────────────────────────────────────────────────────── */
+/* ── Mode bar ───────────────────────────────────────────────────────
+   No boxes. Three words and a hairline that travels to the live one. */
 .bar{
   position:sticky;top:0;z-index:20;
-  background:color-mix(in srgb,var(--bg) 93%,transparent);
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  margin:0 -1.1rem;padding:.5rem 1.1rem;
-  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
-  display:flex;align-items:center;gap:.2rem;position:relative;
+  margin:0 -1.1rem;padding:.45rem 1.1rem;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.2rem;
 }
-/* No boxes. Three words, and a hairline that travels to whichever one is live —
-   the only moving part in the chrome, and it is there to answer "where am I". */
 .bar a{
-  font-family:var(--ui);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:0 .7rem;min-height:44px;display:flex;align-items:center;
-  background:transparent;color:var(--soft);
-  transition:color .3s ease;
+  white-space:nowrap;
+  font-family:var(--display);font-weight:500;font-size:.76rem;letter-spacing:.01em;
+  padding:0 .75rem;min-height:44px;display:flex;align-items:center;
+  background:transparent;color:var(--muted);transition:color .3s ease;
 }
 .bar a.on{color:var(--ink)}
+.bar a.home{padding-left:0;padding-right:.85rem;margin-right:.15rem;color:var(--muted);
+  font-weight:600;border-right:1px solid var(--line)}
+.bar a.home:hover{color:var(--ink)}
+.bar a.home .ar{display:none;font-size:1rem;line-height:1}
+/* On a phone the three modes plus a wordmark won't sit on one line, and a
+   wrapped nav bar is worse than a shorter one. The label becomes an arrow. */
+@media (max-width:430px){
+  .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
+  .bar a{padding:0 .5rem;font-size:.73rem}
+  .bar a.home{padding:0 .55rem 0 0;margin-right:.2rem}
+  .bar a.home .lbl{display:none}
+  .bar a.home .ar{display:inline}
+}
 .bar a:active{opacity:.55}
 .bar-ind{
-  position:absolute;left:0;bottom:0;height:1px;background:var(--accent);
+  position:absolute;left:0;bottom:0;height:2px;background:var(--accent);border-radius:2px;
   transition:transform .42s var(--ease),width .42s var(--ease);
   transform-origin:left center;pointer-events:none;
 }
 .bar-ind.instant{transition:none}
-/* Theme toggle — square, same 44px floor and same border treatment as an
-   inactive mode toggle. Sits at the far right of the only chrome on the page. */
 #themeBtn{
-  margin-left:auto;flex:none;
-  width:44px;min-height:44px;
-  display:flex;align-items:center;justify-content:center;
-  padding:0;background:transparent;color:var(--soft);
-  border:0;border-radius:0;
-  font-family:"Apple Symbols","Segoe UI Symbol","Noto Sans Symbols2",var(--ui);
-  font-size:.95rem;line-height:1;cursor:pointer;
+  margin-left:auto;flex:none;width:44px;height:44px;border-radius:10px;
+  display:grid;place-items:center;padding:0;
+  background:transparent;color:var(--muted);border:0;cursor:pointer;
   -webkit-appearance:none;appearance:none;
-  transition:color .3s ease,opacity .2s ease;
+  transition:background-color .15s ease,color .15s ease,opacity .2s ease;
 }
-#themeBtn:hover{color:var(--ink)}
+#themeBtn:hover{background:var(--field);color:var(--ink)}
 #themeBtn:active{opacity:.5}
+#themeBtn svg{width:20px;height:20px}
 #themeBtn.swap{animation:fade .38s ease both}
 
 /* ── Shared section furniture ───────────────────────────────────────── */
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem}
-.sec-head h2{margin:0;font-family:var(--ui);font-weight:600;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
-.sec-head .count{font-family:var(--ui);font-size:.64rem;letter-spacing:.1em;color:var(--soft);flex:none}
-.sec-intro{margin:0 0 1rem;font-size:.97rem;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sec-intro{margin:0 0 1rem;font-size:.95rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
 section{scroll-margin-top:7.5rem}
-.open-sec .sec-head{padding-bottom:.7rem}
-.coll-sec .sec-head{padding-bottom:.4rem}
+.open-sec .sec-head{padding-bottom:.8rem}
+.coll-sec .sec-head{padding-bottom:.6rem}
 
-/* ── Argument ───────────────────────────────────────────────────────── */
-/* The question is the one hero on the page. It gets the air to act like it. */
-#argument{padding:2.8rem 0 .4rem;scroll-margin-top:7.5rem}
-#argument .q{font-family:var(--serif);font-weight:600;font-size:1.3rem;line-height:1.3;letter-spacing:-.021em;color:var(--ink);text-wrap:pretty}
-#argument .a{margin-top:1.05rem;font-size:1rem;line-height:1.62;color:var(--soft);text-wrap:pretty}
+/* ── Argument ───────────────────────────────────────────────────────
+   The question is the one hero on the page. It gets the air to act like it. */
+#argument{padding:2.6rem 0 .4rem;scroll-margin-top:7.5rem}
+#argument .q{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.32;
+  letter-spacing:-.018em;color:var(--ink);text-wrap:pretty}
+#argument .a{margin-top:1.05rem;font-size:1rem;line-height:1.66;color:var(--muted);text-wrap:pretty}
 
 /* ── Framework ──────────────────────────────────────────────────────── */
 #framework{padding-top:2.2rem}
-.fw-row{display:flex;gap:.8rem;padding:.8rem 0;border-top:1px solid var(--rule)}
-.fw-mark{flex:none;width:2.4rem;font-family:var(--ui);font-weight:600;color:var(--accent)}
-.fw-mark.seq{font-size:.95rem;line-height:1.45}
-.fw-mark.letter{font-size:1.05rem;line-height:1.35}
-.fw-term{font-family:var(--ui);font-weight:600;font-size:.94rem;letter-spacing:-.005em}
-.fw-gloss{margin-top:.3rem;font-size:.97rem;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.fw-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fw-mark{flex:none;width:2rem;font-family:var(--display);font-weight:600;color:var(--accent)}
+.fw-mark.seq{font-size:.95rem;line-height:1.5}
+.fw-mark.letter{font-size:1.05rem;line-height:1.4}
+.fw-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.fw-gloss{margin-top:.28rem;font-size:.95rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
 
-/* ── Insights / Actions ─────────────────────────────────────────────── */
+/* ── Insights / Actions ─────────────────────────────────────────────
+   Each entry is a card, the same object the shelf is built from. */
 #insights,#actions,#vocabulary{padding-top:2.4rem}
-.entry{border-top:1px solid var(--rule);scroll-margin-top:7.5rem}
-.entry-head{display:flex;gap:.8rem;align-items:baseline;padding:.9rem 1.8rem .9rem 0;cursor:pointer;position:relative}
-.entry-mark{flex:none;width:2.4rem;font-family:var(--ui);font-size:.68rem;letter-spacing:.08em;color:var(--soft)}
-.entry-title{flex:1;font-family:var(--serif);font-weight:600;font-size:1.06rem;line-height:1.32;letter-spacing:-.01em;text-wrap:pretty;transition:opacity .18s ease}
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:.6rem;scroll-margin-top:7.5rem;
+  transition:box-shadow .2s ease;
+}
+.entry[data-open="1"]{box-shadow:var(--shadow-hover)}
+.entry-head{display:flex;gap:.85rem;align-items:baseline;
+  padding:1rem 2.6rem 1rem 1rem;cursor:pointer;position:relative}
+.entry-mark{flex:none;width:2.6rem;font-family:var(--display);font-weight:500;
+  font-size:.66rem;letter-spacing:.09em;color:var(--muted)}
+.entry-title{flex:1;margin:0;font-family:var(--display);font-weight:600;font-size:1.03rem;
+  line-height:1.34;letter-spacing:-.011em;text-wrap:pretty;transition:opacity .18s ease}
 .entry-head:active .entry-title,.entry-head:active .entry-mark{opacity:.55}
 
 /* The sign is two hairlines. Opening rotates the upright onto the crossbar and
-   fades it out, so the plus resolves into a minus instead of being swapped. */
-/* Nudged past the line box centre onto the optical centre of the x-height —
-   serif ascenders sit high, so a mathematically centred rule reads as too high. */
-.entry-sign{position:absolute;right:0;top:1.05rem;width:1rem;height:1.4rem}
-.entry-sign i{
-  position:absolute;left:50%;top:50%;background:var(--accent);
-  transition:transform .34s var(--ease),opacity .34s var(--ease);
-}
-.entry-sign i:first-child{width:.72rem;height:1px;transform:translate(-50%,-50%)}
-.entry-sign i:last-child{width:1px;height:.72rem;transform:translate(-50%,-50%)}
+   fades it, so a plus resolves into a minus rather than being swapped for one. */
+.entry-sign{position:absolute;right:1rem;top:1.15rem;width:1rem;height:1.4rem}
+.entry-sign i{position:absolute;left:50%;top:50%;background:var(--accent);
+  transition:transform .34s var(--ease),opacity .34s var(--ease)}
+.entry-sign i:first-child{width:.72rem;height:1.5px;border-radius:2px;transform:translate(-50%,-50%)}
+.entry-sign i:last-child{width:1.5px;height:.72rem;border-radius:2px;transform:translate(-50%,-50%)}
 .entry[data-open="1"] .entry-sign i:last-child{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
 
 /* Height eases via grid rows — no measuring, and it interrupts cleanly. */
 .entry-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .44s var(--ease)}
 .entry[data-open="1"] .entry-wrap{grid-template-rows:1fr}
-.entry-body{overflow:hidden;min-height:0;padding:0;opacity:0;transform:translateY(5px);transition:opacity .3s ease,transform .34s var(--ease)}
+.entry-body{overflow:hidden;min-height:0;padding:0 1rem;opacity:0;transform:translateY(5px);
+  transition:opacity .3s ease,transform .34s var(--ease)}
 .entry[data-open="1"] .entry-body{opacity:1;transform:none;transition-delay:.08s}
-.entry-body > :last-child{margin-bottom:1.6rem}
-.lede{font-family:var(--serif);font-size:1.02rem;line-height:1.6;color:var(--ink);text-wrap:pretty}
-.lede + .lede{margin-top:.9rem}
-.evidence{margin-top:.9rem;font-size:1.02rem;line-height:1.6;color:var(--soft);text-wrap:pretty}
-/* The plate opens the body — the drawing before the prose that unpacks it.
-   It leads, so the top margin is tight against the header row. */
-.entry figure{margin:.3rem 0 1.3rem;width:min(var(--plate),100%)}
+.entry-body > :last-child{margin-bottom:1.35rem}
+.lede{font-size:.98rem;line-height:1.66;color:var(--ink);text-wrap:pretty}
+.lede + .lede{margin-top:.85rem}
+.evidence{margin-top:.85rem;font-size:.96rem;line-height:1.66;color:var(--muted);text-wrap:pretty}
+/* The plate opens the body — the drawing before the prose that unpacks it. */
+.entry figure{margin:.15rem 0 1.2rem;width:min(var(--plate),100%)}
 .entry figure img{display:block;width:100%}
-.operative{margin-top:1.1rem;font-family:var(--ui);font-weight:500;font-size:.95rem;line-height:1.58;letter-spacing:-.004em;color:var(--ink);text-wrap:pretty}
-.caveat{margin-top:.9rem;font-family:var(--serif);font-style:italic;font-size:.99rem;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.operative{margin-top:1.05rem;padding:.8rem .9rem;background:var(--field);border-radius:12px;
+  font-family:var(--display);font-weight:500;font-size:.93rem;line-height:1.58;
+  letter-spacing:-.004em;color:var(--ink);text-wrap:pretty}
+.caveat{margin-top:.85rem;font-size:.94rem;line-height:1.62;color:var(--muted);
+  font-style:italic;text-wrap:pretty}
 
 /* ── Vocabulary ─────────────────────────────────────────────────────── */
-.voc-row{display:flex;gap:.8rem;padding:.75rem 0;border-top:1px solid var(--rule);scroll-margin-top:7.5rem}
-.voc-row:last-child{border-bottom:1px solid var(--rule)}
-/* The gutter stays — it is what keeps one invisible column down the whole page —
-   but the DEF label goes. Every row in a section called Vocabulary is a definition. */
-.voc-mark{flex:none;width:2.4rem}
-.voc-term{font-family:var(--ui);font-weight:600;font-size:.94rem;letter-spacing:-.005em}
-.voc-def{margin-top:.3rem;font-family:var(--serif);font-size:.99rem;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.voc-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  scroll-margin-top:7.5rem}
+.voc-mark{flex:none;width:0}
+.voc-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.voc-def{margin-top:.28rem;font-size:.95rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
 
-/* ── Plates ─────────────────────────────────────────────────────────── */
+/* ── Plates ─────────────────────────────────────────────────────────
+   The drawings sit straight on the paper. They are the interface in this
+   view, so the container gets out of their way. */
 #plates,#onepage{padding:1.9rem 0 0}
-/* The drawings sit straight on the paper. The grey tile made eleven cards; the
-   drawings are the interface here, so the container gets out of their way. */
 .plate-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:2.4rem;max-width:32rem;margin:0 auto}
 .tile{background:transparent;padding:0;display:block;min-width:0;transition:opacity .2s ease}
 .tile:active{opacity:.55}
 .tile img{display:block;width:100%;max-width:100%}
-.tile .cap{display:block;padding-top:.6rem;font-family:var(--ui);font-weight:500;font-size:.9rem;line-height:1.4;letter-spacing:-.006em;color:var(--ink);text-align:center}
+.tile .cap{display:block;padding-top:.65rem;font-family:var(--display);font-weight:500;
+  font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
 .tile.act .cap{color:var(--accent)}
-.tile.empty{min-height:7.5rem;border:1px dashed var(--rule);display:flex;flex-direction:column;justify-content:space-between;padding:.5rem}
-.tile.empty .ph{font-family:var(--ui);font-size:.72rem;line-height:1.4;color:var(--soft)}
-/* They arrive in reading order rather than all at once. */
+.tile.empty{min-height:7.5rem;border:1px dashed var(--line);border-radius:14px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:.6rem}
+.tile.empty .ph{font-size:.74rem;line-height:1.4;color:var(--muted)}
 .enter .tile{animation:rise .5s var(--ease) both;animation-delay:calc(var(--i) * 34ms)}
 
-/* ── One page ───────────────────────────────────────────────────────── */
-/* minmax floor is 9.5rem; the min() keeps two columns at 360px, where a bare
-   9.5rem floor tips to one and the mode loses its point. */
-.qr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(9.5rem,46%),1fr));gap:1.2rem 1.5rem}
-.qr-label{font-family:var(--ui);font-weight:600;text-transform:uppercase;color:var(--accent)}
-.qr-cell.list .qr-label{font-size:.66rem;letter-spacing:.14em;margin-bottom:.5rem}
-.qr-cell.line .qr-label{font-size:.62rem;letter-spacing:.14em;margin-bottom:.25rem}
-.qr-cell ul{margin:0;padding-left:1rem;font-size:.91rem;line-height:1.34;color:var(--soft)}
-.qr-cell li{margin-bottom:.3rem}
-.qr-cell li.short{margin-bottom:.22rem}
+/* ── One page ───────────────────────────────────────────────────────
+   The min() keeps two columns at 360px, where a bare 9.5rem floor tips to one
+   and the mode loses its point. */
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(9.5rem,46%),1fr));
+  gap:.6rem;align-items:start}   /* start, or a short cell stretches to the tallest in its row */
+.qr-cell{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:.85rem .9rem}
+.qr-label{font-family:var(--display);font-weight:600;text-transform:uppercase;color:var(--accent)}
+.qr-cell.list .qr-label{font-size:.66rem;letter-spacing:.13em;margin-bottom:.55rem}
+.qr-cell.line .qr-label{font-size:.63rem;letter-spacing:.13em;margin-bottom:.3rem}
+.qr-cell ul{margin:0;padding-left:1rem;font-size:.9rem;line-height:1.44;color:var(--muted)}
+.qr-cell li{margin-bottom:.32rem}
 .qr-cell li:last-child{margin-bottom:0}
-.qr-cell.line p{margin:0;font-size:.91rem;line-height:1.34;color:var(--soft);text-wrap:pretty}
-.closing{margin-top:1.7rem;padding:1rem 1.1rem;background:var(--panel);font-family:var(--serif);font-size:1.02rem;line-height:1.45;color:var(--ink);text-wrap:pretty}
+.qr-cell.line p{margin:0;font-size:.9rem;line-height:1.44;color:var(--muted);text-wrap:pretty}
+.closing{margin-top:1.5rem;padding:1.1rem 1.15rem;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+  font-family:var(--display);font-weight:500;font-size:1rem;line-height:1.5;
+  color:var(--ink);text-wrap:pretty}
 
 /* ── Plates in either paper ─────────────────────────────────────────
-   The drawings ship as ink with a transparent ground, so they need no blend
-   mode to sit on the page — which also means no stacking context anywhere
-   above them can quietly break them. Dark paper just inverts the ink. */
+   The drawings ship as ink on a transparent ground, so they need no blend
+   mode — which also means nothing above them can quietly break them. Dark
+   paper just inverts the ink. */
 :root[data-theme="dark"] .entry figure img,
 :root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
 
@@ -300,6 +295,7 @@ footer{height:calc(4rem + env(safe-area-inset-bottom))}
   </header>
 
   <nav class="bar">
+    <a class="home" href="../" aria-label="Back to Book HQ"><span class="lbl">Book HQ</span><span class="ar" aria-hidden="true">&larr;</span></a>
     <a href="#index" data-mode="index">Index</a>
     <a href="#plates" data-mode="plates">Plates</a>
     <a href="#onepage" data-mode="onepage">One page</a>
@@ -729,21 +725,27 @@ addEventListener('resize', () => {
 });
 
 /* ── Theme ───────────────────────────────────────────────────────────
-   Light by default. The choice is remembered on this device; the guard
-   keeps it working where storage is blocked (private browsing). */
-const THEME_BG = { light: "#f2f0ec", dark: "#171713" };
+   Dark by default, and it shares the shelf's storage key — pick a side once
+   and every page in Book HQ agrees. The guard keeps it working where storage
+   is blocked (private browsing). */
+const THEME_BG = { light: "#F4F5F7", dark: "#0D0F13" };
 const themeBtn = el('themeBtn');
+const TS = 'stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const TICON = {
+  sun:`<svg viewBox="0 0 24 24"><circle ${TS} cx="12" cy="12" r="4"/><path ${TS} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${TS} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`
+};
 
 function paintTheme(theme){
   const dark = theme === "dark";
-  document.documentElement.dataset.theme = dark ? "dark" : "";
-  themeBtn.textContent = dark ? "☀︎" : "☾︎";  // sun / moon, text presentation
-  themeBtn.setAttribute('aria-label', dark ? "Switch to light" : "Switch to dark");
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.innerHTML = dark ? TICON.sun : TICON.moon;
+  themeBtn.setAttribute('aria-label', dark ? "Switch to light mode" : "Switch to dark mode");
   el('themeColor').setAttribute('content', THEME_BG[dark ? "dark" : "light"]);
 }
 
-let theme = "light";
-try{ if(localStorage.getItem('asom-theme') === 'dark') theme = "dark"; }catch(e){}
+let theme = "dark";
+try{ theme = localStorage.getItem('bookhq-theme') || "dark"; }catch(e){}
 paintTheme(theme);
 
 themeBtn.addEventListener('click', () => {
@@ -754,7 +756,7 @@ themeBtn.addEventListener('click', () => {
   themeBtn.classList.remove('swap'); void themeBtn.offsetWidth; themeBtn.classList.add('swap');
   paintTheme(theme);
   setTimeout(() => document.body.classList.remove('theming'), 520);
-  try{ localStorage.setItem('asom-theme', theme); }catch(e){}
+  try{ localStorage.setItem('bookhq-theme', theme); }catch(e){}
 });
 </script>
 </body>
