@@ -1,378 +1,835 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
+<!doctype html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F6F2E8">
-<title>Chop Wood Carry Water — Joshua Medcalf</title>
-<link rel="icon" href="img/cover.png">
-<link rel="apple-touch-icon" href="img/cover.png">
-<script>
-(function(){var t="light";try{t=localStorage.getItem("cwcw-theme")||"light";}catch(e){}
-document.documentElement.setAttribute("data-theme",t);})();
-</script>
+<meta name="theme-color" content="#0D0F13" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Art of Spending Money — Study Guide</title>
+<!-- Applied before first paint so a stored dark choice never flashes light. -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-wght-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/poppins-latin-600-normal.woff2" crossorigin>
 <style>
-@font-face{font-family:'Caladea';font-style:normal;font-weight:400;font-display:block;src:url('fonts/caladea-regular.woff2') format('woff2')}
-@font-face{font-family:'Caladea';font-style:italic;font-weight:400;font-display:block;src:url('fonts/caladea-italic.woff2') format('woff2')}
-@font-face{font-family:'Caladea';font-style:normal;font-weight:700;font-display:block;src:url('fonts/caladea-bold.woff2') format('woff2')}
-@font-face{font-family:'Carlito';font-style:normal;font-weight:400;font-display:block;src:url('fonts/carlito-regular.woff2') format('woff2')}
-@font-face{font-family:'Carlito';font-style:normal;font-weight:700;font-display:block;src:url('fonts/carlito-bold.woff2') format('woff2')}
+/* ── Type ────────────────────────────────────────────────────────────
+   Same two faces as the shelf: Poppins carries titles and labels, Inter
+   carries everything you read. Both ship with the page, so it opens the
+   same offline and never flashes fallback type on the way in. */
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
 
-:root{
-  --paper:#F6F2E8; --ink:#1C1B18; --soft:#6E6A60;
-  --indigo:#2F4858; --cedar:#9A6234; --rule:#D6CDB8;
-  --panel:#FBF8F1; --plate:1;
-  --ease:cubic-bezier(.32,.72,0,1);
-  --serif:"Caladea",Georgia,serif;
-  --sans:"Carlito","Helvetica Neue",Arial,sans-serif;
+/* ── Tokens ──────────────────────────────────────────────────────────
+   Lifted from the shelf so the two pages are one surface. Only --accent
+   would change per book if a book ever needed its own. */
+:root,:root[data-theme="light"]{
+  --bg:#F4F5F7; --surface:#FFFFFF; --field:#EDF0F4; --coverbg:#EAEEF3;
+  --ink:#171A21; --muted:#697386; --line:#E6E8EE;
+  --accent:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+  --plate:20rem;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:Poppins,var(--ui);
+  color-scheme:light;
 }
-html[data-theme="dark"]{
-  --paper:#15191C; --ink:#E9E3D7; --soft:#9A948A;
-  --indigo:#9FB6C4; --rule:#2C343A;
-  --panel:#1B2126;
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --field:#1E222A; --coverbg:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --line:#262B33;
+  --accent:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
 }
-html[data-theme="dark"]{ --cedar:#C9964F; }
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;scroll-padding-top:7.5rem}
 body{
-  margin:0; background:var(--paper); color:var(--ink);
-  font-family:var(--serif); font-size:17px; line-height:1.62;
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
   -webkit-tap-highlight-color:transparent;
-  transition:background-color .3s var(--ease), color .3s var(--ease);
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
 }
-.wrap{
-  max-width:44rem; margin:0 auto;
-  padding:2.4rem calc(1.25rem + env(safe-area-inset-left))
-          calc(4rem + env(safe-area-inset-bottom))
-          calc(1.25rem + env(safe-area-inset-right));
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
+
+/* ── Motion ─────────────────────────────────────────────────────────
+   One easing curve for everything that opens, moves or arrives. */
+:root{ --ease:cubic-bezier(.32,.72,0,1); }
+@keyframes lift{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes rise{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+header{animation:lift .55s var(--ease) both}
+.bar{animation:fade .5s ease .1s both}   /* opacity only — a transform breaks sticky */
+main{animation:lift .55s var(--ease) .16s both}
+body.theming,body.theming *{
+  transition:background-color .45s ease,color .45s ease,border-color .45s ease !important;
 }
-
-/* ---------------------------------------------------------- masthead */
-.mast{text-align:center}
-.cover{display:block; width:min(13rem,64%); margin:0 auto 1.5rem;
-  background:#fff; border:1px solid var(--rule); border-radius:2px;
-  box-shadow:0 1px 3px rgba(0,0,0,.10);}
-html[data-theme="dark"] .cover{filter:brightness(.86)}
-h1{font-family:var(--sans); font-weight:700; font-size:1.55rem; line-height:1.2;
-   letter-spacing:-.01em; margin:0 0 .3rem}
-.byline{font-family:var(--sans); font-size:.95rem; color:var(--soft); margin:0}
-
-/* ---------------------------------------------------------- buttons */
-.files{display:grid; gap:.6rem; margin:2.1rem 0 .4rem}
-@media(min-width:34rem){ .files{grid-template-columns:repeat(auto-fit,minmax(13rem,1fr))} }
-.file{
-  display:flex; align-items:center; justify-content:space-between; gap:.75rem;
-  min-height:52px; padding:.85rem 1.05rem; text-decoration:none;
-  background:var(--panel); border:1px solid var(--rule); border-radius:3px;
-  color:var(--ink); font-family:var(--sans); font-size:.94rem; line-height:1.25;
-  transition:border-color .25s var(--ease), transform .25s var(--ease);
-}
-.file:hover{border-color:var(--cedar)}
-.file:active{transform:translateY(1px)}
-.file .arw{color:var(--cedar); font-size:1.05rem; flex:none}
-
-/* ---------------------------------------------------------- mode bar */
-.bar{
-  position:sticky; top:0; z-index:20; margin:2.4rem 0 0;
-  background:var(--paper); border-bottom:1px solid var(--rule);
-  transition:background-color .3s var(--ease);
-}
-.modes{position:relative; display:flex; gap:1.6rem}
-.mode{
-  appearance:none; background:none; border:0; cursor:pointer;
-  font-family:var(--sans); font-size:.95rem; color:var(--soft);
-  padding:.95rem .1rem; min-height:44px;
-  transition:color .3s var(--ease);
-}
-.mode[aria-current="true"]{color:var(--ink)}
-.slide{position:absolute; bottom:-1px; height:1px; background:var(--cedar);
-  transition:transform .45s var(--ease), width .45s var(--ease)}
-.themer{
-  margin-left:auto; appearance:none; background:none; border:0; cursor:pointer;
-  min-width:44px; min-height:44px; color:var(--soft); font-family:var(--sans);
-  font-size:.95rem; transition:color .3s var(--ease);
-}
-.themer:hover{color:var(--ink)}
-
-/* ---------------------------------------------------------- views */
-.view{display:none}
-.view.on{display:block}
-
-/* ---------------------------------------------------------- entries */
-.entry{border-bottom:1px solid var(--rule)}
-.head{
-  width:100%; display:flex; align-items:flex-start; gap:1rem; text-align:left;
-  appearance:none; background:none; border:0; cursor:pointer; color:inherit;
-  padding:1.35rem 0; min-height:44px;
-}
-.num{font-family:var(--sans); font-size:.72rem; letter-spacing:.13em;
-  color:var(--cedar); padding-top:.42rem; flex:none}
-.name{font-family:var(--sans); font-weight:700; font-size:1.09rem; line-height:1.34;
-  flex:1; transition:color .25s var(--ease)}
-.head:hover .name{color:var(--cedar)}
-.sign{position:relative; width:15px; height:15px; flex:none; margin-top:.5rem}
-.sign i{position:absolute; left:0; top:7px; width:15px; height:1.5px;
-  background:var(--soft); display:block;
-  transition:transform .4s var(--ease), opacity .4s var(--ease)}
-.sign i.up{transform:rotate(90deg)}
-.entry.open .sign i.up{transform:rotate(0deg); opacity:0}
-
-.fold{display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s var(--ease)}
-.entry.open .fold{grid-template-rows:1fr}
-.fold > div{overflow:hidden}
-.inner{padding:0 0 1.7rem}
-
-.plate{display:block; width:34%; min-width:8.5rem; margin:0 0 1.15rem}
-html[data-theme="dark"] .plate{filter:invert(1)}
-.body{margin:0 0 1rem}
-.proof{margin:0 0 1.05rem; padding-left:1rem; border-left:2px solid var(--rule);
-  font-style:italic; color:var(--indigo)}
-.turn{font-family:var(--sans); font-weight:700; color:var(--cedar); margin:0}
-.when{color:var(--soft); margin:0 0 1rem}
-.care{margin:1.05rem 0 0; font-style:italic; font-size:.95rem; color:var(--soft)}
-
-/* ---------------------------------------------------------- plates */
-.plates{padding-top:1.6rem}
-.plates img{display:block; width:100%; max-width:26rem; margin:0 auto 2.6rem}
-html[data-theme="dark"] .plates img{filter:invert(1)}
-
-/* ---------------------------------------------------------- settle */
-.settle{opacity:0; transform:translateY(9px)}
-.ready .settle{opacity:1; transform:none;
-  transition:opacity .42s var(--ease), transform .42s var(--ease)}
-.ready .settle:nth-child(2){transition-delay:.05s}
-.ready .settle:nth-child(3){transition-delay:.10s}
-.ready .settle:nth-child(4){transition-delay:.15s}
-
 @media (prefers-reduced-motion:reduce){
-  *{transition:none !important; animation:none !important}
-  .settle{opacity:1; transform:none}
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
 }
+p{margin:0}
+a{color:var(--accent);text-decoration:none}
+img{border:0}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem}
 
+/* ── Header ─────────────────────────────────────────────────────────
+   The jacket stacks above the title. Beside it the title breaks onto two
+   lines and the byline onto three. It carries the shelf tile's treatment —
+   same radius, same hairline, same shadow — so arriving here feels like the
+   tile you tapped got bigger. */
+header{padding:2.2rem 0 1.4rem}
+.masthead{display:block}
+.cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
+  border-radius:14px;overflow:hidden;background:var(--coverbg);
+  border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+/* The jacket is an object, not ink — never inverted, only dimmed so it sits
+   in a dark page instead of glaring out of it. */
+:root[data-theme="dark"] .cover img{filter:brightness(.86)}
+.book-title{margin:0;font-family:var(--display);font-weight:600;
+  font-size:1.62rem;line-height:1.22;letter-spacing:-.014em;color:var(--ink)}
+.byline{margin-top:.35rem;font-size:.94rem;color:var(--muted)}
+.subtitle{margin-top:.15rem;font-size:.88rem;color:var(--muted);opacity:.78}
+
+/* Companion files are things you go and get, so they read as buttons. */
+.links{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.55rem}
+.links:empty{display:none}
+.links a{
+  display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  background:var(--field);border:1px solid var(--line);border-radius:12px;
+  font-weight:500;font-size:.86rem;color:var(--ink);
+  transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
+}
+.links a .mk{flex:none;color:var(--accent);font-size:.95rem;line-height:1}
+.links a:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.links a:active{opacity:.6}
+
+/* ── Mode bar ───────────────────────────────────────────────────────
+   No boxes. Three words and a hairline that travels to the live one. */
+.bar{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  margin:0 -1.1rem;padding:.45rem 1.1rem;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.2rem;
+}
+.bar a{
+  white-space:nowrap;
+  font-family:var(--display);font-weight:500;font-size:.76rem;letter-spacing:.01em;
+  padding:0 .75rem;min-height:44px;display:flex;align-items:center;
+  background:transparent;color:var(--muted);transition:color .3s ease;
+}
+.bar a.on{color:var(--ink)}
+.bar a.home{padding-left:0;padding-right:.85rem;margin-right:.15rem;color:var(--muted);
+  font-weight:600;border-right:1px solid var(--line)}
+.bar a.home:hover{color:var(--ink)}
+.bar a.home .ar{display:none;font-size:1rem;line-height:1}
+/* On a phone the three modes plus a wordmark won't sit on one line, and a
+   wrapped nav bar is worse than a shorter one. The label becomes an arrow. */
+@media (max-width:430px){
+  .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
+  .bar a{padding:0 .5rem;font-size:.73rem}
+  .bar a.home{padding:0 .55rem 0 0;margin-right:.2rem}
+  .bar a.home .lbl{display:none}
+  .bar a.home .ar{display:inline}
+}
+.bar a:active{opacity:.55}
+.bar-ind{
+  position:absolute;left:0;bottom:0;height:2px;background:var(--accent);border-radius:2px;
+  transition:transform .42s var(--ease),width .42s var(--ease);
+  transform-origin:left center;pointer-events:none;
+}
+.bar-ind.instant{transition:none}
+#themeBtn{
+  margin-left:auto;flex:none;width:44px;height:44px;border-radius:10px;
+  display:grid;place-items:center;padding:0;
+  background:transparent;color:var(--muted);border:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,opacity .2s ease;
+}
+#themeBtn:hover{background:var(--field);color:var(--ink)}
+#themeBtn:active{opacity:.5}
+#themeBtn svg{width:20px;height:20px}
+#themeBtn.swap{animation:fade .38s ease both}
+
+/* ── Shared section furniture ───────────────────────────────────────── */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sec-intro{margin:0 0 1rem;font-size:.95rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+section{scroll-margin-top:7.5rem}
+.open-sec .sec-head{padding-bottom:.8rem}
+.coll-sec .sec-head{padding-bottom:.6rem}
+
+/* ── Argument ───────────────────────────────────────────────────────
+   The question is the one hero on the page. It gets the air to act like it. */
+#argument{padding:2.6rem 0 .4rem;scroll-margin-top:7.5rem}
+#argument .q{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.32;
+  letter-spacing:-.018em;color:var(--ink);text-wrap:pretty}
+#argument .a{margin-top:1.05rem;font-size:1rem;line-height:1.66;color:var(--muted);text-wrap:pretty}
+
+/* ── Framework ──────────────────────────────────────────────────────── */
+#framework{padding-top:2.2rem}
+.fw-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fw-mark{flex:none;width:2rem;font-family:var(--display);font-weight:600;color:var(--accent)}
+.fw-mark.seq{font-size:.95rem;line-height:1.5}
+.fw-mark.letter{font-size:1.05rem;line-height:1.4}
+.fw-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.fw-gloss{margin-top:.28rem;font-size:.95rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+
+/* ── Insights / Actions ─────────────────────────────────────────────
+   Each entry is a card, the same object the shelf is built from. */
+#insights,#actions,#vocabulary{padding-top:2.4rem}
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:.6rem;scroll-margin-top:7.5rem;
+  transition:box-shadow .2s ease;
+}
+.entry[data-open="1"]{box-shadow:var(--shadow-hover)}
+.entry-head{display:flex;gap:.85rem;align-items:baseline;
+  padding:1rem 2.6rem 1rem 1rem;cursor:pointer;position:relative}
+.entry-mark{flex:none;width:2.6rem;font-family:var(--display);font-weight:500;
+  font-size:.66rem;letter-spacing:.09em;color:var(--muted)}
+.entry-title{flex:1;margin:0;font-family:var(--display);font-weight:600;font-size:1.03rem;
+  line-height:1.34;letter-spacing:-.011em;text-wrap:pretty;transition:opacity .18s ease}
+.entry-head:active .entry-title,.entry-head:active .entry-mark{opacity:.55}
+
+/* The sign is two hairlines. Opening rotates the upright onto the crossbar and
+   fades it, so a plus resolves into a minus rather than being swapped for one. */
+.entry-sign{position:absolute;right:1rem;top:1.15rem;width:1rem;height:1.4rem}
+.entry-sign i{position:absolute;left:50%;top:50%;background:var(--accent);
+  transition:transform .34s var(--ease),opacity .34s var(--ease)}
+.entry-sign i:first-child{width:.72rem;height:1.5px;border-radius:2px;transform:translate(-50%,-50%)}
+.entry-sign i:last-child{width:1.5px;height:.72rem;border-radius:2px;transform:translate(-50%,-50%)}
+.entry[data-open="1"] .entry-sign i:last-child{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+
+/* Height eases via grid rows — no measuring, and it interrupts cleanly. */
+.entry-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .44s var(--ease)}
+.entry[data-open="1"] .entry-wrap{grid-template-rows:1fr}
+.entry-body{overflow:hidden;min-height:0;padding:0 1rem;opacity:0;transform:translateY(5px);
+  transition:opacity .3s ease,transform .34s var(--ease)}
+.entry[data-open="1"] .entry-body{opacity:1;transform:none;transition-delay:.08s}
+.entry-body > :last-child{margin-bottom:1.35rem}
+.lede{font-size:.98rem;line-height:1.66;color:var(--ink);text-wrap:pretty}
+.lede + .lede{margin-top:.85rem}
+.evidence{margin-top:.85rem;font-size:.96rem;line-height:1.66;color:var(--muted);text-wrap:pretty}
+/* The plate opens the body — the drawing before the prose that unpacks it. */
+.entry figure{margin:.15rem 0 1.2rem;width:min(var(--plate),100%)}
+.entry figure img{display:block;width:100%}
+.operative{margin-top:1.05rem;padding:.8rem .9rem;background:var(--field);border-radius:12px;
+  font-family:var(--display);font-weight:500;font-size:.93rem;line-height:1.58;
+  letter-spacing:-.004em;color:var(--ink);text-wrap:pretty}
+.caveat{margin-top:.85rem;font-size:.94rem;line-height:1.62;color:var(--muted);
+  font-style:italic;text-wrap:pretty}
+
+/* ── Vocabulary ─────────────────────────────────────────────────────── */
+.voc-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  scroll-margin-top:7.5rem}
+.voc-mark{flex:none;width:0}
+.voc-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.voc-def{margin-top:.28rem;font-size:.95rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+
+/* ── Plates ─────────────────────────────────────────────────────────
+   A rail you swipe, not a column you scroll. One drawing at a time, snapped
+   to centre, with the neighbours peeking in so it reads as swipeable before
+   anyone tries. The drawings sit straight on the paper — they are the
+   interface in this view, so the container gets out of their way. */
+#plates,#onepage{padding:1.9rem 0 0}
+.rail-wrap{position:relative}
+.rail{
+  --slide:min(30rem,78vw);
+  display:flex;gap:1.6rem;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  margin:0 -1.1rem;padding:0 calc(50% - var(--slide)/2 + 1.1rem);
+}
+.rail::-webkit-scrollbar{display:none}
+.tile{
+  flex:0 0 var(--slide);scroll-snap-align:center;
+  background:transparent;padding:0;display:block;min-width:0;
+  transition:opacity .2s ease;
+}
+.tile:active{opacity:.55}
+.tile img{display:block;width:100%;max-width:100%;pointer-events:none;-webkit-user-drag:none}
+.tile .cap{display:block;padding-top:.7rem;font-family:var(--display);font-weight:500;
+  font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
+.tile.act .cap{color:var(--accent)}
+.tile.empty{min-height:7.5rem;border:1px dashed var(--line);border-radius:14px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:.6rem}
+.tile.empty .ph{font-size:.74rem;line-height:1.4;color:var(--muted)}
+.enter .rail{animation:fade .45s var(--ease) both}
+
+/* Where you are in the set, and the only two controls. */
+.rail-foot{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:1.1rem 0 .2rem}
+.rail-count{font-family:var(--display);font-weight:500;font-size:.75rem;letter-spacing:.08em;
+  color:var(--muted);min-width:4.2rem;text-align:center;font-variant-numeric:tabular-nums}
+.rail-btn{
+  width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease,opacity .2s ease;
+}
+.rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
+.rail-btn:disabled{opacity:.32;cursor:default}
+.rail-btn svg{width:18px;height:18px}
+/* On touch the swipe is the control; the buttons would just be furniture. */
+@media (hover:none){ .rail-btn{display:none} }
+@media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
+
+/* ── One page ───────────────────────────────────────────────────────
+   The min() keeps two columns at 360px, where a bare 9.5rem floor tips to one
+   and the mode loses its point. */
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(9.5rem,46%),1fr));
+  gap:.6rem;align-items:start}   /* start, or a short cell stretches to the tallest in its row */
+.qr-cell{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:.85rem .9rem}
+.qr-label{font-family:var(--display);font-weight:600;text-transform:uppercase;color:var(--accent)}
+.qr-cell.list .qr-label{font-size:.66rem;letter-spacing:.13em;margin-bottom:.55rem}
+.qr-cell.line .qr-label{font-size:.63rem;letter-spacing:.13em;margin-bottom:.3rem}
+.qr-cell ul{margin:0;padding-left:1rem;font-size:.9rem;line-height:1.44;color:var(--muted)}
+.qr-cell li{margin-bottom:.32rem}
+.qr-cell li:last-child{margin-bottom:0}
+.qr-cell.line p{margin:0;font-size:.9rem;line-height:1.44;color:var(--muted);text-wrap:pretty}
+.closing{margin-top:1.5rem;padding:1.1rem 1.15rem;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+  font-family:var(--display);font-weight:500;font-size:1rem;line-height:1.5;
+  color:var(--ink);text-wrap:pretty}
+
+/* ── Plates in either paper ─────────────────────────────────────────
+   The drawings ship as ink on a transparent ground, so they need no blend
+   mode — which also means nothing above them can quietly break them. Dark
+   paper just inverts the ink. */
+:root[data-theme="dark"] .entry figure img,
+:root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
+
+footer{height:calc(4rem + env(safe-area-inset-bottom))}
+[hidden]{display:none !important}
 </style>
 </head>
 <body>
+
 <div class="wrap">
+  <header>
+    <div class="masthead">
+      <div class="cover" id="bCover" hidden></div>
+      <div>
+        <h1 class="book-title" id="bTitle"></h1>
+        <p class="byline" id="bByline"></p>
+        <p class="subtitle" id="bSub"></p>
+      </div>
+    </div>
+    <nav class="links" id="bLinks"></nav>
+  </header>
 
-<header class="mast settle">
-<img class="cover" src="img/cover.png" alt="" onerror="this.remove()">
-<h1>Chop Wood Carry Water</h1>
-<p class="byline">Joshua Medcalf</p>
-</header>
+  <nav class="bar">
+    <a class="home" href="../" aria-label="Back to Book HQ"><span class="lbl">Book HQ</span><span class="ar" aria-hidden="true">&larr;</span></a>
+    <a href="#index" data-mode="index">Index</a>
+    <a href="#plates" data-mode="plates">Plates</a>
+    <a href="#onepage" data-mode="onepage">One page</a>
+    <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
+    <span class="bar-ind instant" id="barInd"></span>
+  </nav>
 
-<nav class="files settle">
-<a class="file" href="./Chop Wood Carry Water - Important Insights and Action Guide.pdf">Insights and Action Guide<span class="arw" aria-hidden="true">&#8599;</span></a>
-<a class="file" href="./Chop Wood Carry Water - Spoken Companion.docx">Spoken Companion<span class="arw" aria-hidden="true">&#8599;</span></a>
-</nav>
+  <main>
+    <div id="mode-index"></div>
+    <div id="mode-plates" hidden></div>
+    <div id="mode-onepage" hidden></div>
+  </main>
 
-<div class="bar settle">
-<div class="modes">
-<button class="mode" id="mode-insights" data-mode="insights" aria-current="true">Insights</button>
-<button class="mode" id="mode-actions" data-mode="actions" aria-current="false">Actions</button>
-<button class="mode" id="mode-plates" data-mode="plates" aria-current="false">Plates</button>
-<button class="themer" id="themer" aria-label="Switch to dark">Dark</button>
-<span class="slide" id="slide" aria-hidden="true"></span>
-</div>
+  <footer></footer>
 </div>
 
-<main class="settle">
-<div class="view on" id="view-insights">
-<section class="entry" id="insight-1">
-<button class="head" aria-expanded="false"><span class="num">01</span><span class="name">You Are Always Building Your Own House</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/insight-01.png" alt="">
-<p class="body">Every day you are producing two things: the work, and the person doing the work. The work gets handed over, forgotten, or lost. The person is the only permanent output. Treat any assignment as something you are doing for someone else and you will quietly lower the standard, because the cost of lowering it seems to land on them.</p>
-<p class="proof">Kota built the finest houses in Tokyo for thirty years, hand-selecting every material. Asked to build one last house before retiring, he agreed with his head but not his heart — he delegated, details slipped, the house passed code and nothing more. When he finished, his boss handed him a small box with the keys inside. It was his house. It had been his the whole time.</p>
-<p class="turn">Before you cut a corner, ask who actually receives the cut. The answer is always the same person.</p>
-</div></div></div></section>
-<section class="entry" id="insight-2">
-<button class="head" aria-expanded="false"><span class="num">02</span><span class="name">With One Eye on the Goal, You Only Have One Eye for the Journey</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/insight-02.png" alt="">
-<p class="body">Attention is not additive. Whatever you give the outcome comes out of the process, and the process is the only place the skill is actually built. A related trap: treating situations as tests. If it is a test, you optimize for passing it. If it is an opportunity, you optimize for what you take out of it. Over years those two people end up in different places.</p>
-<p class="proof">John asks how long it will take to become a samurai archer. Ten years. And if he skips chopping wood and carrying water? Twenty. And if he gives every waking moment to archery alone? Thirty. Ice climbers who stare at the summit cannot see where to put a foot; they slip and they die.</p>
-<p class="turn">Judge your day by whether you did the work well, not by where the work left you on the scoreboard.</p>
-</div></div></div></section>
-<section class="entry" id="insight-3">
-<button class="head" aria-expanded="false"><span class="num">03</span><span class="name">Your Value Comes From Who You Are, Not From What You Do</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/insight-03.png" alt="">
-<p class="body">When identity is fused to performance, every result becomes a verdict on your worth — which inflates you when things go well, flattens you when they don&#x27;t, and quietly corrupts your decisions, because now every choice is also a defense of your value. The fix is to locate identity in something that cannot be taken away in a moment.</p>
-<p class="proof">John overtrains, tears his shoulder, and is put out of action for six to eight weeks. Akira asks him: you cannot shoot, you cannot chop wood or carry water — so who are you? John has no answer. Akira&#x27;s own: I am not a samurai archer; I am a human being who happens to be world class at archery.</p>
-<p class="turn">Answer the question now, in writing, while nothing has been taken away — because the day it is taken away is the worst day to start looking.</p>
-</div></div></div></section>
-<section class="entry" id="insight-4">
-<button class="head" aria-expanded="false"><span class="num">04</span><span class="name">Achievement Is Salt Water</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/insight-04.png" alt="">
-<p class="body">Achievement does not fill the hole people expect it to fill; it enlarges the thirst. If what you have accomplished so far has not done the job, more of it will not do the job either. The society-issued scorecard — win more, earn more, be seen more — is not a hard scorecard to top. It is an impossible one, which is a different problem entirely.</p>
-<p class="proof">Kobe Bryant says a sixth title will satisfy him and let him retire. Andre Agassi, after reaching number one in the world: “I thought that getting to number one was going to be the moment I made sense of my life. But it left me a little empty, and I spiraled down.”</p>
-<p class="turn">You need a scorecard of your own, made of characteristics rather than results, and you need to actually grade yourself on it.</p>
-</div></div></div></section>
-<section class="entry" id="insight-5">
-<button class="head" aria-expanded="false"><span class="num">05</span><span class="name">Growth Happens Underground Long Before It Happens in the Air</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/insight-05.png" alt="">
-<p class="body">Mastery moves in steps, not constants — long flat plateaus broken by sudden jumps. Feeling stuck is therefore not evidence of being stuck; it is the normal texture of the middle. And the invisible years are not wasted time before the growth. They are the structure that lets the growth hold.</p>
-<p class="proof">Plant bamboo in good soil and water it faithfully and you see nothing for roughly five years — while underground a dense mat of roots spreads out to carry weight that does not yet exist. Then it comes up ninety feet in six weeks. Height without roots is the story of people who arrive at success and cannot hold it.</p>
-<p class="turn">Measure the watering, not the height, and do not read a plateau as a verdict.</p>
-</div></div></div></section>
-<section class="entry" id="insight-6">
-<button class="head" aria-expanded="false"><span class="num">06</span><span class="name">Surrender the Outcome</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/insight-06.png" alt="">
-<p class="body">Partially controllable goals — winning, sales, someone else&#x27;s record — are alluring and dangerous, because pursuing them hard enough leaves a wake regardless of whether you arrive. Reaching the goal makes the wake easier to justify. It does not make it smaller. Surrender is not indifference; it is removing the one thing that makes you tight, forces your hand, and keeps you out of the moment.</p>
-<p class="proof">Akira drives all day through Croatian mountains to reach a waterfall, snapping at the woman he loves, ignoring her when she says she only wants to spend the day with him, ignoring locals who warn him off the trail — and finally, in the dark and the rain, having sent her back down with strangers, he turns around without ever seeing it.</p>
-<p class="turn">Name what you actually control, commit everything to it, and let the rest go before it costs you the people standing next to you.</p>
-</div></div></div></section>
-</div>
-<div class="view" id="view-actions">
-<section class="entry" id="action-1">
-<button class="head" aria-expanded="false"><span class="num">01</span><span class="name">Build Your Own Scorecard</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/action-01.png" alt="">
-<p class="body">List the people you genuinely admire and the characteristics they embodied that you would want to be known for. Narrow it to the four that matter most. Grade yourself on those four twice a day.</p>
-<p class="when">Set it up once. Grade at midday and again at night — midday so you still have an evening to correct what is slipping.</p>
-<p class="turn">Any situation, including a bad one, becomes a place to move a number you chose yourself rather than one the world assigned you.</p>
-<p class="care">Four, not eight. A scorecard you cannot hold in your head is a list, not a scorecard.</p>
-</div></div></div></section>
-<section class="entry" id="action-2">
-<button class="head" aria-expanded="false"><span class="num">02</span><span class="name">Keep a What Went Well Journal</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/action-02.png" alt="">
-<p class="body">Write a worth statement at the top — my value comes from who I am, not from what I do — then a growth statement: anything that happens to me today is in my best interest and an opportunity to learn and grow. Then fifteen specific things you did well. Then, and only then, two areas for growth and two things you learned.</p>
-<p class="when">After every training session, performance, or working day.</p>
-<p class="turn">Fifteen stops being hard. You start noticing good repetitions while they are happening rather than reconstructing them at night.</p>
-<p class="care">Two growth areas, never more — nobody can hold more than two in mind the next day. If you quit short of fifteen, beat yesterday&#x27;s stopping point by two.</p>
-</div></div></div></section>
-<section class="entry" id="action-3">
-<button class="head" aria-expanded="false"><span class="num">03</span><span class="name">Carry Your Principles in Your Pocket</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/action-03.png" alt="">
-<p class="body">Each morning, before the work starts, write out four to six principles you will hold to no matter what. Fold the paper and put it in your pocket.</p>
-<p class="when">Daily, and especially on days you can already feel your mood making decisions for you.</p>
-<p class="turn">When feelings surge, you touch the pocket or read the list aloud, and the decision is already made.</p>
-<p class="care">Borrow principles that have been tested for a long time rather than inventing clever ones. You will still slip; the practice is getting back on the road, not never leaving it.</p>
-</div></div></div></section>
-<section class="entry" id="action-4">
-<button class="head" aria-expanded="false"><span class="num">04</span><span class="name">Set Your Warrior Dial Before You Perform</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/action-04.png" alt="">
-<p class="body">Notice where your activation sits on a one-to-ten scale, decide where it needs to be for this particular task, and move it deliberately. Down: slow breathing, slower speech, lower voice, slower movement, calm music. Up: upbeat music, movement, anything that fires you.</p>
-<p class="when">In the minutes before anything that requires precision — and before the games that feel too big, which is exactly when everyone overshoots.</p>
-<p class="turn">You arrive at the line at your number instead of whatever number the occasion handed you.</p>
-<p class="care">Turning the dial down is much harder than turning it up, and most training cultures only ever practice up.</p>
-</div></div></div></section>
-<section class="entry" id="action-5">
-<button class="head" aria-expanded="false"><span class="num">05</span><span class="name">Take the Two-Minute Gratefulness Walk</span><span class="sign" aria-hidden="true"><i></i><i class="up"></i></span></button>
-<div class="fold"><div><div class="inner">
-<img class="plate" src="img/action-05.png" alt="">
-<p class="body">Walk for two minutes naming everything you are grateful for, with deliberate attention on the things you normally take for granted.</p>
-<p class="when">Immediately after a loss, a bad session, or any moment you notice perspective has gone.</p>
-<p class="turn">You can feel the shift inside two minutes — and you are markedly easier to be around for the people who have to live with your result.</p>
-<p class="care">It works as a reset, not as a substitute for the reckoning. Do the walk, then have the honest conversation about what went wrong.</p>
-</div></div></div></section>
-</div>
-<div class="view plates" id="view-plates">
-<img src="img/insight-01.png" alt="">
-<img src="img/insight-02.png" alt="">
-<img src="img/insight-03.png" alt="">
-<img src="img/insight-04.png" alt="">
-<img src="img/insight-05.png" alt="">
-<img src="img/insight-06.png" alt="">
-<img src="img/action-01.png" alt="">
-<img src="img/action-02.png" alt="">
-<img src="img/action-03.png" alt="">
-<img src="img/action-04.png" alt="">
-<img src="img/action-05.png" alt="">
-</div>
-</main>
-
-</div>
 <script>
-(function(){
-  var root=document.documentElement;
-  var MODES=["insights","actions","plates"];
+/* ════════════════════════════════════════════════════════════════════
+   THE BOOK. One object — this is the only thing that changes per book.
+   Add an insight / action / term by adding one entry to the array.
+   `plate` and `caveat` are optional; omitting either degrades cleanly.
+   ════════════════════════════════════════════════════════════════════ */
+const BOOK = {
+ "title": "Chop Wood Carry Water",
+ "author": "Joshua Medcalf",
+ "subtitle": "How to Fall in Love with the Process of Becoming Great",
+ "cover": "img/cover.png",
+ "links": [
+  {
+   "mark": "↓",
+   "label": "Insights & action guide",
+   "href": "Chop Wood Carry Water - Important Insights and Action Guide.pdf"
+  },
+  {
+   "mark": "↓",
+   "label": "Spoken companion",
+   "href": "Chop Wood Carry Water - Spoken Companion.docx"
+  }
+ ],
+ "insights": [
+  {
+   "id": "insight-1",
+   "title": "You Are Always Building Your Own House",
+   "lede": [
+    "Every day you are producing two things: the work, and the person doing the work. The work gets handed over, forgotten, or lost. The person is the only permanent output. Treat any assignment as something you are doing for someone else and you will quietly lower the standard, because the cost of lowering it seems to land on them."
+   ],
+   "operative": "Before you cut a corner, ask who actually receives the cut. The answer is always the same person.",
+   "plate": "img/insight-01.png",
+   "evidence": "Kota built the finest houses in Tokyo for thirty years, hand-selecting every material. Asked to build one last house before retiring, he agreed with his head but not his heart — he delegated, details slipped, the house passed code and nothing more. When he finished, his boss handed him a small box with the keys inside. It was his house. It had been his the whole time."
+  },
+  {
+   "id": "insight-2",
+   "title": "With One Eye on the Goal, You Only Have One Eye for the Journey",
+   "lede": [
+    "Attention is not additive. Whatever you give the outcome comes out of the process, and the process is the only place the skill is actually built. A related trap: treating situations as tests. If it is a test, you optimize for passing it. If it is an opportunity, you optimize for what you take out of it. Over years those two people end up in different places."
+   ],
+   "operative": "Judge your day by whether you did the work well, not by where the work left you on the scoreboard.",
+   "plate": "img/insight-02.png",
+   "evidence": "John asks how long it will take to become a samurai archer. Ten years. And if he skips chopping wood and carrying water? Twenty. And if he gives every waking moment to archery alone? Thirty. Ice climbers who stare at the summit cannot see where to put a foot; they slip and they die."
+  },
+  {
+   "id": "insight-3",
+   "title": "Your Value Comes From Who You Are, Not From What You Do",
+   "lede": [
+    "When identity is fused to performance, every result becomes a verdict on your worth — which inflates you when things go well, flattens you when they don't, and quietly corrupts your decisions, because now every choice is also a defense of your value. The fix is to locate identity in something that cannot be taken away in a moment."
+   ],
+   "operative": "Answer the question now, in writing, while nothing has been taken away — because the day it is taken away is the worst day to start looking.",
+   "plate": "img/insight-03.png",
+   "evidence": "John overtrains, tears his shoulder, and is put out of action for six to eight weeks. Akira asks him: you cannot shoot, you cannot chop wood or carry water — so who are you? John has no answer. Akira's own: I am not a samurai archer; I am a human being who happens to be world class at archery."
+  },
+  {
+   "id": "insight-4",
+   "title": "Achievement Is Salt Water",
+   "lede": [
+    "Achievement does not fill the hole people expect it to fill; it enlarges the thirst. If what you have accomplished so far has not done the job, more of it will not do the job either. The society-issued scorecard — win more, earn more, be seen more — is not a hard scorecard to top. It is an impossible one, which is a different problem entirely."
+   ],
+   "operative": "You need a scorecard of your own, made of characteristics rather than results, and you need to actually grade yourself on it.",
+   "plate": "img/insight-04.png",
+   "evidence": "Kobe Bryant says a sixth title will satisfy him and let him retire. Andre Agassi, after reaching number one in the world: “I thought that getting to number one was going to be the moment I made sense of my life. But it left me a little empty, and I spiraled down.”"
+  },
+  {
+   "id": "insight-5",
+   "title": "Growth Happens Underground Long Before It Happens in the Air",
+   "lede": [
+    "Mastery moves in steps, not constants — long flat plateaus broken by sudden jumps. Feeling stuck is therefore not evidence of being stuck; it is the normal texture of the middle. And the invisible years are not wasted time before the growth. They are the structure that lets the growth hold."
+   ],
+   "operative": "Measure the watering, not the height, and do not read a plateau as a verdict.",
+   "plate": "img/insight-05.png",
+   "evidence": "Plant bamboo in good soil and water it faithfully and you see nothing for roughly five years — while underground a dense mat of roots spreads out to carry weight that does not yet exist. Then it comes up ninety feet in six weeks. Height without roots is the story of people who arrive at success and cannot hold it."
+  },
+  {
+   "id": "insight-6",
+   "title": "Surrender the Outcome",
+   "lede": [
+    "Partially controllable goals — winning, sales, someone else's record — are alluring and dangerous, because pursuing them hard enough leaves a wake regardless of whether you arrive. Reaching the goal makes the wake easier to justify. It does not make it smaller. Surrender is not indifference; it is removing the one thing that makes you tight, forces your hand, and keeps you out of the moment."
+   ],
+   "operative": "Name what you actually control, commit everything to it, and let the rest go before it costs you the people standing next to you.",
+   "plate": "img/insight-06.png",
+   "evidence": "Akira drives all day through Croatian mountains to reach a waterfall, snapping at the woman he loves, ignoring her when she says she only wants to spend the day with him, ignoring locals who warn him off the trail — and finally, in the dark and the rain, having sent her back down with strangers, he turns around without ever seeing it."
+  }
+ ],
+ "actions": [
+  {
+   "id": "action-1",
+   "title": "Build Your Own Scorecard",
+   "lede": [
+    "List the people you genuinely admire and the characteristics they embodied that you would want to be known for. Narrow it to the four that matter most. Grade yourself on those four twice a day.",
+    "When: Set it up once. Grade at midday and again at night — midday so you still have an evening to correct what is slipping."
+   ],
+   "operative": "Any situation, including a bad one, becomes a place to move a number you chose yourself rather than one the world assigned you.",
+   "plate": "img/action-01.png",
+   "caveat": "Four, not eight. A scorecard you cannot hold in your head is a list, not a scorecard."
+  },
+  {
+   "id": "action-2",
+   "title": "Keep a What Went Well Journal",
+   "lede": [
+    "Write a worth statement at the top — my value comes from who I am, not from what I do — then a growth statement: anything that happens to me today is in my best interest and an opportunity to learn and grow. Then fifteen specific things you did well. Then, and only then, two areas for growth and two things you learned.",
+    "When: After every training session, performance, or working day."
+   ],
+   "operative": "Fifteen stops being hard. You start noticing good repetitions while they are happening rather than reconstructing them at night.",
+   "plate": "img/action-02.png",
+   "caveat": "Two growth areas, never more — nobody can hold more than two in mind the next day. If you quit short of fifteen, beat yesterday's stopping point by two."
+  },
+  {
+   "id": "action-3",
+   "title": "Carry Your Principles in Your Pocket",
+   "lede": [
+    "Each morning, before the work starts, write out four to six principles you will hold to no matter what. Fold the paper and put it in your pocket.",
+    "When: Daily, and especially on days you can already feel your mood making decisions for you."
+   ],
+   "operative": "When feelings surge, you touch the pocket or read the list aloud, and the decision is already made.",
+   "plate": "img/action-03.png",
+   "caveat": "Borrow principles that have been tested for a long time rather than inventing clever ones. You will still slip; the practice is getting back on the road, not never leaving it."
+  },
+  {
+   "id": "action-4",
+   "title": "Set Your Warrior Dial Before You Perform",
+   "lede": [
+    "Notice where your activation sits on a one-to-ten scale, decide where it needs to be for this particular task, and move it deliberately. Down: slow breathing, slower speech, lower voice, slower movement, calm music. Up: upbeat music, movement, anything that fires you.",
+    "When: In the minutes before anything that requires precision — and before the games that feel too big, which is exactly when everyone overshoots."
+   ],
+   "operative": "You arrive at the line at your number instead of whatever number the occasion handed you.",
+   "plate": "img/action-04.png",
+   "caveat": "Turning the dial down is much harder than turning it up, and most training cultures only ever practice up."
+  },
+  {
+   "id": "action-5",
+   "title": "Take the Two-Minute Gratefulness Walk",
+   "lede": [
+    "Walk for two minutes naming everything you are grateful for, with deliberate attention on the things you normally take for granted.",
+    "When: Immediately after a loss, a bad session, or any moment you notice perspective has gone."
+   ],
+   "operative": "You can feel the shift inside two minutes — and you are markedly easier to be around for the people who have to live with your result.",
+   "plate": "img/action-05.png",
+   "caveat": "It works as a reset, not as a substitute for the reckoning. Do the walk, then have the honest conversation about what went wrong."
+  }
+ ]
+};
 
-  function paintTheme(t){
-    root.setAttribute("data-theme",t);
-    var m=document.querySelector('meta[name="theme-color"]');
-    if(m) m.setAttribute("content", t==="dark" ? "#15191C" : "#F6F2E8");
-    var b=document.getElementById("themer");
-    if(b){ b.textContent = t==="dark" ? "Light" : "Dark";
-           b.setAttribute("aria-label", t==="dark" ? "Switch to light" : "Switch to dark"); }
+/* ════════════════════════════════════════════════════════════════════
+   Render
+   ════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el  = id => document.getElementById(id);
+
+document.title = BOOK.title + " — Study Guide";
+if(BOOK.cover){
+  el('bCover').innerHTML = `<img src="${esc(BOOK.cover)}" alt="Cover of ${esc(BOOK.title)} by ${esc(BOOK.author)}">`;
+  el('bCover').hidden = false;
+  // If the file is missing, drop the slot rather than showing a broken image.
+  el('bCover').querySelector('img').onerror = () => { el('bCover').hidden = true; };
+  // Home-screen icon, since this mostly gets opened from a phone.
+  for(const rel of ["icon","apple-touch-icon"]){
+    const l = document.createElement('link');
+    l.rel = rel; l.href = BOOK.cover;
+    document.head.appendChild(l);
+  }
+}
+el('bTitle').textContent  = BOOK.title;
+el('bByline').textContent = BOOK.author || "";
+el('bSub').textContent    = BOOK.subtitle || "";
+if(!BOOK.subtitle) el('bSub').hidden = true;
+el('bLinks').innerHTML = (BOOK.links || []).map(l =>
+  `<a href="${esc(l.href)}"${/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : ''}><span class="mk" aria-hidden="true">${esc(l.mark)}</span>${esc(l.label)}</a>`
+).join("");
+
+const ledeHTML = v => (Array.isArray(v) ? v : [v]).map(p => `<p class="lede">${esc(p)}</p>`).join("");
+
+function entryHTML(e, kind, n){
+  const label = (kind === "insight" ? "INS " : "ACT ") + n;
+  return `
+  <article class="entry${e.plate ? '' : ' no-plate'}" id="${esc(e.id)}" data-open="0">
+    <div class="entry-head">
+      <span class="entry-mark">${label}</span>
+      <h3 class="entry-title">${esc(e.title)}</h3>
+      <span class="entry-sign" aria-hidden="true"><i></i><i></i></span>
+    </div>
+    <div class="entry-wrap"><div class="entry-body">
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${e.evidence ? `<p class="evidence">${esc(e.evidence)}</p>` : ''}
+      <p class="operative">${esc(e.operative)}</p>
+      ${e.caveat ? `<p class="caveat">${esc(e.caveat)}</p>` : ''}
+    </div></div>
+  </article>`;
+}
+
+function secHead(name){
+  return `<div class="sec-head"><h2>${esc(name)}</h2></div>`;
+}
+
+const any = v => Array.isArray(v) ? v.length > 0 : !!v;
+
+const argumentHTML = () => !BOOK.argument ? '' : `
+  <div id="argument">
+    <p class="q">${esc(BOOK.argument.question)}</p>
+    ${BOOK.argument.answer ? `<p class="a">${esc(BOOK.argument.answer)}</p>` : ''}
+  </div>`;
+
+const frameworkHTML = () => !(BOOK.framework && any(BOOK.framework.steps)) ? '' : `
+  <section id="framework" class="open-sec">
+    ${secHead(BOOK.framework.name)}
+    ${BOOK.framework.intro ? `<p class="sec-intro">${esc(BOOK.framework.intro)}</p>` : ''}
+    ${BOOK.framework.steps.map(st => `
+      <div class="fw-row">
+        <span class="fw-mark ${/^\d/.test(st.mark) ? 'seq' : 'letter'}">${esc(st.mark)}</span>
+        <div>
+          <div class="fw-term">${esc(st.term)}</div>
+          <p class="fw-gloss">${esc(st.gloss)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+const listHTML = (items, kind, name) => !any(items) ? '' : `
+  <section id="${kind}s" class="coll-sec">
+    ${secHead(name)}
+    ${items.map((e,i) => entryHTML(e, kind, i+1)).join("")}
+  </section>`;
+
+const vocabHTML = () => !(BOOK.vocabulary && any(BOOK.vocabulary.terms)) ? '' : `
+  <section id="vocabulary" class="open-sec">
+    ${secHead("Vocabulary")}
+    ${BOOK.vocabulary.intro ? `<p class="sec-intro">${esc(BOOK.vocabulary.intro)}</p>` : ''}
+    ${BOOK.vocabulary.terms.map(t => `
+      <div class="voc-row" id="${esc(t.id)}">
+        <span class="voc-mark"></span>
+        <div>
+          <div class="voc-term">${esc(t.term)}</div>
+          <p class="voc-def">${esc(t.def)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+el('mode-index').innerHTML =
+  argumentHTML() + frameworkHTML() +
+  listHTML(BOOK.insights, "insight", "Insights") +
+  listHTML(BOOK.actions,  "action",  "Actions") +
+  vocabHTML();
+
+function tileHTML(e, kind, n, i){
+  const cls = kind === "action" ? "tile act" : "tile";
+  const st = ` style="--i:${i}"`;
+  if(!e.plate){
+    return `<a class="${cls} empty" href="#${esc(e.id)}"${st}>
+      <span class="ph">${esc(e.title)}</span>
+      <span class="cap">Plate coming</span>
+    </a>`;
+  }
+  return `<a class="${cls}" href="#${esc(e.id)}"${st}>
+    <img src="${esc(e.plate)}" alt="${esc(e.alt || '')}">
+    <span class="cap">${esc(e.title)}</span>
+  </a>`;
+}
+
+const RS = 'stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+const slides = [
+  ...(BOOK.insights || []).map((e,i) => tileHTML(e,"insight",i+1,i)),
+  ...(BOOK.actions  || []).map((e,i) => tileHTML(e,"action", i+1,(BOOK.insights||[]).length+i))
+];
+el('mode-plates').innerHTML = !slides.length ? '' : `
+  <div class="rail-wrap">
+    <div class="rail" id="rail" tabindex="0" aria-label="Plates, use arrow keys">${slides.join("")}</div>
+    <div class="rail-foot">
+      <button class="rail-btn" id="railPrev" type="button" aria-label="Previous plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+      <span class="rail-count" id="railCount"></span>
+      <button class="rail-btn" id="railNext" type="button" aria-label="Next plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </div>`;
+
+el('mode-onepage').innerHTML = !any(BOOK.quickReference) ? '' : `
+  <div class="qr-grid">
+    ${BOOK.quickReference.map(c => c.kind === "list"
+      ? `<div class="qr-cell list">
+           <div class="qr-label">${esc(c.label)}</div>
+           <ul>${c.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
+         </div>`
+      : `<div class="qr-cell line">
+           <div class="qr-label">${esc(c.label)}</div>
+           <p>${esc(c.text)}</p>
+         </div>`).join("")}
+  </div>
+  ${BOOK.closingLine ? `<div class="closing">${esc(BOOK.closingLine)}</div>` : ''}`;
+
+/* ════════════════════════════════════════════════════════════════════
+   Behavior — mode is driven entirely by location.hash, so every state
+   is linkable and the back button works.
+   ════════════════════════════════════════════════════════════════════ */
+const MODES = {};
+// A book without quick reference has no One page, and one without drawings has
+// no Plates. Drop the empty ones rather than offering a blank view.
+for(const k of ['index','plates','onepage']){
+  const v = el('mode-' + k);
+  if(v.innerHTML.trim()) MODES[k] = v;
+  else { v.remove(); document.querySelector(`.bar a[data-mode="${k}"]`)?.remove(); }
+}
+const FIRST = Object.keys(MODES)[0] || 'index';
+const barInd = el('barInd');
+let booted = false;
+
+// The hairline travels to the live word. On first paint it is placed, not moved.
+function placeIndicator(mode){
+  const a = document.querySelector(`.bar a[data-mode="${mode}"]`);
+  if(!a) return;
+  barInd.style.width = a.offsetWidth + "px";
+  barInd.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+
+function setMode(mode){
+  if(!MODES[mode]) mode = FIRST;
+  const changed = MODES[mode].hidden || !booted;
+  for(const k in MODES) MODES[k].hidden = (k !== mode);
+  if(mode === 'plates') requestAnimationFrame(railSync);
+  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === mode));
+  placeIndicator(mode);
+
+  // Replay the arrival on the incoming view, but not on the very first paint —
+  // the page-level entrance already covers that.
+  if(changed && booted){
+    const v = MODES[mode];
+    v.classList.remove('enter');
+    void v.offsetWidth;          // restart the animation
+    v.classList.add('enter');
+  }
+}
+
+function openEntry(id){
+  const e = document.getElementById(id);
+  if(e && e.classList.contains('entry')) e.dataset.open = "1";
+  return e;
+}
+
+function route(){
+  const hash = location.hash.replace(/^#/, "");
+
+  if((hash === "onepage" || hash === "plates") && MODES[hash]){
+    setMode(hash);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  if(hash === "" || hash === "index" || !MODES.index){
+    setMode(MODES.index ? "index" : FIRST);
+    return;
   }
 
-  function slide(){
-    var live=document.querySelector('.mode[aria-current="true"]');
-    var s=document.getElementById("slide");
-    if(!live||!s) return;
-    s.style.width=live.offsetWidth+"px";
-    s.style.transform="translateX("+live.offsetLeft+"px)";
+  // Any other id: index mode, open that entry if it is one, scroll to it.
+  setMode("index");
+  const target = openEntry(hash) || document.getElementById(hash);
+  if(target){
+    const top = target.getBoundingClientRect().top + window.scrollY - 120;
+    window.scrollTo({ top, behavior: 'smooth' });
   }
+}
 
-  function show(mode){
-    MODES.forEach(function(m){
-      var v=document.getElementById("view-"+m);
-      if(v) v.classList.toggle("on", m===mode);
-      var b=document.getElementById("mode-"+m);
-      if(b) b.setAttribute("aria-current", m===mode ? "true" : "false");
-    });
-    slide();
-  }
+// One delegated listener rather than per-entry handlers.
+MODES.index?.addEventListener('click', ev => {
+  const head = ev.target.closest('.entry-head');
+  if(!head) return;
+  const entry = head.closest('.entry');
+  entry.dataset.open = entry.dataset.open === "1" ? "0" : "1";
+});
 
-  function openEntry(el){
-    if(!el) return;
-    el.classList.add("open");
-    var h=el.querySelector(".head");
-    if(h) h.setAttribute("aria-expanded","true");
-  }
-
-  function route(){
-    var h=(location.hash||"").replace(/^#/,"");
-    if(MODES.indexOf(h)>-1){ show(h); return; }
-    var m=h.match(/^(insight|action)-(\d+)$/);
-    if(m){
-      show(m[1]==="insight" ? "insights" : "actions");
-      var el=document.getElementById(h);
-      openEntry(el);
-      if(el) requestAnimationFrame(function(){
-        el.scrollIntoView({block:"start", behavior:"smooth"});
-      });
-      return;
-    }
-    show("insights");
-  }
-
-  document.addEventListener("click", function(e){
-    var mb=e.target.closest(".mode");
-    if(mb){ location.hash=mb.dataset.mode; return; }
-
-    var tb=e.target.closest("#themer");
-    if(tb){
-      var next = root.getAttribute("data-theme")==="dark" ? "light" : "dark";
-      paintTheme(next);
-      try{ localStorage.setItem("cwcw-theme", next); }catch(err){}
-      return;
-    }
-
-    var hd=e.target.closest(".head");
-    if(hd){
-      var entry=hd.closest(".entry");
-      var open=entry.classList.toggle("open");
-      hd.setAttribute("aria-expanded", open ? "true" : "false");
-      if(open) history.replaceState(null,"","#"+entry.id);
+window.addEventListener('hashchange', route);
+route();
+requestAnimationFrame(() => {           // hand the indicator its transition back
+  barInd.classList.remove('instant');
+  booted = true;
+});
+// The words change width when the real mono face lands — re-measure once.
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => {
+    const on = document.querySelector('.bar a.on');
+    if(on){
+      barInd.classList.add('instant');
+      placeIndicator(on.dataset.mode);
+      requestAnimationFrame(() => barInd.classList.remove('instant'));
     }
   });
+}
+addEventListener('resize', () => {
+  barInd.classList.add('instant');
+  placeIndicator(document.querySelector('.bar a.on').dataset.mode);
+  requestAnimationFrame(() => barInd.classList.remove('instant'));
+});
 
-  window.addEventListener("hashchange", route);
-  window.addEventListener("resize", slide);
+/* ── Plates rail ─────────────────────────────────────────────────────
+   Swipe on touch; arrows and the keyboard on anything with a pointer. The
+   snap is CSS, so the gesture stays native and the JS only reports position. */
+const rail = el('rail');
+const MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  paintTheme(root.getAttribute("data-theme")||"light");
-  route();
-  requestAnimationFrame(function(){ slide(); document.body.classList.add("ready"); });
-})();
+function railIndex(){
+  if(!rail) return 0;
+  const r = rail.getBoundingClientRect(), mid = r.left + r.width / 2;
+  let best = 0, bd = Infinity;
+  [...rail.children].forEach((t, i) => {
+    const b = t.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid);
+    if(d < bd){ bd = d; best = i; }
+  });
+  return best;
+}
+function railSync(){
+  if(!rail) return;
+  const i = railIndex(), n = rail.children.length;
+  el('railCount').textContent = String(i + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+  el('railPrev').disabled = i === 0;
+  el('railNext').disabled = i === n - 1;
+}
+function railGo(step){
+  if(!rail) return;
+  const t = rail.children[Math.max(0, Math.min(rail.children.length - 1, railIndex() + step))];
+  if(!t) return;
+  const r = rail.getBoundingClientRect(), b = t.getBoundingClientRect();
+  rail.scrollBy({ left: (b.left + b.width/2) - (r.left + r.width/2), behavior: MOTION ? 'smooth' : 'auto' });
+}
+
+if(rail){
+  let ticking = false;
+  rail.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { railSync(); ticking = false; });
+  }, { passive: true });
+
+  el('railPrev').addEventListener('click', () => railGo(-1));
+  el('railNext').addEventListener('click', () => railGo(1));
+
+  // A swipe must not count as a tap on the plate underneath it.
+  let downX = 0, downY = 0;
+  rail.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; }, { passive: true });
+  rail.addEventListener('click', e => {
+    if(Math.abs(e.clientX - downX) > 10 || Math.abs(e.clientY - downY) > 10){
+      e.preventDefault(); e.stopPropagation();
+    }
+  }, true);
+
+  addEventListener('keydown', e => {
+    if(!MODES.plates || MODES.plates.hidden) return;
+    if(e.key === 'ArrowRight'){ e.preventDefault(); railGo(1); }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); railGo(-1); }
+  });
+  addEventListener('resize', railSync);
+  railSync();
+}
+
+/* ── Theme ───────────────────────────────────────────────────────────
+   Dark by default, and it shares the shelf's storage key — pick a side once
+   and every page in Book HQ agrees. The guard keeps it working where storage
+   is blocked (private browsing). */
+const THEME_BG = { light: "#F4F5F7", dark: "#0D0F13" };
+const themeBtn = el('themeBtn');
+const TS = 'stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const TICON = {
+  sun:`<svg viewBox="0 0 24 24"><circle ${TS} cx="12" cy="12" r="4"/><path ${TS} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${TS} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`
+};
+
+function paintTheme(theme){
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.innerHTML = dark ? TICON.sun : TICON.moon;
+  themeBtn.setAttribute('aria-label', dark ? "Switch to light mode" : "Switch to dark mode");
+  el('themeColor').setAttribute('content', THEME_BG[dark ? "dark" : "light"]);
+}
+
+let theme = "dark";
+try{ theme = localStorage.getItem('bookhq-theme') || "dark"; }catch(e){}
+paintTheme(theme);
+
+themeBtn.addEventListener('click', () => {
+  theme = theme === "dark" ? "light" : "dark";
+  // Ease the colour change for the length of the swap only, so the transition
+  // never sits on the page slowing everything else down.
+  document.body.classList.add('theming');
+  themeBtn.classList.remove('swap'); void themeBtn.offsetWidth; themeBtn.classList.add('swap');
+  paintTheme(theme);
+  setTimeout(() => document.body.classList.remove('theming'), 520);
+  try{ localStorage.setItem('bookhq-theme', theme); }catch(e){}
+});
 </script>
 </body>
 </html>
