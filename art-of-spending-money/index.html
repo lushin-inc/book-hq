@@ -79,7 +79,17 @@ img{border:0}
    lines and the byline onto three. It carries the shelf tile's treatment —
    same radius, same hairline, same shadow — so arriving here feels like the
    tile you tapped got bigger. */
-header{padding:2.2rem 0 1.4rem}
+header{padding:1.4rem 0 1.4rem}
+/* Back to the shelf. Above the jacket rather than in the mode bar — this link
+   leaves the page, and the bar is for moving around inside it. */
+.home{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:44px;
+  font-family:var(--display);font-weight:500;font-size:.8rem;letter-spacing:.01em;
+  color:var(--muted);transition:color .2s ease;
+}
+.home:hover{color:var(--ink)}
+.home:active{opacity:.6}
+.home .ar{font-size:.95rem;line-height:1}
 .masthead{display:block}
 .cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
   border-radius:14px;overflow:hidden;background:var(--coverbg);
@@ -124,18 +134,9 @@ header{padding:2.2rem 0 1.4rem}
   background:transparent;color:var(--muted);transition:color .3s ease;
 }
 .bar a.on{color:var(--ink)}
-.bar a.home{padding-left:0;padding-right:.85rem;margin-right:.15rem;color:var(--muted);
-  font-weight:600;border-right:1px solid var(--line)}
-.bar a.home:hover{color:var(--ink)}
-.bar a.home .ar{display:none;font-size:1rem;line-height:1}
-/* On a phone the three modes plus a wordmark won't sit on one line, and a
-   wrapped nav bar is worse than a shorter one. The label becomes an arrow. */
 @media (max-width:430px){
   .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
-  .bar a{padding:0 .5rem;font-size:.73rem}
-  .bar a.home{padding:0 .55rem 0 0;margin-right:.2rem}
-  .bar a.home .lbl{display:none}
-  .bar a.home .ar{display:inline}
+  .bar a{padding:0 .55rem;font-size:.74rem}
 }
 .bar a:active{opacity:.55}
 .bar-ind{
@@ -240,7 +241,7 @@ section{scroll-margin-top:7.5rem}
    to centre, with the neighbours peeking in so it reads as swipeable before
    anyone tries. The drawings sit straight on the paper — they are the
    interface in this view, so the container gets out of their way. */
-#plates,#onepage{padding:1.9rem 0 0}
+#plates{padding:1.9rem 0 0}
 .rail-wrap{position:relative}
 .rail{
   --slide:min(30rem,78vw);
@@ -280,33 +281,32 @@ section{scroll-margin-top:7.5rem}
 .rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
 .rail-btn:disabled{opacity:.32;cursor:default}
 .rail-btn svg{width:18px;height:18px}
-/* On touch the swipe is the control; the buttons would just be furniture. */
-@media (hover:none){ .rail-btn{display:none} }
+/* In the rail the swipe is the control, so on touch the buttons are furniture.
+   In the solo view they are the only way through, so they always stay. */
+@media (hover:none){ .rail-foot .rail-btn{display:none} }
 @media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
 
-/* ── One page ───────────────────────────────────────────────────────
-   The min() keeps two columns at 360px, where a bare 9.5rem floor tips to one
-   and the mode loses its point. */
-.qr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(9.5rem,46%),1fr));
-  gap:.6rem;align-items:start}   /* start, or a short cell stretches to the tallest in its row */
-.qr-cell{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:.85rem .9rem}
-.qr-label{font-family:var(--display);font-weight:600;text-transform:uppercase;color:var(--accent)}
-.qr-cell.list .qr-label{font-size:.66rem;letter-spacing:.13em;margin-bottom:.55rem}
-.qr-cell.line .qr-label{font-size:.63rem;letter-spacing:.13em;margin-bottom:.3rem}
-.qr-cell ul{margin:0;padding-left:1rem;font-size:.9rem;line-height:1.44;color:var(--muted)}
-.qr-cell li{margin-bottom:.32rem}
-.qr-cell li:last-child{margin-bottom:0}
-.qr-cell.line p{margin:0;font-size:.9rem;line-height:1.44;color:var(--muted);text-wrap:pretty}
-.closing{margin-top:1.5rem;padding:1.1rem 1.15rem;background:var(--surface);
-  border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
-  font-family:var(--display);font-weight:500;font-size:1rem;line-height:1.5;
-  color:var(--ink);text-wrap:pretty}
+/* ── One plate on its own ───────────────────────────────────────────
+   Arrived at by tapping a plate. One drawing, its own text, and a way to the
+   next one. Nothing else competes with it — that is the whole point of the
+   view, so resist adding anything here. */
+#mode-entry{padding:1.9rem 0 0}
+.solo-mark{font-family:var(--display);font-weight:500;font-size:.66rem;
+  letter-spacing:.09em;color:var(--muted)}
+.solo-title{margin:.45rem 0 0;font-family:var(--display);font-weight:600;
+  font-size:1.32rem;line-height:1.3;letter-spacing:-.016em;color:var(--ink);text-wrap:pretty}
+.solo figure{margin:1.5rem auto;width:min(30rem,100%)}
+.solo figure img{display:block;width:100%}
+.solo-nav{display:flex;align-items:center;justify-content:center;gap:.9rem;
+  margin-top:2.2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.solo .operative{margin-top:1.2rem}
 
 /* ── Plates in either paper ─────────────────────────────────────────
    The drawings ship as ink on a transparent ground, so they need no blend
    mode — which also means nothing above them can quietly break them. Dark
    paper just inverts the ink. */
 :root[data-theme="dark"] .entry figure img,
+:root[data-theme="dark"] .solo figure img,
 :root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
 
 footer{height:calc(4rem + env(safe-area-inset-bottom))}
@@ -317,6 +317,7 @@ footer{height:calc(4rem + env(safe-area-inset-bottom))}
 
 <div class="wrap">
   <header>
+    <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
     <div class="masthead">
       <div class="cover" id="bCover" hidden></div>
       <div>
@@ -329,18 +330,16 @@ footer{height:calc(4rem + env(safe-area-inset-bottom))}
   </header>
 
   <nav class="bar">
-    <a class="home" href="../" aria-label="Back to Book HQ"><span class="lbl">Book HQ</span><span class="ar" aria-hidden="true">&larr;</span></a>
-    <a href="#index" data-mode="index">Index</a>
     <a href="#plates" data-mode="plates">Plates</a>
-    <a href="#onepage" data-mode="onepage">One page</a>
+    <a href="#index" data-mode="index">Index</a>
     <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
     <span class="bar-ind instant" id="barInd"></span>
   </nav>
 
   <main>
-    <div id="mode-index"></div>
-    <div id="mode-plates" hidden></div>
-    <div id="mode-onepage" hidden></div>
+    <div id="mode-plates"></div>
+    <div id="mode-index" hidden></div>
+    <div id="mode-entry" hidden></div>
   </main>
 
   <footer></footer>
@@ -742,6 +741,12 @@ function tileHTML(e, kind, n, i){
 }
 
 const RS = 'stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+// One flat list in slot order — the rail, the solo view and its prev/next all
+// count against this, so they can never disagree about what "next" means.
+const SEQ = [
+  ...(BOOK.insights || []).map((e,i) => ({e, kind:"insight", n:i+1})),
+  ...(BOOK.actions  || []).map((e,i) => ({e, kind:"action",  n:i+1}))
+];
 const slides = [
   ...(BOOK.insights || []).map((e,i) => tileHTML(e,"insight",i+1,i)),
   ...(BOOK.actions  || []).map((e,i) => tileHTML(e,"action", i+1,(BOOK.insights||[]).length+i))
@@ -758,20 +763,6 @@ el('mode-plates').innerHTML = !slides.length ? '' : `
     </div>
   </div>`;
 
-el('mode-onepage').innerHTML = !any(BOOK.quickReference) ? '' : `
-  <div class="qr-grid">
-    ${BOOK.quickReference.map(c => c.kind === "list"
-      ? `<div class="qr-cell list">
-           <div class="qr-label">${esc(c.label)}</div>
-           <ul>${c.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
-         </div>`
-      : `<div class="qr-cell line">
-           <div class="qr-label">${esc(c.label)}</div>
-           <p>${esc(c.text)}</p>
-         </div>`).join("")}
-  </div>
-  ${BOOK.closingLine ? `<div class="closing">${esc(BOOK.closingLine)}</div>` : ''}`;
-
 /* ════════════════════════════════════════════════════════════════════
    Behavior — mode is driven entirely by location.hash, so every state
    is linkable and the back button works.
@@ -779,12 +770,15 @@ el('mode-onepage').innerHTML = !any(BOOK.quickReference) ? '' : `
 const MODES = {};
 // A book without quick reference has no One page, and one without drawings has
 // no Plates. Drop the empty ones rather than offering a blank view.
-for(const k of ['index','plates','onepage']){
+for(const k of ['plates','index']){
   const v = el('mode-' + k);
   if(v.innerHTML.trim()) MODES[k] = v;
   else { v.remove(); document.querySelector(`.bar a[data-mode="${k}"]`)?.remove(); }
 }
 const FIRST = Object.keys(MODES)[0] || 'index';
+// The solo view has no tab — you reach it by tapping a plate — so it is never
+// pruned for being empty. It renders on demand.
+MODES.entry = el('mode-entry');
 const barInd = el('barInd');
 let booted = false;
 
@@ -801,8 +795,10 @@ function setMode(mode){
   const changed = MODES[mode].hidden || !booted;
   for(const k in MODES) MODES[k].hidden = (k !== mode);
   if(mode === 'plates') requestAnimationFrame(railSync);
-  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === mode));
-  placeIndicator(mode);
+  // A solo plate belongs to Plates, so the bar keeps pointing there.
+  const lit = mode === 'entry' ? (MODES.plates ? 'plates' : FIRST) : mode;
+  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === lit));
+  placeIndicator(lit);
 
   // Replay the arrival on the incoming view, but not on the very first paint —
   // the page-level entrance already covers that.
@@ -820,26 +816,68 @@ function openEntry(id){
   return e;
 }
 
+/* One plate, on its own. Built on demand from the same entry data the index
+   uses, so there is no second copy of the content to keep in step. */
+function renderSolo(i){
+  const { e, kind, n } = SEQ[i];
+  MODES.entry.innerHTML = `
+    <article class="solo">
+      <div class="solo-mark">${kind === "insight" ? "INS " : "ACT "}${n}</div>
+      <h2 class="solo-title">${esc(e.title)}</h2>
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${e.evidence ? `<p class="evidence">${esc(e.evidence)}</p>` : ''}
+      <p class="operative">${esc(e.operative)}</p>
+      ${e.caveat ? `<p class="caveat">${esc(e.caveat)}</p>` : ''}
+      <nav class="solo-nav">
+        <button class="rail-btn" id="soloPrev" type="button" aria-label="Previous plate"${i === 0 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+        <span class="rail-count">${String(i+1).padStart(2,'0')} / ${String(SEQ.length).padStart(2,'0')}</span>
+        <button class="rail-btn" id="soloNext" type="button" aria-label="Next plate"${i === SEQ.length-1 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+      </nav>
+    </article>`;
+  soloAt = i;
+  el('soloPrev').addEventListener('click', () => soloGo(-1));
+  el('soloNext').addEventListener('click', () => soloGo(1));
+}
+let soloAt = -1;
+function soloGo(step){
+  const j = soloAt + step;
+  if(j < 0 || j >= SEQ.length) return;
+  location.hash = SEQ[j].e.id;      // through the hash, so back works
+}
+
 function route(){
   const hash = location.hash.replace(/^#/, "");
 
-  if((hash === "onepage" || hash === "plates") && MODES[hash]){
+  if((hash === "plates" || hash === "index") && MODES[hash]){
     setMode(hash);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
-  if(hash === "" || hash === "index" || !MODES.index){
-    setMode(MODES.index ? "index" : FIRST);
+  if(hash === ""){ setMode(FIRST); return; }
+
+  // A plate's own page. This is where tapping a plate lands.
+  const at = SEQ.findIndex(x => x.e.id === hash);
+  if(at > -1){
+    renderSolo(at);
+    setMode('entry');
+    window.scrollTo({ top: 0, behavior: booted ? 'smooth' : 'auto' });
     return;
   }
 
-  // Any other id: index mode, open that entry if it is one, scroll to it.
-  setMode("index");
-  const target = openEntry(hash) || document.getElementById(hash);
-  if(target){
-    const top = target.getBoundingClientRect().top + window.scrollY - 120;
-    window.scrollTo({ top, behavior: 'smooth' });
+  // Anything else that names something on the index — a vocabulary row.
+  if(MODES.index){
+    setMode("index");
+    const target = document.getElementById(hash);
+    if(target){
+      const top = target.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
+      return;
+    }
   }
+  setMode(FIRST);
 }
 
 // One delegated listener rather than per-entry handlers.
@@ -925,9 +963,10 @@ if(rail){
   }, true);
 
   addEventListener('keydown', e => {
-    if(!MODES.plates || MODES.plates.hidden) return;
-    if(e.key === 'ArrowRight'){ e.preventDefault(); railGo(1); }
-    if(e.key === 'ArrowLeft'){ e.preventDefault(); railGo(-1); }
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const step = e.key === 'ArrowRight' ? 1 : -1;
+    if(MODES.plates && !MODES.plates.hidden){ e.preventDefault(); railGo(step); }
+    else if(!MODES.entry.hidden){ e.preventDefault(); soloGo(step); }
   });
   addEventListener('resize', railSync);
   railSync();
