@@ -98,6 +98,7 @@ header{padding:2.2rem 0 1.4rem}
 .links:empty{display:none}
 .links a{
   display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  max-width:22rem;   /* a single companion file shouldn't span the whole column */
   background:var(--field);border:1px solid var(--line);border-radius:12px;
   font-weight:500;font-size:.86rem;color:var(--ink);
   transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
@@ -357,11 +358,6 @@ const BOOK = {
  "subtitle": "Simple Choices for a Richer Life",
  "cover": "img/cover.jpg",
  "links": [
-  {
-   "mark": "↓",
-   "label": "Insights & action guide",
-   "href": "Insights_and_Action_Guide.pdf"
-  },
   {
    "mark": "↓",
    "label": "Spoken companion",

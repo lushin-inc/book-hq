@@ -2,6 +2,9 @@
 
 The page, the PDF and the docx all read from this. None of them hardcode
 content, which is what makes a rebuild a re-render.
+
+The Insights + Action Guide PDF is still produced and still ships in the
+folder — it just is not linked from the page.
 """
 
 BOOK = {
@@ -10,11 +13,6 @@ BOOK = {
     "subtitle": "Simple Choices for a Richer Life",
     "cover": "img/cover.jpg",
     "links": [
-        {
-            "mark": "↓",
-            "label": "Insights & action guide",
-            "href": "Insights_and_Action_Guide.pdf"
-        },
         {
             "mark": "↓",
             "label": "Spoken companion",
