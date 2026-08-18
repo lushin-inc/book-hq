@@ -238,9 +238,11 @@ section{scroll-margin-top:7.5rem}
 
 /* ── Plates ─────────────────────────────────────────────────────────
    A rail you swipe, not a column you scroll. One drawing at a time, snapped
-   to centre, with the neighbours peeking in so it reads as swipeable before
-   anyone tries. The drawings sit straight on the paper — they are the
-   interface in this view, so the container gets out of their way. */
+   to centre, and only that one visible — the neighbours stay in the flow so
+   the native snap still works, but they are faded out and made untappable so
+   nothing competes with the plate you are looking at. The drawings sit
+   straight on the paper — they are the interface in this view, so the
+   container gets out of their way. */
 #plates{padding:1.9rem 0 0}
 .rail-wrap{position:relative}
 .rail{
@@ -256,9 +258,14 @@ section{scroll-margin-top:7.5rem}
 .tile{
   flex:0 0 var(--slide);scroll-snap-align:center;
   background:transparent;padding:0;display:block;min-width:0;
-  transition:opacity .2s ease;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s var(--ease);
 }
-.tile:active{opacity:.55}
+/* Only the centred plate is visible or tappable. The rest keep their place in
+   the rail so scroll-snap still has something to snap to. NOTE: `act` on a
+   tile means "action tile", not "active" — the centred one is `cur`. */
+.tile.cur{opacity:1;pointer-events:auto}
+.tile.cur:active{opacity:.55}
 .tile img{display:block;width:100%;max-width:100%;pointer-events:none;-webkit-user-drag:none}
 .tile .cap{display:block;padding-top:.7rem;font-family:var(--display);font-weight:500;
   font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
@@ -281,9 +288,9 @@ section{scroll-margin-top:7.5rem}
 .rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
 .rail-btn:disabled{opacity:.32;cursor:default}
 .rail-btn svg{width:18px;height:18px}
-/* In the rail the swipe is the control, so on touch the buttons are furniture.
-   In the solo view they are the only way through, so they always stay. */
-@media (hover:none){ .rail-foot .rail-btn{display:none} }
+/* The buttons stay on touch as well. They used to be hidden there because the
+   peeking neighbours advertised the swipe; with the neighbours hidden, these
+   and the counter are the only sign there is more than one plate. */
 @media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
 
 /* ── One plate on its own ───────────────────────────────────────────
@@ -331,7 +338,7 @@ footer{height:calc(4rem + env(safe-area-inset-bottom))}
 
   <nav class="bar">
     <a href="#plates" data-mode="plates">Plates</a>
-    <a href="#index" data-mode="index">Index</a>
+    <a href="#index" data-mode="index">The book</a>
     <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
     <span class="bar-ind instant" id="barInd"></span>
   </nav>
@@ -736,11 +743,11 @@ const vocabHTML = () => !(BOOK.vocabulary && any(BOOK.vocabulary.terms)) ? '' : 
       </div>`).join("")}
   </section>`;
 
+// The entries are not repeated here — they live in Plates, one at a time, and
+// listing them again just duplicated every word on the page. What is left is
+// the only copy of the book's argument and its terms.
 el('mode-index').innerHTML =
-  argumentHTML() + frameworkHTML() +
-  listHTML(BOOK.insights, "insight", "Insights") +
-  listHTML(BOOK.actions,  "action",  "Actions") +
-  vocabHTML();
+  argumentHTML() + frameworkHTML() + vocabHTML();
 
 function tileHTML(e, kind, n, i){
   const cls = kind === "action" ? "tile act" : "tile";
@@ -827,11 +834,7 @@ function setMode(mode){
   }
 }
 
-function openEntry(id){
-  const e = document.getElementById(id);
-  if(e && e.classList.contains('entry')) e.dataset.open = "1";
-  return e;
-}
+
 
 /* One plate, on its own. Built on demand from the same entry data the index
    uses, so there is no second copy of the content to keep in step. */
@@ -880,7 +883,15 @@ function route(){
   if(at > -1){
     renderSolo(at);
     setMode('entry');
-    window.scrollTo({ top: 0, behavior: booted ? 'smooth' : 'auto' });
+    // Land on the plate, not the top of the page. Tapping a drawing should put
+    // that drawing under the bar with the first paragraph already showing
+    // beneath it, so you read on from there instead of scrolling back down past
+    // the jacket. Measured off #mode-entry, whose top sits above the image, so
+    // it is stable whether or not the image has loaded yet.
+    const bar = document.querySelector('.bar');
+    const top = MODES.entry.getBoundingClientRect().top + window.scrollY
+              - (bar ? bar.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: booted ? 'smooth' : 'auto' });
     return;
   }
 
@@ -896,14 +907,6 @@ function route(){
   }
   setMode(FIRST);
 }
-
-// One delegated listener rather than per-entry handlers.
-MODES.index?.addEventListener('click', ev => {
-  const head = ev.target.closest('.entry-head');
-  if(!head) return;
-  const entry = head.closest('.entry');
-  entry.dataset.open = entry.dataset.open === "1" ? "0" : "1";
-});
 
 window.addEventListener('hashchange', route);
 route();
@@ -950,6 +953,7 @@ function railSync(){
   el('railCount').textContent = String(i + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
   el('railPrev').disabled = i === 0;
   el('railNext').disabled = i === n - 1;
+  [...rail.children].forEach((t, k) => t.classList.toggle('cur', k === i));
 }
 function railGo(step){
   if(!rail) return;
