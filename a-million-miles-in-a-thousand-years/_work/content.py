@@ -297,3 +297,25 @@ BOOK = {
     ],
     "closingLine": "Nobody gets to watch the parade."
 }
+
+
+# ── Takeaways ──────────────────────────────────────────────────────────
+# One line per entry, shown under the title before the drawing, so the point
+# is available in five seconds without reading the entry. Written from the
+# entry's own prose — it states nothing the body does not already say.
+TAKEAWAY = {
+    "insight-1": "A life feels empty because nothing adds up, not because too little happened.",
+    "insight-2": "Only your actions are on the screen. Where the footage and the intention disagree, the footage is the story.",
+    "insight-3": "If you do not choose an ambition, advertising installs one. Your bank statement records which one you actually chose.",
+    "insight-4": "Nobody changes because they want to. Build the doorway that makes not doing it worse than doing it.",
+    "insight-5": "The flat middle is not the price of the story. It is the story, and it is where everyone quits.",
+    "insight-6": "There is no moment when everything resolves. Waiting for one turns every real satisfaction into a disappointment.",
+    "action-1": "Print a year of bank statements and read them as the record of what this character actually wanted.",
+    "action-2": "Attach a cost to not doing it — a deposit, a date, a person you would hate to disappoint.",
+    "action-3": "Say what the story is about, out loud, every day, to whoever is in it with you.",
+    "action-4": "People take the best story on offer. Offer a better one instead of taking the current one away.",
+    "action-5": "Good lives do not happen in coffee shops. Build the scene on purpose and someone will still be telling it.",
+}
+
+for _e in BOOK["insights"] + BOOK["actions"]:
+    _e["takeaway"] = TAKEAWAY[_e["id"]]

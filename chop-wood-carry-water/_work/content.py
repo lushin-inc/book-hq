@@ -918,3 +918,25 @@ BOOK = {
                        for l, t in QUICK_REFERENCE],
     "closingLine": QUICK_REFERENCE[0][1],
 }
+
+
+# ── Takeaways ──────────────────────────────────────────────────────────
+# One line per entry, shown under the title before the drawing, so the point
+# is available in five seconds without reading the entry. Written from the
+# entry's own prose — it states nothing the body does not already say.
+TAKEAWAY = {
+    "insight-1": "The work gets handed over; the person doing it is the only permanent output. You receive every cut corner.",
+    "insight-2": "Attention is not additive. What you give the outcome comes out of the process, where skill is built.",
+    "insight-3": "When identity is fused to performance, every result becomes a verdict on your worth.",
+    "insight-4": "Achievement enlarges the thirst instead of filling the hole. The scorecard you were issued cannot be topped.",
+    "insight-5": "Mastery moves in steps, not constants. A plateau is the normal texture of the middle, not a verdict.",
+    "insight-6": "Chasing a partly controllable outcome leaves a wake whether or not you arrive. Arriving just makes it easier to justify.",
+    "action-1": "Pick four characteristics you want to be known for and grade yourself on them at midday and at night.",
+    "action-2": "Write fifteen specific things you did well before you write a single thing that went wrong.",
+    "action-3": "Write four to six principles each morning and carry them folded in your pocket for the moment feelings surge.",
+    "action-4": "Notice where your activation sits, decide where this task needs it, and move it there before you start.",
+    "action-5": "Walk two minutes naming what you are grateful for, especially right after a loss.",
+}
+
+for _e in BOOK["insights"] + BOOK["actions"]:
+    _e["takeaway"] = TAKEAWAY[_e["id"]]

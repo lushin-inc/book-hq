@@ -280,3 +280,25 @@ BOOK = {
     ],
     "closingLine": "All behavior makes sense with enough information — including yours."
 }
+
+
+# ── Takeaways ──────────────────────────────────────────────────────────
+# One line per entry, shown under the title before the drawing, so the point
+# is available in five seconds without reading the entry. Written from the
+# entry's own prose — it states nothing the body does not already say.
+TAKEAWAY = {
+    "insight-1": "Every purchase either improves your life or adjusts what others think of you. Regret comes from confusing the two.",
+    "insight-2": "What you actually want is respect. Stuff is the fastest way to chase it and the least durable.",
+    "insight-3": "Wealth is the gap between what you have and what you want, and wanting less closes it too.",
+    "insight-4": "You feel the contrast, not the amount. Anything installed permanently stops delivering the thing you bought it for.",
+    "insight-5": "Rich is having money. Wealthy is still being able to change your mind about how you use it.",
+    "insight-6": "You have already spent every cent you ever earned. Savings bought freedom; debt sold a piece of your future.",
+    "action-1": "Ask what you would own on an island with nobody watching, then buy status on purpose or not at all.",
+    "action-2": "Stop arguing the general case. Ask which choice you will regret from where you will actually be standing later.",
+    "action-3": "Treat every transfer to savings as a purchase — five hundred dollars moved buys five hundred dollars of independence.",
+    "action-4": "Try many small kinds of spending and cut without mercy. Finding your thing is a process of elimination.",
+    "action-5": "Keep your financial life inside your own house. Judge results as if nobody outside your family could see them.",
+}
+
+for _e in BOOK["insights"] + BOOK["actions"]:
+    _e["takeaway"] = TAKEAWAY[_e["id"]]

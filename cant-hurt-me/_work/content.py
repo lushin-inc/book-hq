@@ -815,3 +815,25 @@ COMPANION = [
  "Peace isn't a look on your face. It's a feeling in your heart. You cannot find it without first going to war with yourself, and people want to jump to the peace before they do the war. There is no finish line, and that is the deal you are accepting. The question he leaves you with: how do you want your book to read at the end of your life?",
 ]},
 ]
+
+
+# ── Takeaways ──────────────────────────────────────────────────────────
+# One line per entry, shown under the title before the drawing, so the point
+# is available in five seconds without reading the entry. Written from the
+# entry's own prose — it states nothing the body does not already say.
+TAKEAWAY = {
+    "insight-1": "When the mind says empty, about sixty percent is still there. The signal is early, not accurate.",
+    "insight-2": "You cannot fix a position you refuse to say out loud, and comfort is what keeps it unsaid.",
+    "insight-3": "Motivation decides nothing on a bad morning. Discipline works because the decision was never open for discussion.",
+    "insight-4": "Perform hardest at the hour you are expected to fade. The opponent you break is usually your own head.",
+    "insight-5": "Past wins only help if you re-feel them, not just recall them — and only if stocked in advance.",
+    "insight-6": "Written honestly, and starting with what went right, failure is the only feedback that cannot be faked.",
+    "action-1": "Say your real position out loud to your reflection, then put the next small step on the glass.",
+    "action-2": "Put one thing you avoid into the calendar every day, small enough to survive a bad morning.",
+    "action-3": "Write your wins down on a calm day, feeling each one, so you can draw on them mid-effort.",
+    "action-4": "Go to where the mind says stop, add five percent, and make that your new baseline.",
+    "action-5": "After a failure, write it longhand — what went right first — then schedule the retry.",
+}
+
+for _e in BOOK["insights"] + BOOK["actions"]:
+    _e["takeaway"] = TAKEAWAY[_e["id"]]
