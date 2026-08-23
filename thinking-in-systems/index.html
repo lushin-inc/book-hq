@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D0F13" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Book HQ</title>
+<!-- Applied before first paint so a stored dark choice never flashes light. -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-wght-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/poppins-latin-600-normal.woff2" crossorigin>
+<style>
+/* ── Type ────────────────────────────────────────────────────────────
+   Same two faces as the shelf: Poppins carries titles and labels, Inter
+   carries everything you read. Both ship with the page, so it opens the
+   same offline and never flashes fallback type on the way in. */
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* ── Tokens ──────────────────────────────────────────────────────────
+   Lifted from the shelf so the two pages are one surface. Only --accent
+   would change per book if a book ever needed its own. */
+:root,:root[data-theme="light"]{
+  --bg:#F4F5F7; --surface:#FFFFFF; --field:#EDF0F4; --coverbg:#EAEEF3;
+  --ink:#171A21; --muted:#697386; --prose:#3D4757; --line:#E6E8EE;
+  --accent:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+  --plate:20rem; --measure:33rem;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:Poppins,var(--ui);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --field:#1E222A; --coverbg:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --prose:#C8CED8; --line:#262B33;
+  --accent:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:7.5rem}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
+
+/* ── Motion ─────────────────────────────────────────────────────────
+   One easing curve for everything that opens, moves or arrives. */
+:root{ --ease:cubic-bezier(.32,.72,0,1); }
+@keyframes lift{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes rise{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+header{animation:lift .55s var(--ease) both}
+.bar{animation:fade .5s ease .1s both}   /* opacity only — a transform breaks sticky */
+main{animation:lift .55s var(--ease) .16s both}
+body.theming,body.theming *{
+  transition:background-color .45s ease,color .45s ease,border-color .45s ease !important;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+p{margin:0}
+a{color:var(--accent);text-decoration:none}
+img{border:0}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem}
+
+/* ── Header ─────────────────────────────────────────────────────────
+   The jacket stacks above the title. Beside it the title breaks onto two
+   lines and the byline onto three. It carries the shelf tile's treatment —
+   same radius, same hairline, same shadow — so arriving here feels like the
+   tile you tapped got bigger. */
+header{padding:1.4rem 0 1.4rem}
+/* Back to the shelf. Above the jacket rather than in the mode bar — this link
+   leaves the page, and the bar is for moving around inside it. */
+.home{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:44px;
+  font-family:var(--display);font-weight:500;font-size:.8rem;letter-spacing:.01em;
+  color:var(--muted);transition:color .2s ease;
+}
+.home:hover{color:var(--ink)}
+.home:active{opacity:.6}
+.home .ar{font-size:.95rem;line-height:1}
+.masthead{display:block}
+.cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
+  border-radius:14px;overflow:hidden;background:var(--coverbg);
+  border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+/* The jacket is an object, not ink — never inverted, only dimmed so it sits
+   in a dark page instead of glaring out of it. */
+:root[data-theme="dark"] .cover img{filter:brightness(.86)}
+.book-title{margin:0;font-family:var(--display);font-weight:600;
+  font-size:1.62rem;line-height:1.22;letter-spacing:-.014em;color:var(--ink)}
+.byline{margin-top:.35rem;font-size:.94rem;color:var(--muted)}
+.subtitle{margin-top:.15rem;font-size:.88rem;color:var(--muted);opacity:.78}
+
+/* Companion files are things you go and get, so they read as buttons. */
+.links{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.55rem}
+.links:empty{display:none}
+.links a{
+  display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  max-width:22rem;   /* a single companion file shouldn't span the whole column */
+  background:var(--field);border:1px solid var(--line);border-radius:12px;
+  font-weight:500;font-size:.86rem;color:var(--ink);
+  transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
+}
+.links a .mk{flex:none;color:var(--accent);font-size:.95rem;line-height:1}
+.links a:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.links a:active{opacity:.6}
+
+/* ── Mode bar ───────────────────────────────────────────────────────
+   No boxes. Three words and a hairline that travels to the live one. */
+.bar{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  margin:0 -1.1rem;padding:.45rem 1.1rem;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.2rem;
+}
+.bar a{
+  white-space:nowrap;
+  font-family:var(--display);font-weight:500;font-size:.76rem;letter-spacing:.01em;
+  padding:0 .75rem;min-height:44px;display:flex;align-items:center;
+  background:transparent;color:var(--muted);transition:color .3s ease;
+}
+.bar a.on{color:var(--ink)}
+@media (max-width:430px){
+  .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
+  .bar a{padding:0 .55rem;font-size:.74rem}
+}
+.bar a:active{opacity:.55}
+.bar-ind{
+  position:absolute;left:0;bottom:0;height:2px;background:var(--accent);border-radius:2px;
+  transition:transform .42s var(--ease),width .42s var(--ease);
+  transform-origin:left center;pointer-events:none;
+}
+.bar-ind.instant{transition:none}
+#themeBtn{
+  margin-left:auto;flex:none;width:44px;height:44px;border-radius:10px;
+  display:grid;place-items:center;padding:0;
+  background:transparent;color:var(--muted);border:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,opacity .2s ease;
+}
+#themeBtn:hover{background:var(--field);color:var(--ink)}
+#themeBtn:active{opacity:.5}
+#themeBtn svg{width:20px;height:20px}
+#themeBtn.swap{animation:fade .38s ease both}
+
+/* ── Shared section furniture ───────────────────────────────────────── */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sec-intro{margin:0 0 1rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.sec-intro + .sec-intro{margin-top:-.25rem}
+section{scroll-margin-top:7.5rem}
+.open-sec .sec-head{padding-bottom:.8rem}
+.coll-sec .sec-head{padding-bottom:.6rem}
+
+/* ── Argument ───────────────────────────────────────────────────────
+   The question is the one hero on the page. It gets the air to act like it. */
+#argument{padding:2.6rem 0 .4rem;scroll-margin-top:7.5rem}
+#argument .q{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.32;
+  letter-spacing:-.018em;color:var(--ink);text-wrap:pretty}
+#argument .a{margin:1.05rem 0 0;max-width:var(--measure);font-size:1.16rem;line-height:1.75;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+#argument .a + .a{margin-top:1.25rem}
+
+/* ── Framework ──────────────────────────────────────────────────────── */
+#framework{padding-top:2.2rem}
+.fw-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fw-mark{flex:none;width:2rem;font-family:var(--display);font-weight:600;color:var(--accent)}
+.fw-mark.seq{font-size:.95rem;line-height:1.5}
+.fw-mark.letter{font-size:1.05rem;line-height:1.4}
+.fw-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.fw-gloss{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Insights / Actions ─────────────────────────────────────────────
+   Each entry is a card, the same object the shelf is built from. */
+#insights,#actions,#vocabulary{padding-top:2.4rem}
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:.6rem;scroll-margin-top:7.5rem;
+  transition:box-shadow .2s ease;
+}
+.entry[data-open="1"]{box-shadow:var(--shadow-hover)}
+.entry-head{display:flex;gap:.85rem;align-items:baseline;
+  padding:1rem 2.6rem 1rem 1rem;cursor:pointer;position:relative}
+.entry-mark{flex:none;width:2.6rem;font-family:var(--display);font-weight:500;
+  font-size:.66rem;letter-spacing:.09em;color:var(--muted)}
+.entry-title{flex:1;margin:0;font-family:var(--display);font-weight:600;font-size:1.03rem;
+  line-height:1.34;letter-spacing:-.011em;text-wrap:pretty;transition:opacity .18s ease}
+.entry-head:active .entry-title,.entry-head:active .entry-mark{opacity:.55}
+
+/* The sign is two hairlines. Opening rotates the upright onto the crossbar and
+   fades it, so a plus resolves into a minus rather than being swapped for one. */
+.entry-sign{position:absolute;right:1rem;top:1.15rem;width:1rem;height:1.4rem}
+.entry-sign i{position:absolute;left:50%;top:50%;background:var(--accent);
+  transition:transform .34s var(--ease),opacity .34s var(--ease)}
+.entry-sign i:first-child{width:.72rem;height:1.5px;border-radius:2px;transform:translate(-50%,-50%)}
+.entry-sign i:last-child{width:1.5px;height:.72rem;border-radius:2px;transform:translate(-50%,-50%)}
+.entry[data-open="1"] .entry-sign i:last-child{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+
+/* Height eases via grid rows — no measuring, and it interrupts cleanly. */
+.entry-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .44s var(--ease)}
+.entry[data-open="1"] .entry-wrap{grid-template-rows:1fr}
+.entry-body{overflow:hidden;min-height:0;padding:0 1rem;opacity:0;transform:translateY(5px);
+  transition:opacity .3s ease,transform .34s var(--ease)}
+.entry[data-open="1"] .entry-body{opacity:1;transform:none;transition-delay:.08s}
+.entry-body > :last-child{margin-bottom:1.35rem}
+/* Reading type. Set for a dyslexic reader first, and these numbers are the
+   whole of it — do not tune them by eye:
+     measure     ~58 characters. Past ~65 the return sweep starts missing lines.
+     leading     1.75. The gap between lines has to beat the gap between words.
+     tracking    a touch positive. Letters that touch get read as one shape.
+     paragraph   a full blank line, so there is always a place to rest.
+     colour      --prose, never --muted. Muted is for labels and counters. */
+.lede,.evidence,.op-p{
+  max-width:var(--measure);font-size:1.13rem;line-height:1.75;
+  letter-spacing:.008em;word-spacing:.02em;text-wrap:pretty;
+}
+.lede{color:var(--ink)}
+.evidence{color:var(--prose)}
+.lede + .lede,.evidence + .evidence,.lede + .evidence{margin-top:1.25rem}
+/* The plate opens the body — the drawing before the prose that unpacks it. */
+.entry figure{margin:.15rem 0 1.2rem;width:min(var(--plate),100%)}
+.entry figure img{display:block;width:100%}
+/* What it changes in practice. A filled pill promises a short pull-line; these
+   run eighty to a hundred words, so the promise broke every time. A rule down
+   the side marks the same passage without pretending it is a caption. */
+.operative{margin-top:1.35rem;padding-left:1rem;border-left:2px solid var(--accent)}
+.op-p{margin:0;color:var(--ink)}
+.op-p + .op-p{margin-top:1.25rem}
+.caveat{max-width:var(--measure);margin-top:1.1rem;font-size:1rem;line-height:1.7;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.caveat + .caveat{margin-top:1.25rem}
+
+/* ── Vocabulary ─────────────────────────────────────────────────────── */
+.voc-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  scroll-margin-top:7.5rem}
+.voc-mark{flex:none;width:0}
+.voc-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.voc-def{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Plates ─────────────────────────────────────────────────────────
+   A rail you swipe, not a column you scroll. One drawing at a time, snapped
+   to centre, and only that one visible — the neighbours stay in the flow so
+   the native snap still works, but they are faded out and made untappable so
+   nothing competes with the plate you are looking at. The drawings sit
+   straight on the paper — they are the interface in this view, so the
+   container gets out of their way. */
+#plates{padding:1.9rem 0 0}
+.rail-wrap{position:relative}
+.rail{
+  --slide:min(30rem,78vw);
+  display:flex;gap:1.6rem;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  margin:0 -1.1rem;padding:0 calc(50% - var(--slide)/2 + 1.1rem);
+}
+.rail::-webkit-scrollbar{display:none}
+.tile{
+  flex:0 0 var(--slide);scroll-snap-align:center;
+  background:transparent;padding:0;display:block;min-width:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s var(--ease);
+}
+/* Only the centred plate is visible or tappable. The rest keep their place in
+   the rail so scroll-snap still has something to snap to. NOTE: `act` on a
+   tile means "action tile", not "active" — the centred one is `cur`. */
+.tile.cur{opacity:1;pointer-events:auto}
+.tile.cur:active{opacity:.55}
+.tile img{display:block;width:100%;max-width:100%;pointer-events:none;-webkit-user-drag:none}
+.tile .cap{display:block;padding-top:.7rem;font-family:var(--display);font-weight:500;
+  font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
+.tile.act .cap{color:var(--accent)}
+.tile.empty{min-height:7.5rem;border:1px dashed var(--line);border-radius:14px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:.6rem}
+.tile.empty .ph{font-size:.74rem;line-height:1.4;color:var(--muted)}
+.enter .rail{animation:fade .45s var(--ease) both}
+
+/* Where you are in the set, and the only two controls. */
+.rail-foot{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:1.1rem 0 .2rem}
+.rail-count{font-family:var(--display);font-weight:500;font-size:.75rem;letter-spacing:.08em;
+  color:var(--muted);min-width:4.2rem;text-align:center;font-variant-numeric:tabular-nums}
+.rail-btn{
+  width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease,opacity .2s ease;
+}
+.rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
+.rail-btn:disabled{opacity:.32;cursor:default}
+.rail-btn svg{width:18px;height:18px}
+/* The buttons stay on touch as well. They used to be hidden there because the
+   peeking neighbours advertised the swipe; with the neighbours hidden, these
+   and the counter are the only sign there is more than one plate. */
+@media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
+
+/* ── One plate on its own ───────────────────────────────────────────
+   Arrived at by tapping a plate. One drawing, its own text, and a way to the
+   next one. Nothing else competes with it — that is the whole point of the
+   view, so resist adding anything here. */
+#mode-entry{padding:1.9rem 0 0}
+.solo-mark{font-family:var(--display);font-weight:500;font-size:.66rem;
+  letter-spacing:.09em;color:var(--muted)}
+.solo-title{margin:.45rem 0 0;font-family:var(--display);font-weight:600;
+  font-size:1.32rem;line-height:1.3;letter-spacing:-.016em;color:var(--ink);text-wrap:pretty}
+/* The deck. One sentence carrying the point, above the drawing, so the entry
+   can be taken in without committing to three hundred words. A newspaper deck,
+   not a second headline: the reading face, not the display one, and lighter
+   than the title above it. `takeaway` is optional — a book without one loses
+   the line and nothing else. */
+.solo-take{margin:.85rem 0 0;max-width:var(--measure);font-size:1.22rem;line-height:1.55;
+  letter-spacing:.004em;color:var(--ink);text-wrap:pretty}
+.solo figure{margin:1.5rem auto;width:min(30rem,100%)}
+.solo figure img{display:block;width:100%}
+.solo-nav{display:flex;align-items:center;justify-content:center;gap:.9rem;
+  margin-top:2.2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.solo .operative{margin-top:1.2rem}
+
+/* ── Plates in either paper ─────────────────────────────────────────
+   The drawings ship as ink on a transparent ground, so they need no blend
+   mode — which also means nothing above them can quietly break them. Dark
+   paper just inverts the ink. */
+:root[data-theme="dark"] .entry figure img,
+:root[data-theme="dark"] .solo figure img,
+:root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
+
+footer{height:calc(4rem + env(safe-area-inset-bottom))}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
+    <div class="masthead">
+      <div class="cover" id="bCover" hidden></div>
+      <div>
+        <h1 class="book-title" id="bTitle"></h1>
+        <p class="byline" id="bByline"></p>
+        <p class="subtitle" id="bSub"></p>
+      </div>
+    </div>
+    <nav class="links" id="bLinks"></nav>
+  </header>
+
+  <nav class="bar">
+    <a href="#plates" data-mode="plates">Plates</a>
+    <a href="#index" data-mode="index">The book</a>
+    <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
+    <span class="bar-ind instant" id="barInd"></span>
+  </nav>
+
+  <main>
+    <div id="mode-plates"></div>
+    <div id="mode-index" hidden></div>
+    <div id="mode-entry" hidden></div>
+  </main>
+
+  <footer></footer>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   THE BOOK. One object — this is the only thing that changes per book.
+   Add an insight / action / term by adding one entry to the array.
+   `plate` and `caveat` are optional; omitting either degrades cleanly.
+   ════════════════════════════════════════════════════════════════════ */
+const BOOK = {
+ "slug": "thinking-in-systems",
+ "title": "Thinking in Systems",
+ "subtitle": "A Primer",
+ "author": "Donella H. Meadows",
+ "cover": "img/cover.jpg",
+ "argument": {
+  "question": "Why do the problems we work hardest on refuse to go away?",
+  "answer": [
+   "Because the effort lands on events, and the behaviour lives in the structure. Hunger, addiction, overfishing, arms races, traffic and unemployment persist through decades of analytical brilliance because each one is the characteristic output of an arrangement of stocks, flows, feedback loops and goals that nobody redesigned. Swap the elements and a system stays itself. Change the interconnections and it becomes something else.",
+   "Change its purpose and it becomes something else again. The behaviour is latent in the structure the way the bounce is latent in a Slinky, and it will keep reappearing, under new names and new leadership, until the structure changes. That is the unsettling half of systems thinking. The comforting half is that structure is something people build, which means it is something people can rebuild."
+  ]
+ },
+ "framework": {
+  "name": "The Twelve Leverage Points",
+  "intro": [
+   "A list of places to intervene in a system, ordered from the weakest to the strongest. It was written in one sitting out of frustration during a meeting on global trade, and it is offered as an invitation to think more broadly rather than as a recipe: the order is slithery and every item has exceptions that move it. One rule holds across the whole list. The higher the leverage point, the harder the system will resist changing it."
+  ],
+  "steps": [
+   {
+    "mark": "12",
+    "term": "Numbers",
+    "gloss": "Constants and parameters — subsidies, taxes, standards, the minimum wage, the size of a flow. Almost all attention goes here and almost no leverage is here."
+   },
+   {
+    "mark": "11",
+    "term": "Buffers",
+    "gloss": "The size of a stabilising stock relative to its flows. Rivers flood, lakes rarely do. Buffers steady a system, but they are usually physical and costly to change."
+   },
+   {
+    "mark": "10",
+    "term": "Stock-and-flow structure",
+    "gloss": "The plumbing itself. Powerful, and rarely a leverage point, because rebuilding is slow and expensive. The leverage is in laying it out correctly the first time."
+   },
+   {
+    "mark": "9",
+    "term": "Delays",
+    "gloss": "Lengths of time relative to the rate of change. Delays determine how fast a system can react and how far it overshoots — and mostly they cannot be shortened. Things take as long as they take."
+   },
+   {
+    "mark": "8",
+    "term": "Balancing feedback loops",
+    "gloss": "The strength of a correcting loop relative to the impact it has to correct. Stripping out loops that are rarely used, because they look like cost, quietly narrows the range a system can survive."
+   },
+   {
+    "mark": "7",
+    "term": "Reinforcing feedback loops",
+    "gloss": "The gain around a driving loop. Slowing the growth is almost always a stronger move than strengthening the brakes that are trying to contain it."
+   },
+   {
+    "mark": "6",
+    "term": "Information flows",
+    "gloss": "Who does and does not have access. Adding a loop where none existed is the cheapest powerful intervention available, and the one most reliably resisted by whoever benefits from its absence."
+   },
+   {
+    "mark": "5",
+    "term": "Rules",
+    "gloss": "Incentives, punishments, constraints — the scope and degrees of freedom of the whole system. Power over the rules is real power. Watch who holds it and what they are allowed to exclude."
+   },
+   {
+    "mark": "4",
+    "term": "Self-organisation",
+    "gloss": "The power to add, change or evolve structure. The strongest form of resilience, and it requires variability, experimentation and a willingness to lose control, which is why it is so often suppressed."
+   },
+   {
+    "mark": "3",
+    "term": "Goals",
+    "gloss": "The purpose of the system. Everything lower on this list — structure, loops, information, even self-organisation — bends to conform to it."
+   },
+   {
+    "mark": "2",
+    "term": "Paradigms",
+    "gloss": "The shared unstated assumptions the goals and the structure arise from. Societies resist paradigm change harder than they resist anything else. In a single person it can happen in a moment."
+   },
+   {
+    "mark": "1",
+    "term": "Transcending paradigms",
+    "gloss": "Staying unattached to any of them; holding that no paradigm is true, including the one shaping your own view, and finding that funny rather than frightening."
+   }
+  ]
+ },
+ "vocabulary": {
+  "intro": [
+   "Systems language is largely a translation of things people already know intuitively into terms precise enough to reason with. A society that has no working word for a thing does not manage that thing — which is why the words below are worth the small effort of learning."
+  ],
+  "terms": [
+   {
+    "term": "Stock",
+    "def": "An accumulation you can see, count or measure at a given moment: water in a tub, money in an account, wood in a forest, a reserve of goodwill. A stock is the present memory of the flows that have changed it."
+   },
+   {
+    "term": "Flow",
+    "def": "What fills or drains a stock — births and deaths, purchases and sales, hiring and quitting. Flows can be changed abruptly; the stocks they feed cannot."
+   },
+   {
+    "term": "Balancing feedback loop",
+    "def": "A goal-seeking loop that opposes whatever direction of change is imposed on it. A source of stability, and equally a source of resistance to change."
+   },
+   {
+    "term": "Reinforcing feedback loop",
+    "def": "A self-multiplying loop: the more there is, the more is added. It produces exponential growth or runaway collapse, and it is found wherever something can reproduce itself out of itself."
+   },
+   {
+    "term": "Shifting dominance",
+    "def": "When competing loops change relative strength and one takes over, turning growth into decline, or a steady state into a swing. Most complex behaviour is dominance changing hands."
+   },
+   {
+    "term": "Delay",
+    "def": "The time between an action and its effect. Every stock is a delay. A delay inside a balancing loop is what makes a system oscillate."
+   },
+   {
+    "term": "Nonlinearity",
+    "def": "A relationship in which cause does not produce proportional effect. Two hundred pounds of fertiliser does not double the yield from one hundred, and three hundred lowers it."
+   },
+   {
+    "term": "Limiting factor",
+    "def": "At any moment the scarcest input is the one that governs. More of an abundant input does nothing — and growth itself keeps changing which input is scarce."
+   },
+   {
+    "term": "Bounded rationality",
+    "def": "People decide sensibly on the information that reaches them, which is never information about the whole system. Not omniscient optimisers; satisficers, meeting a need well enough and moving on."
+   },
+   {
+    "term": "Resilience",
+    "def": "The ability to recover from disturbance — the range a system can wander over and still be pulled back. Not the same as stability: a system can look steady for years and have almost none."
+   },
+   {
+    "term": "Leverage point",
+    "def": "A place where a small change produces a large shift in behaviour. Usually counterintuitive, frequently identified correctly, and then pushed in the wrong direction."
+   }
+  ]
+ },
+ "insights": [
+  {
+   "id": "insight-1",
+   "n": 1,
+   "title": "The bounce is in the Slinky",
+   "lede": [
+    "A system's characteristic behaviour is latent inside its own structure. An outside event can release that behaviour or suppress it, but the same event applied to a different system produces a different result. The system, to a large extent, causes what it does."
+   ],
+   "plate": "img/insight-01.png",
+   "alt": "A waterline across the square. Above it a single small newspaper page. Below it a wavy line running left to right, and below that a closed loop of arrows around a box, with arrows rising from the loop to the wave and from the wave to the page.",
+   "evidence": [
+    "Meadows opened her classes by balancing a Slinky on one upturned palm, gripping it from above, and pulling the lower hand away. The spring drops, springs back, and yo-yos in the air. Then she does exactly the same thing with the cardboard box the Slinky came in. It hangs there. Same hand, same release, different object, different behaviour."
+   ],
+   "operative": [
+    "What follows is a ranking. Events are the most visible layer of a system and the least explanatory — which is why nightly market commentary predicts nothing. Underneath sits behaviour, the shape a variable makes over time. Underneath that sits structure: interlocking stocks, flows and loops. Ask for the time graph before you accept the explanation."
+   ],
+   "takeaway": "The same hand releases a Slinky and a box. Only one bounces. The behaviour was already in the object."
+  },
+  {
+   "id": "insight-2",
+   "n": 2,
+   "title": "There is more than one way to fill a bathtub",
+   "lede": [
+    "The mind fastens on stocks more readily than on flows, and on inflows more readily than on outflows. So half the available levers go unnoticed. A stock rises when you increase what comes in, and it rises just as surely when you reduce what goes out."
+   ],
+   "plate": "img/insight-02.png",
+   "alt": "A bathtub in cross-section with water partway up. A tap above it with a handle, a stick-figure hand turning it. Below, the drain with an identically drawn handle and no hand on it.",
+   "evidence": [
+    "A breakthrough in energy efficiency does the same thing to the stock of available oil as the discovery of a new field. Different people profit from it, which is most of why one feels like an achievement and the other feels like a sacrifice. A workforce grows by hiring or by fewer people leaving; national wealth rises by building factories or by making them last longer, often more cheaply."
+   ],
+   "operative": [
+    "Stocks change slowly because flows take time to flow, and that slowness is the pace-setter of the whole system. It also buys room to manoeuvre: soil that took centuries to accumulate rarely erodes at once, and skills a population has learned are not forgotten overnight. Expect momentum, plan for it, and stop giving up too soon."
+   ],
+   "takeaway": "A stock rises if you open the tap or close the drain. Most people only see the tap."
+  },
+  {
+   "id": "insight-3",
+   "n": 3,
+   "title": "Reacting faster widens the swing",
+   "lede": [
+    "A delay inside a balancing loop makes a system oscillate. The oscillation is not evidence that anyone involved is slow or careless. It is what the structure does, and the people inside it are struggling to steer on information that cannot arrive in time."
+   ],
+   "plate": "img/insight-03.png",
+   "alt": "A straight horizontal target line with a wavy path crossing it repeatedly, the waves growing taller left to right. At each crossing a stick-figure arm pushes down hard on the path.",
+   "evidence": [
+    "A car dealer averages sales over five days, corrects a third of any shortfall per order, and waits five days for delivery. One permanent ten per cent rise in demand sets her inventory swinging for months. Shortening her perception delay makes the swings slightly worse. Cutting her response time from three days to two makes them far worse. Lengthening it to six damps them and the system settles."
+   ],
+   "operative": [
+    "This is the signature failure of intervention: high leverage, wrong direction. She found a real lever and pushed it the wrong way. The same structure spread across an industry — perception, production, delivery and construction delays entrained with each other and amplified by speculators — is the primary cause of business cycles. Presidents can sharpen or soften them. They do not create them."
+   ],
+   "takeaway": "A delay inside a balancing loop makes things swing. Correcting faster widens the swing; waiting longer settles it."
+  },
+  {
+   "id": "insight-4",
+   "n": 4,
+   "title": "Resilience is spent invisibly",
+   "lede": [
+    "Resilience is the plateau a system can play on — the range it can wander over and still be returned by its own restoring loops. Stability is what you can measure week to week. Resilience is what you cannot see at all until you exceed it."
+   ],
+   "plate": "img/insight-04.png",
+   "alt": "A stick figure juggling on top of a narrow rock ledge. Beside the ledge, a neat stack of rectangular blocks that were cut away from it, each block the same width as the missing ground.",
+   "evidence": [
+    "Because it is invisible it gets traded for things that are not. Meadows attributes to bovine growth hormone a rise in milk yield achieved by diverting the cow's metabolic energy from other functions, leaving the animal less healthy, shorter-lived and more dependent on human management. Just-in-time delivery cut inventory costs across whole industries and made production vulnerable to any interruption in fuel, traffic or labour."
+   ],
+   "operative": [
+    "The plateau narrows quietly, the walls get lower, and one day the system does something it has done a hundred times before and crashes. Racing sailboats are the pure case: optimised so completely around the current rules that any change to the rules would render them useless. Manage for the ability to recover, not only for output and steadiness."
+   ],
+   "takeaway": "Resilience is the room a system has to recover. It is spent invisibly and shows only at the edge."
+  },
+  {
+   "id": "insight-5",
+   "n": 5,
+   "title": "Everyone in the booth sees one gauge",
+   "lede": [
+    "People make quite reasonable decisions on the information reaching them, and the information reaching them is never information about the whole system. Herbert Simon called this bounded rationality: not omniscient optimisers, but satisficers finding something they can live with for now and sticking to it."
+   ],
+   "plate": "img/insight-05.png",
+   "alt": "A wide panel of many dials. In front of it a small booth with a narrow horizontal slot, and a stick figure inside seeing exactly one dial through the slot, one hand on a lever whose linkage runs behind the whole panel.",
+   "evidence": [
+    "Fishermen do not know how many fish there are, much less how many will be caught by everyone else today. Investors do not know what other investors are planning, so they over-invest and under-invest together. The finding is not that these people are foolish. It is that anyone placed there decides the same way. Students playing simulated fishermen overfish. Given a manager's position, you will start seeing labour as a cost."
+   ],
+   "operative": [
+    "The practical consequence is unwelcome and freeing at once: replacing the individual almost never changes the outcome, and blaming them almost never helps. What changes the outcome is redesigning what reaches that position — the information, the incentives, the goals, the constraints. Understanding why the behaviour is reasonable is not an excuse for it. It is the only route to changing it."
+   ],
+   "takeaway": "People decide sensibly on what reaches their position. Replace the person and the position decides the same way again."
+  },
+  {
+   "id": "insight-6",
+   "n": 6,
+   "title": "The crowd pushes the short end of the lever",
+   "lede": [
+    "Leverage points are places where a small change produces a large shift in behaviour. They exist, people deep inside a system often sense where they are, and more often than not they push them backwards — systematically worsening the problem they set out to solve."
+   ],
+   "plate": "img/insight-06.png",
+   "alt": "A long plank balanced on a fulcrum with a heavy block on one end. A crowd of stick figures presses together on the short section near the fulcrum. The far end of the plank is empty.",
+   "evidence": [
+    "The world model Forrester built for the Club of Rome returned growth itself, in population and in the economy, as the leverage point. World leaders were fixated on exactly that lever and pushing it hard the wrong way. His 1969 urban dynamics study found subsidised low-income housing to be a leverage point in the direction nobody expected; he was derided at the time, and many of those projects have since been torn down."
+   ],
+   "operative": [
+    "Ranked weakest to strongest the list runs numbers, buffers, physical structure, delays, balancing loops, reinforcing loops, information flows, rules, self-organisation, goals, paradigms. Meadows' own estimate was that some ninety-nine per cent of attention goes to the first item. Parameters matter enormously to whoever is standing in the flow, and changing them rarely changes what the system does."
+   ],
+   "takeaway": "Numbers are the weakest place to intervene and take almost all the attention. Goals and paradigms are the strongest."
+  }
+ ],
+ "actions": [
+  {
+   "id": "action-1",
+   "n": 1,
+   "title": "Plot the history before you propose anything",
+   "lede": [
+    "Before disturbing a system in any way, watch how it behaves. Learn its history. Ask the people who have been around a long time what actually happened. Where data exist, plot them over time rather than relying on anyone's memory, including your own."
+   ],
+   "plate": "img/action-01.png",
+   "alt": "Three panels. A stick figure watching a machine with one dot on a sheet of paper; the same sheet with many scattered dots; the dots joined into a wave whose swings grow wider.",
+   "operative": [
+    "Use this at the start of any diagnosis, and above all when everyone in the room already agrees on the cause. It has worked when the question changes from what is wrong to how did we get here, what else could this do, and where does this end if nothing changes. Plotting several variables together starts to show not only what is in the system but how it might be wired."
+   ],
+   "caveat": [
+    "Memory is unreliable about timing and direction, and confident people are no exception. Meadows records being told with great authority that milk prices were rising when they were falling. Starting from behaviour also blocks the commonest move in any meeting, which is to define the problem as the absence of one's favourite solution."
+   ],
+   "takeaway": "Watch the system and plot its history before proposing anything. The shape of the curve usually contradicts somebody."
+  },
+  {
+   "id": "action-2",
+   "n": 2,
+   "title": "Move the intake pipe downstream of the outflow",
+   "lede": [
+    "Find the decision being made without feedback about its own consequences, and route that feedback back to whoever is making it, in a form they cannot route around. Missing information flows are among the most common causes of system malfunction and among the cheapest to repair."
+   ],
+   "plate": "img/action-02.png",
+   "alt": "A factory beside a river with a waste pipe discharging into the current. A stick-figure hand lifts the intake pipe and carries it downstream past the outflow, with a curved arrow showing the move.",
+   "operative": [
+    "Use it wherever the cost of a decision lands somewhere other than on the decider — a shared resource, a discharge, a budget, a rule its authors exempted themselves from. Success looks like behaviour changing with no penalty attached. After the Toxic Release Inventory made United States factory emissions a matter of public record in 1988, reported emissions nationwide fell by around forty per cent within two years. No fines, no lawsuits, no required reductions."
+   ],
+   "caveat": [
+    "Placement and form decide whether it works. Telling every user of an aquifer that the water table is falling can start a race to the bottom; making the price of water climb steeply as pumping outruns recharge does not. Expect resistance in proportion to the value of the missing loop, because someone is usually benefiting from its absence."
+   ],
+   "takeaway": "Route the consequence back to whoever decides. Put the factory's intake pipe downstream of its own outflow."
+  },
+  {
+   "id": "action-3",
+   "n": 3,
+   "title": "Set the catch at your best mark, not your last one",
+   "lede": [
+    "Hold the performance standard absolute. Where a standard has to move at all, let it be pulled upward by the best result you have ever achieved rather than dragged downward by the worst — which is the direction it will drift on its own."
+   ],
+   "plate": "img/action-03.png",
+   "alt": "A vertical toothed bar with a pawl resting in one tooth. A stick-figure hand lifts the pawl to the highest tooth the bar has reached, where it sits as a catch preventing the bar from dropping back.",
+   "operative": [
+    "Use it wherever a goal is quietly allowed to follow perceived performance: service quality, safety records, a training programme, a country's sense of what it can expect of itself. It is working when the same structure runs in reverse — the better things get, the harder the effort to improve them, a reinforcing loop climbing instead of sinking."
+   ],
+   "caveat": [
+    "The failure mode is gradual by design, which is why it has a nickname about frogs and warming water. A system that drops sharply provokes correction; one that sinks slowly erases the memory of how good things used to be, and each lowered expectation licenses the next. The tell is bad results treated as the real signal and good ones dismissed as flukes."
+   ],
+   "takeaway": "Hold the standard absolute. Let the goal be pulled up by your best result, never down by your worst."
+  },
+  {
+   "id": "action-4",
+   "n": 4,
+   "title": "Thicken the trunk, then pull the stake",
+   "lede": [
+    "When you step in to help a struggling system, intervene in the way that rebuilds its own capacity to hold itself up, and then take yourself out. Helping a system to help itself is usually cheaper and easier than taking it over and running it."
+   ],
+   "plate": "img/action-04.png",
+   "alt": "A young tree with a visibly thickened trunk and roots spreading wide underground. A stick figure pulls a wooden support stake out of the ground beside it, the loosened tie hanging from the stake.",
+   "operative": [
+    "Use it any time a fix relieves a symptom without touching what produced it: a subsidy, a pesticide, a price cap, a painkiller. Start with questions rather than a takeover — why is the system's own correction failing, what is obstructing it, how could it be made to work? The measure of success is needing less of the intervention over time rather than more."
+   ],
+   "caveat": [
+    "If the intervention lets the original capacity atrophy, a reinforcing loop starts and the system needs ever more of the thing that is weakening it. Withdrawal then means facing the real and by now worse state of things. Sometimes it can be tapered: insulation and efficient cars ahead of a fuel price rise, polyculture and rotation ahead of dropping a pesticide. Sometimes there is no way through but to bear it."
+   ],
+   "takeaway": "Intervene so the system regains its own capacity to cope, then withdraw. Needing less of the fix is success."
+  },
+  {
+   "id": "action-5",
+   "n": 5,
+   "title": "Bolt the dial to the lever",
+   "lede": [
+    "Write policies that read the state of the system and adjust themselves, instead of policies that fix a number and hope the world holds still. The best of them contain loops that alter and correct their own loops — learning designed into the management process."
+   ],
+   "plate": "img/action-05.png",
+   "alt": "A large round dial mounted on a pipe, its needle partway up. A stiff rod runs from the needle to the top of a control lever. A stick-figure hand tightens the bolt where the rod meets the lever.",
+   "operative": [
+    "Use it wherever there is real uncertainty about the size of a problem or how fast it will move. The 1987 Montreal Protocol set phase-out targets for ozone-damaging chemicals and also required monitoring and a reconvened congress to revise the schedule — which happened three years later, accelerated, because the damage was worse than foreseen. Success looks like a policy that never needs an emergency rewrite."
+   ],
+   "caveat": [
+    "A self-adjusting policy is only as good as the indicator it reads, and a system will produce exactly what you ask it for. An indicator that measures effort returns effort: money spent per student, or the gross national product, which rises when there are more car accidents and repair bills and falls when a light bulb lasts ten times as long."
+   ],
+   "takeaway": "Write the policy as a loop that reads the system and adjusts itself, not as a fixed number."
+  }
+ ],
+ "quickReference": [
+  {
+   "kind": "line",
+   "label": "Three levels",
+   "text": "Event, behaviour, structure. Events explain nothing. Ask for the time graph before you accept the story."
+  },
+  {
+   "kind": "line",
+   "label": "Two loops",
+   "text": "A balancing loop seeks a goal and resists change. A reinforcing loop multiplies whatever direction it is already going."
+  },
+  {
+   "kind": "line",
+   "label": "Stocks",
+   "text": "Slow, buffering, pace-setting. Raise one by closing the drain as readily as by opening the tap."
+  },
+  {
+   "kind": "line",
+   "label": "Delays",
+   "text": "Every stock is a delay. A delay inside a balancing loop means oscillation, and correcting faster widens the swing."
+  },
+  {
+   "kind": "line",
+   "label": "Limits",
+   "text": "The scarcest input governs. Growth changes which input is scarce, so the binding limit keeps moving."
+  },
+  {
+   "kind": "line",
+   "label": "The traps",
+   "text": "Policy resistance. Tragedy of the commons. Drift to low performance. Escalation. Success to the successful. Addiction. Rule beating. The wrong goal."
+  },
+  {
+   "kind": "line",
+   "label": "Leverage, weak to strong",
+   "text": "Numbers, buffers, structure, delays, balancing loops, reinforcing loops, information, rules, self-organisation, goals, paradigms."
+  },
+  {
+   "kind": "line",
+   "label": "Before intervening",
+   "text": "Get the beat. Put your model where it can be challenged. Send the consequence back to whoever decides."
+  },
+  {
+   "kind": "line",
+   "label": "Checking a goal",
+   "text": "A system produces what you ask it for. If the indicator measures effort, effort is what you will get."
+  }
+ ],
+ "closingLine": "You cannot control a system and you cannot fully figure one out. You can watch it, redesign it, and dance with it.",
+ "links": [
+  {
+   "label": "Spoken Companion",
+   "href": "Spoken_Companion.docx"
+  }
+ ]
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   Render
+   ════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el  = id => document.getElementById(id);
+
+document.title = BOOK.title;
+if(BOOK.cover){
+  el('bCover').innerHTML = `<img src="${esc(BOOK.cover)}" alt="Cover of ${esc(BOOK.title)} by ${esc(BOOK.author)}">`;
+  el('bCover').hidden = false;
+  // If the file is missing, drop the slot rather than showing a broken image.
+  el('bCover').querySelector('img').onerror = () => { el('bCover').hidden = true; };
+  // Home-screen icon, since this mostly gets opened from a phone.
+  for(const rel of ["icon","apple-touch-icon"]){
+    const l = document.createElement('link');
+    l.rel = rel; l.href = BOOK.cover;
+    document.head.appendChild(l);
+  }
+}
+el('bTitle').textContent  = BOOK.title;
+el('bByline').textContent = BOOK.author || "";
+el('bSub').textContent    = BOOK.subtitle || "";
+if(!BOOK.subtitle) el('bSub').hidden = true;
+el('bLinks').innerHTML = (BOOK.links || []).map(l =>
+  `<a href="${esc(l.href)}"${/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : ''}><span class="mk" aria-hidden="true">${esc(l.mark)}</span>${esc(l.label)}</a>`
+).join("");
+
+const asList = v => (v == null || v === "" ? [] : Array.isArray(v) ? v.filter(Boolean) : [v]);
+/* Every prose field arrives as a list of paragraphs — build_page.py breaks the
+   long ones at sentence boundaries before the page ever sees them. */
+const proseHTML = (v, cls) => asList(v).map(p => `<p class="${cls}">${esc(p)}</p>`).join("");
+const ledeHTML = v => proseHTML(v, "lede");
+
+function entryHTML(e, kind, n){
+  const label = (kind === "insight" ? "INS " : "ACT ") + n;
+  return `
+  <article class="entry${e.plate ? '' : ' no-plate'}" id="${esc(e.id)}" data-open="0">
+    <div class="entry-head">
+      <span class="entry-mark">${label}</span>
+      <h3 class="entry-title">${esc(e.title)}</h3>
+      <span class="entry-sign" aria-hidden="true"><i></i><i></i></span>
+    </div>
+    <div class="entry-wrap"><div class="entry-body">
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+    </div></div>
+  </article>`;
+}
+
+function secHead(name){
+  return `<div class="sec-head"><h2>${esc(name)}</h2></div>`;
+}
+
+const any = v => Array.isArray(v) ? v.length > 0 : !!v;
+
+const argumentHTML = () => !BOOK.argument ? '' : `
+  <div id="argument">
+    <p class="q">${esc(BOOK.argument.question)}</p>
+    ${proseHTML(BOOK.argument.answer, "a")}
+  </div>`;
+
+const frameworkHTML = () => !(BOOK.framework && any(BOOK.framework.steps)) ? '' : `
+  <section id="framework" class="open-sec">
+    ${secHead(BOOK.framework.name)}
+    ${proseHTML(BOOK.framework.intro, "sec-intro")}
+    ${BOOK.framework.steps.map(st => `
+      <div class="fw-row">
+        <span class="fw-mark ${/^\d/.test(st.mark) ? 'seq' : 'letter'}">${esc(st.mark)}</span>
+        <div>
+          <div class="fw-term">${esc(st.term)}</div>
+          <p class="fw-gloss">${esc(st.gloss)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+const listHTML = (items, kind, name) => !any(items) ? '' : `
+  <section id="${kind}s" class="coll-sec">
+    ${secHead(name)}
+    ${items.map((e,i) => entryHTML(e, kind, i+1)).join("")}
+  </section>`;
+
+const vocabHTML = () => !(BOOK.vocabulary && any(BOOK.vocabulary.terms)) ? '' : `
+  <section id="vocabulary" class="open-sec">
+    ${secHead("Vocabulary")}
+    ${proseHTML(BOOK.vocabulary.intro, "sec-intro")}
+    ${BOOK.vocabulary.terms.map(t => `
+      <div class="voc-row" id="${esc(t.id)}">
+        <span class="voc-mark"></span>
+        <div>
+          <div class="voc-term">${esc(t.term)}</div>
+          <p class="voc-def">${esc(t.def)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+// The entries are not repeated here — they live in Plates, one at a time, and
+// listing them again just duplicated every word on the page. What is left is
+// the only copy of the book's argument and its terms.
+el('mode-index').innerHTML =
+  argumentHTML() + frameworkHTML() + vocabHTML();
+
+function tileHTML(e, kind, n, i){
+  const cls = kind === "action" ? "tile act" : "tile";
+  const st = ` style="--i:${i}"`;
+  if(!e.plate){
+    return `<a class="${cls} empty" href="#${esc(e.id)}"${st}>
+      <span class="ph">${esc(e.title)}</span>
+      <span class="cap">Plate coming</span>
+    </a>`;
+  }
+  return `<a class="${cls}" href="#${esc(e.id)}"${st}>
+    <img src="${esc(e.plate)}" alt="${esc(e.alt || '')}">
+    <span class="cap">${esc(e.title)}</span>
+  </a>`;
+}
+
+const RS = 'stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+// One flat list in slot order — the rail, the solo view and its prev/next all
+// count against this, so they can never disagree about what "next" means.
+const SEQ = [
+  ...(BOOK.insights || []).map((e,i) => ({e, kind:"insight", n:i+1})),
+  ...(BOOK.actions  || []).map((e,i) => ({e, kind:"action",  n:i+1}))
+];
+const slides = [
+  ...(BOOK.insights || []).map((e,i) => tileHTML(e,"insight",i+1,i)),
+  ...(BOOK.actions  || []).map((e,i) => tileHTML(e,"action", i+1,(BOOK.insights||[]).length+i))
+];
+el('mode-plates').innerHTML = !slides.length ? '' : `
+  <div class="rail-wrap">
+    <div class="rail" id="rail" tabindex="0" aria-label="Plates, use arrow keys">${slides.join("")}</div>
+    <div class="rail-foot">
+      <button class="rail-btn" id="railPrev" type="button" aria-label="Previous plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+      <span class="rail-count" id="railCount"></span>
+      <button class="rail-btn" id="railNext" type="button" aria-label="Next plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </div>`;
+
+/* ════════════════════════════════════════════════════════════════════
+   Behavior — mode is driven entirely by location.hash, so every state
+   is linkable and the back button works.
+   ════════════════════════════════════════════════════════════════════ */
+const MODES = {};
+// A book without quick reference has no One page, and one without drawings has
+// no Plates. Drop the empty ones rather than offering a blank view.
+for(const k of ['plates','index']){
+  const v = el('mode-' + k);
+  if(v.innerHTML.trim()) MODES[k] = v;
+  else { v.remove(); document.querySelector(`.bar a[data-mode="${k}"]`)?.remove(); }
+}
+const FIRST = Object.keys(MODES)[0] || 'index';
+// The solo view has no tab — you reach it by tapping a plate — so it is never
+// pruned for being empty. It renders on demand.
+MODES.entry = el('mode-entry');
+const barInd = el('barInd');
+let booted = false;
+
+// The hairline travels to the live word. On first paint it is placed, not moved.
+function placeIndicator(mode){
+  const a = document.querySelector(`.bar a[data-mode="${mode}"]`);
+  if(!a) return;
+  barInd.style.width = a.offsetWidth + "px";
+  barInd.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+
+function setMode(mode){
+  if(!MODES[mode]) mode = FIRST;
+  const changed = MODES[mode].hidden || !booted;
+  for(const k in MODES) MODES[k].hidden = (k !== mode);
+  if(mode === 'plates') requestAnimationFrame(railSync);
+  // A solo plate belongs to Plates, so the bar keeps pointing there.
+  const lit = mode === 'entry' ? (MODES.plates ? 'plates' : FIRST) : mode;
+  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === lit));
+  placeIndicator(lit);
+
+  // Replay the arrival on the incoming view, but not on the very first paint —
+  // the page-level entrance already covers that.
+  if(changed && booted){
+    const v = MODES[mode];
+    v.classList.remove('enter');
+    void v.offsetWidth;          // restart the animation
+    v.classList.add('enter');
+  }
+}
+
+
+
+/* One plate, on its own. Built on demand from the same entry data the index
+   uses, so there is no second copy of the content to keep in step. */
+function renderSolo(i){
+  const { e, kind, n } = SEQ[i];
+  MODES.entry.innerHTML = `
+    <article class="solo">
+      <div class="solo-mark">${kind === "insight" ? "INS " : "ACT "}${n}</div>
+      <h2 class="solo-title">${esc(e.title)}</h2>
+      ${e.takeaway ? `<p class="solo-take">${esc(e.takeaway)}</p>` : ''}
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+      <nav class="solo-nav">
+        <button class="rail-btn" id="soloPrev" type="button" aria-label="Previous plate"${i === 0 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+        <span class="rail-count">${String(i+1).padStart(2,'0')} / ${String(SEQ.length).padStart(2,'0')}</span>
+        <button class="rail-btn" id="soloNext" type="button" aria-label="Next plate"${i === SEQ.length-1 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+      </nav>
+    </article>`;
+  soloAt = i;
+  el('soloPrev').addEventListener('click', () => soloGo(-1));
+  el('soloNext').addEventListener('click', () => soloGo(1));
+}
+let soloAt = -1;
+function soloGo(step){
+  const j = soloAt + step;
+  if(j < 0 || j >= SEQ.length) return;
+  location.hash = SEQ[j].e.id;      // through the hash, so back works
+}
+
+function route(){
+  const hash = location.hash.replace(/^#/, "");
+
+  if((hash === "plates" || hash === "index") && MODES[hash]){
+    setMode(hash);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  if(hash === ""){ setMode(FIRST); return; }
+
+  // A plate's own page. This is where tapping a plate lands.
+  const at = SEQ.findIndex(x => x.e.id === hash);
+  if(at > -1){
+    renderSolo(at);
+    setMode('entry');
+    // Land on the plate, not the top of the page. Tapping a drawing should put
+    // that drawing under the bar with the first paragraph already showing
+    // beneath it, so you read on from there instead of scrolling back down past
+    // the jacket. Measured off #mode-entry, whose top sits above the image, so
+    // it is stable whether or not the image has loaded yet.
+    const bar = document.querySelector('.bar');
+    const top = MODES.entry.getBoundingClientRect().top + window.scrollY
+              - (bar ? bar.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: booted ? 'smooth' : 'auto' });
+    return;
+  }
+
+  // Anything else that names something on the index — a vocabulary row.
+  if(MODES.index){
+    setMode("index");
+    const target = document.getElementById(hash);
+    if(target){
+      const top = target.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
+      return;
+    }
+  }
+  setMode(FIRST);
+}
+
+window.addEventListener('hashchange', route);
+route();
+requestAnimationFrame(() => {           // hand the indicator its transition back
+  barInd.classList.remove('instant');
+  booted = true;
+});
+// The words change width when the real mono face lands — re-measure once.
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => {
+    const on = document.querySelector('.bar a.on');
+    if(on){
+      barInd.classList.add('instant');
+      placeIndicator(on.dataset.mode);
+      requestAnimationFrame(() => barInd.classList.remove('instant'));
+    }
+  });
+}
+addEventListener('resize', () => {
+  barInd.classList.add('instant');
+  placeIndicator(document.querySelector('.bar a.on').dataset.mode);
+  requestAnimationFrame(() => barInd.classList.remove('instant'));
+});
+
+/* ── Plates rail ─────────────────────────────────────────────────────
+   Swipe on touch; arrows and the keyboard on anything with a pointer. The
+   snap is CSS, so the gesture stays native and the JS only reports position. */
+const rail = el('rail');
+const MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function railIndex(){
+  if(!rail) return 0;
+  const r = rail.getBoundingClientRect(), mid = r.left + r.width / 2;
+  let best = 0, bd = Infinity;
+  [...rail.children].forEach((t, i) => {
+    const b = t.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid);
+    if(d < bd){ bd = d; best = i; }
+  });
+  return best;
+}
+function railSync(){
+  if(!rail) return;
+  const i = railIndex(), n = rail.children.length;
+  el('railCount').textContent = String(i + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+  el('railPrev').disabled = i === 0;
+  el('railNext').disabled = i === n - 1;
+  [...rail.children].forEach((t, k) => t.classList.toggle('cur', k === i));
+}
+function railGo(step){
+  if(!rail) return;
+  const t = rail.children[Math.max(0, Math.min(rail.children.length - 1, railIndex() + step))];
+  if(!t) return;
+  const r = rail.getBoundingClientRect(), b = t.getBoundingClientRect();
+  rail.scrollBy({ left: (b.left + b.width/2) - (r.left + r.width/2), behavior: MOTION ? 'smooth' : 'auto' });
+}
+
+if(rail){
+  let ticking = false;
+  rail.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { railSync(); ticking = false; });
+  }, { passive: true });
+
+  el('railPrev').addEventListener('click', () => railGo(-1));
+  el('railNext').addEventListener('click', () => railGo(1));
+
+  // A swipe must not count as a tap on the plate underneath it.
+  let downX = 0, downY = 0;
+  rail.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; }, { passive: true });
+  rail.addEventListener('click', e => {
+    if(Math.abs(e.clientX - downX) > 10 || Math.abs(e.clientY - downY) > 10){
+      e.preventDefault(); e.stopPropagation();
+    }
+  }, true);
+
+  addEventListener('keydown', e => {
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const step = e.key === 'ArrowRight' ? 1 : -1;
+    if(MODES.plates && !MODES.plates.hidden){ e.preventDefault(); railGo(step); }
+    else if(!MODES.entry.hidden){ e.preventDefault(); soloGo(step); }
+  });
+  addEventListener('resize', railSync);
+  railSync();
+}
+
+/* ── Theme ───────────────────────────────────────────────────────────
+   Dark by default, and it shares the shelf's storage key — pick a side once
+   and every page in Book HQ agrees. The guard keeps it working where storage
+   is blocked (private browsing). */
+const THEME_BG = { light: "#F4F5F7", dark: "#0D0F13" };
+const themeBtn = el('themeBtn');
+const TS = 'stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const TICON = {
+  sun:`<svg viewBox="0 0 24 24"><circle ${TS} cx="12" cy="12" r="4"/><path ${TS} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${TS} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`
+};
+
+function paintTheme(theme){
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.innerHTML = dark ? TICON.sun : TICON.moon;
+  themeBtn.setAttribute('aria-label', dark ? "Switch to light mode" : "Switch to dark mode");
+  el('themeColor').setAttribute('content', THEME_BG[dark ? "dark" : "light"]);
+}
+
+let theme = "dark";
+try{ theme = localStorage.getItem('bookhq-theme') || "dark"; }catch(e){}
+paintTheme(theme);
+
+themeBtn.addEventListener('click', () => {
+  theme = theme === "dark" ? "light" : "dark";
+  // Ease the colour change for the length of the swap only, so the transition
+  // never sits on the page slowing everything else down.
+  document.body.classList.add('theming');
+  themeBtn.classList.remove('swap'); void themeBtn.offsetWidth; themeBtn.classList.add('swap');
+  paintTheme(theme);
+  setTimeout(() => document.body.classList.remove('theming'), 520);
+  try{ localStorage.setItem('bookhq-theme', theme); }catch(e){}
+});
+</script>
+</body>
+</html>
