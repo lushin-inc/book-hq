@@ -90,12 +90,100 @@ a{color:inherit;text-decoration:none}
   .top{padding-top:24px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ── Favorites ──────────────────────────────────────────────────────
+   Same drawer as the book pages, same localStorage key, written against the
+   shelf's own tokens (--ring, --cover) rather than the book page's. */
+.fav-toggle{
+  display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:0 .7rem;
+  background:transparent;border:1px solid var(--line);border-radius:10px;
+  color:var(--muted);cursor:pointer;-webkit-appearance:none;appearance:none;
+  font-family:"Poppins",-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:500;font-size:.78rem;letter-spacing:.01em;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease;
+}
+.fav-toggle:hover{background:var(--field);color:var(--ink);border-color:var(--ring)}
+.fav-toggle svg{width:17px;height:17px}
+.fav-n{
+  min-width:1.15rem;padding:0 .3rem;border-radius:999px;background:var(--ring);
+  color:#fff;font-size:.66rem;line-height:1.15rem;text-align:center;font-variant-numeric:tabular-nums;
+}
+.drawer-scrim{
+  position:fixed;inset:0;z-index:40;background:rgba(9,11,15,.44);
+  opacity:0;transition:opacity .26s cubic-bezier(.32,.72,0,1);
+}
+.drawer-scrim.open{opacity:1}
+.drawer{
+  position:fixed;z-index:41;top:0;left:0;bottom:0;width:min(24rem,92vw);
+  display:flex;flex-direction:column;background:var(--surface);
+  border-right:1px solid var(--line);padding-left:env(safe-area-inset-left);
+  transform:translateX(-100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
+  overscroll-behavior:contain;
+}
+.drawer.open{transform:none}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:1rem 1.05rem .8rem;border-bottom:1px solid var(--line);
+  padding-top:calc(1rem + env(safe-area-inset-top));
+}
+.drawer-head h2{
+  margin:0;font-family:"Poppins",-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:600;font-size:1rem;letter-spacing:.01em;color:var(--ink);
+}
+.drawer-close{
+  width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease;
+}
+.drawer-close:hover{background:var(--field);color:var(--ink);border-color:var(--ring)}
+.drawer-close svg{width:18px;height:18px}
+.drawer-body{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:.5rem .6rem calc(1.2rem + env(safe-area-inset-bottom));
+}
+.fav-empty{padding:1.1rem .45rem;color:var(--muted);font-size:.92rem;line-height:1.6}
+.fav-group{margin:.55rem 0 1rem}
+.fav-group h3{
+  margin:0 0 .3rem;padding:0 .45rem;
+  font-family:"Poppins",-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:500;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+}
+.fav-row{display:flex;align-items:stretch;gap:.2rem}
+.fav-link{
+  flex:1;display:flex;align-items:center;gap:.7rem;min-height:74px;
+  padding:.45rem;border-radius:12px;color:var(--ink);text-decoration:none;
+  transition:background-color .15s ease;
+}
+.fav-link:hover{background:var(--field)}
+.fav-link img{width:64px;height:64px;flex:0 0 auto;object-fit:contain;border-radius:8px}
+[data-theme="dark"] .fav-link img{filter:invert(1)}
+.fav-t{
+  font-family:"Poppins",-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:500;font-size:.86rem;line-height:1.35;letter-spacing:.005em;
+}
+.fav-x{
+  width:44px;flex:0 0 auto;display:grid;place-items:center;
+  background:transparent;border:0;border-radius:10px;color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease;
+}
+.fav-x:hover{background:var(--field);color:var(--ink)}
+.fav-x svg{width:15px;height:15px}
+body.drawer-open{overflow:hidden}
+@media (prefers-reduced-motion:reduce){
+  .drawer,.drawer-scrim{transition:none !important}
+}
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="brand">Book HQ</div>
+  <button class="fav-toggle" id="favBtn" type="button" aria-expanded="false" aria-label="Favorites">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m12 3.4 2.65 5.37 5.93.86-4.29 4.18 1.01 5.9L12 17.92l-5.3 2.79 1.01-5.9L3.42 9.63l5.93-.86Z"/></svg>
+    Favorites<span class="fav-n" id="favN" hidden></span>
+  </button>
   <button class="theme-toggle" id="themeBtn" type="button" aria-label="Switch theme"></button>
 </header>
 
@@ -105,6 +193,17 @@ a{color:inherit;text-decoration:none}
     <input id="search" type="search" placeholder="Search books" autocomplete="off" spellcheck="false" aria-label="Search books">
   </div>
 </div>
+
+<div class="drawer-scrim" id="favScrim" hidden></div>
+<aside class="drawer" id="favDrawer" hidden aria-label="Favorites">
+  <div class="drawer-head">
+    <h2>Favorites</h2>
+    <button class="drawer-close" id="favClose" type="button" aria-label="Close favorites">
+      <svg viewBox="0 0 24 24"><path stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="favList"></div>
+</aside>
 
 <main class="wrap">
   <div class="shelf" id="shelf"></div>
@@ -130,7 +229,7 @@ const BOOKS = [
   { slug:"cant-hurt-me", title:"Can't Hurt Me", author:"David Goggins", cover:"cant-hurt-me/img/cover.jpg" },
   { slug:"a-million-miles-in-a-thousand-years", title:"A Million Miles in a Thousand Years", author:"Donald Miller", cover:"a-million-miles-in-a-thousand-years/img/cover.jpg" },
   { slug:"thinking-in-systems", title:"Thinking in Systems", author:"Donella H. Meadows", cover:"thinking-in-systems/img/cover.jpg" },
-  { slug:"7-habits-of-highly-effective-people", title:"The 7 Habits of Highly Effective People", author:"Stephen R. Covey", cover:"7-habits-of-highly-effective-people/img/cover.jpg" },
+  { slug:"room-for-good-things-to-run-wild", title:"Room for Good Things to Run Wild", author:"Josh Nadeau", cover:"room-for-good-things-to-run-wild/img/cover.jpg" },
 ];
 
 /* ---- icons ---- */
@@ -182,6 +281,86 @@ themeBtn.addEventListener('click',()=>{
   applyTheme(theme);
   try{localStorage.setItem('bookhq-theme',theme);}catch(e){}
 });
+
+/* ── Favorites ───────────────────────────────────────────────────────
+   The same key the book pages write. The shelf sits above the book folders,
+   so a plate is <slug>/img/... from here rather than ../<slug>/img/...
+   ──────────────────────────────────────────────────────────────────── */
+(function(){
+  const FAV_KEY = 'bookhq-favorites';
+  const MOTION  = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const read  = () => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch(e){ return []; } };
+  const write = v  => { try { localStorage.setItem(FAV_KEY, JSON.stringify(v)); } catch(e){} };
+  const X = '<svg viewBox="0 0 24 24"><path stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>';
+
+  function render(){
+    const favs = read();
+    $('favN').textContent = favs.length;
+    $('favN').hidden = !favs.length;
+    if(!favs.length){
+      $('favList').innerHTML = '<p class="fav-empty">Nothing kept yet. Open a book, then a plate, and tap the star.</p>';
+      return;
+    }
+    const groups = [];
+    for(const f of favs){
+      let g = groups.find(x => x.slug === f.slug);
+      if(!g){ g = { slug:f.slug, book:f.book, items:[] }; groups.push(g); }
+      g.items.push(f);
+    }
+    $('favList').innerHTML = groups.map(g => `
+      <section class="fav-group">
+        <h3>${esc(g.book)}</h3>
+        ${g.items.map(f => `
+          <div class="fav-row">
+            <a class="fav-link" href="${esc(g.slug)}/#${esc(f.id)}">
+              ${f.plate ? `<img src="${esc(g.slug)}/${esc(f.plate)}" alt="" loading="lazy">` : ''}
+              <span class="fav-t">${esc(f.title)}</span>
+            </a>
+            <button class="fav-x" type="button" data-slug="${esc(g.slug)}" data-id="${esc(f.id)}" aria-label="Remove ${esc(f.title)}">${X}</button>
+          </div>`).join('')}
+      </section>`).join('');
+  }
+
+  function open(on){
+    const d = $('favDrawer'), sc = $('favScrim');
+    if(on === !d.hidden) return;
+    if(on){
+      render();
+      d.hidden = false; sc.hidden = false;
+      requestAnimationFrame(() => { d.classList.add('open'); sc.classList.add('open'); });
+      document.body.classList.add('drawer-open');
+      $('favBtn').setAttribute('aria-expanded','true');
+    } else {
+      d.classList.remove('open'); sc.classList.remove('open');
+      document.body.classList.remove('drawer-open');
+      $('favBtn').setAttribute('aria-expanded','false');
+      const done = () => { if(!d.classList.contains('open')){ d.hidden = true; sc.hidden = true; } };
+      MOTION ? setTimeout(done, 300) : done();
+    }
+  }
+  function close(){
+    open(false);
+    if(location.hash === '#favorites') history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  $('favBtn').addEventListener('click', () => open($('favDrawer').hidden));
+  $('favClose').addEventListener('click', close);
+  $('favScrim').addEventListener('click', close);
+  $('favList').addEventListener('click', ev => {
+    const x = ev.target.closest('.fav-x');
+    if(!x) return;
+    ev.preventDefault();
+    write(read().filter(f => !(f.slug === x.dataset.slug && f.id === x.dataset.id)));
+    render();
+  });
+  addEventListener('keydown', ev => { if(ev.key === 'Escape') close(); });
+  addEventListener('storage', ev => { if(ev.key === FAV_KEY) render(); });
+  addEventListener('hashchange', () => { if(location.hash === '#favorites') open(true); });
+  render();
+  if(location.hash === '#favorites') open(true);
+})();
 </script>
 </body>
 </html>
