@@ -344,13 +344,108 @@ section{scroll-margin-top:7.5rem}
 
 footer{height:calc(4rem + env(safe-area-inset-bottom))}
 [hidden]{display:none !important}
+
+/* ── Favorites ─────────────────────────────────────────────────────
+   The star sits in the control rows that already exist — the rail foot and
+   the solo nav — never over the drawing. The solo view's whole point is that
+   nothing competes with the plate, so the furniture takes the control and the
+   picture is left alone.
+   Favorites are shared across every book on the site under one key, so the
+   drawer on any book shows the whole collection. */
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.fav-toggle{
+  display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:0 .7rem;
+  background:transparent;border:1px solid var(--line);border-radius:10px;
+  color:var(--muted);cursor:pointer;-webkit-appearance:none;appearance:none;
+  font-family:var(--display);font-weight:500;font-size:.78rem;letter-spacing:.01em;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease;
+}
+.fav-toggle:hover{background:var(--field);color:var(--ink);border-color:var(--accent)}
+.fav-toggle svg{width:17px;height:17px}
+.fav-n{
+  min-width:1.15rem;padding:0 .3rem;border-radius:999px;background:var(--accent);
+  color:#fff;font-size:.66rem;line-height:1.15rem;text-align:center;font-variant-numeric:tabular-nums;
+}
+/* The star in a control row. Filled means kept. */
+.star-btn.on{color:var(--accent);border-color:var(--accent)}
+.star-btn.on svg path{fill:currentColor}
+
+.drawer-scrim{
+  position:fixed;inset:0;z-index:40;background:rgba(9,11,15,.44);
+  opacity:0;transition:opacity .26s var(--ease);
+}
+.drawer-scrim.open{opacity:1}
+.drawer{
+  position:fixed;z-index:41;top:0;left:0;bottom:0;width:min(24rem,92vw);
+  display:flex;flex-direction:column;background:var(--surface);
+  border-right:1px solid var(--line);
+  padding-left:env(safe-area-inset-left);
+  transform:translateX(-100%);transition:transform .3s var(--ease);
+  overscroll-behavior:contain;
+}
+.drawer.open{transform:none}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:1rem 1.05rem .8rem;border-bottom:1px solid var(--line);
+  padding-top:calc(1rem + env(safe-area-inset-top));
+}
+.drawer-head h2{
+  margin:0;font-family:var(--display);font-weight:600;font-size:1rem;
+  letter-spacing:.01em;color:var(--ink);
+}
+.drawer-body{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:.5rem .6rem calc(1.2rem + env(safe-area-inset-bottom));
+}
+.fav-empty{
+  padding:1.1rem .45rem;color:var(--prose);font-size:.92rem;line-height:1.6;
+  max-width:var(--measure);
+}
+.fav-group{margin:.55rem 0 1rem}
+.fav-group h3{
+  margin:0 0 .3rem;padding:0 .45rem;
+  font-family:var(--display);font-weight:500;font-size:.7rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);
+}
+.fav-row{display:flex;align-items:stretch;gap:.2rem}
+.fav-link{
+  flex:1;display:flex;align-items:center;gap:.7rem;min-height:74px;
+  padding:.45rem;border-radius:12px;color:var(--ink);
+  transition:background-color .15s ease;
+}
+.fav-link:hover{background:var(--field)}
+.fav-link img{
+  width:64px;height:64px;flex:0 0 auto;object-fit:contain;border-radius:8px;
+}
+/* No background behind the plate: filter:invert() would invert that too and
+   leave a pale box with the ink barely readable on dark paper. */
+[data-theme="dark"] .fav-link img{filter:invert(1)}
+.fav-t{
+  font-family:var(--display);font-weight:500;font-size:.86rem;line-height:1.35;
+  letter-spacing:.005em;
+}
+.fav-x{
+  width:44px;flex:0 0 auto;display:grid;place-items:center;
+  background:transparent;border:0;border-radius:10px;color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease;
+}
+.fav-x:hover{background:var(--field);color:var(--ink)}
+.fav-x svg{width:15px;height:15px}
+body.drawer-open{overflow:hidden}
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <header>
-    <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
+    <div class="top-row">
+      <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
+      <button class="fav-toggle" id="favBtn" type="button" aria-expanded="false" aria-label="Favorites">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m12 3.4 2.65 5.37 5.93.86-4.29 4.18 1.01 5.9L12 17.92l-5.3 2.79 1.01-5.9L3.42 9.63l5.93-.86Z"/></svg>
+        Favorites<span class="fav-n" id="favN" hidden></span>
+      </button>
+    </div>
     <div class="masthead">
       <div class="cover" id="bCover" hidden></div>
       <div>
@@ -377,6 +472,17 @@ footer{height:calc(4rem + env(safe-area-inset-bottom))}
 
   <footer></footer>
 </div>
+
+<div class="drawer-scrim" id="favScrim" hidden></div>
+<aside class="drawer" id="favDrawer" hidden aria-label="Favorites">
+  <div class="drawer-head">
+    <h2>Favorites</h2>
+    <button class="rail-btn" id="favClose" type="button" aria-label="Close favorites">
+      <svg viewBox="0 0 24 24"><path stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="favList"></div>
+</aside>
 
 <script>
 /* ════════════════════════════════════════════════════════════════════
@@ -870,6 +976,8 @@ el('mode-plates').innerHTML = !slides.length ? '' : `
       <span class="rail-count" id="railCount"></span>
       <button class="rail-btn" id="railNext" type="button" aria-label="Next plate">
         <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+      <button class="rail-btn star-btn" id="railStar" type="button" aria-pressed="false" aria-label="Keep this plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m12 3.4 2.65 5.37 5.93.86-4.29 4.18 1.01 5.9L12 17.92l-5.3 2.79 1.01-5.9L3.42 9.63l5.93-.86Z"/></svg></button>
     </div>
   </div>`;
 
@@ -942,11 +1050,15 @@ function renderSolo(i){
         <span class="rail-count">${String(i+1).padStart(2,'0')} / ${String(SEQ.length).padStart(2,'0')}</span>
         <button class="rail-btn" id="soloNext" type="button" aria-label="Next plate"${i === SEQ.length-1 ? ' disabled' : ''}>
           <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+        <button class="rail-btn star-btn" id="soloStar" type="button" aria-pressed="false" aria-label="Keep this plate">
+          <svg viewBox="0 0 24 24"><path ${RS} d="m12 3.4 2.65 5.37 5.93.86-4.29 4.18 1.01 5.9L12 17.92l-5.3 2.79 1.01-5.9L3.42 9.63l5.93-.86Z"/></svg></button>
       </nav>
     </article>`;
   soloAt = i;
   el('soloPrev').addEventListener('click', () => soloGo(-1));
   el('soloNext').addEventListener('click', () => soloGo(1));
+  el('soloStar').addEventListener('click', favToggle);
+  favSyncStars();
 }
 let soloAt = -1;
 function soloGo(step){
@@ -954,6 +1066,145 @@ function soloGo(step){
   if(j < 0 || j >= SEQ.length) return;
   location.hash = SEQ[j].e.id;      // through the hash, so back works
 }
+
+
+/* ── Favorites ──────────────────────────────────────────────────────
+   One key for the whole site, so a plate kept in one book shows up in the
+   drawer on every other. Guarded throughout: if storage is unavailable the
+   star simply stops persisting and nothing else on the page notices.
+   ──────────────────────────────────────────────────────────────────── */
+const FAV_KEY  = 'bookhq-favorites';
+const FAV_MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Book pages sit one level under the shelf, so a sibling book is ../<slug>/.
+const FAV_BASE = '../';
+// Older books predate BOOK.slug — fall back to the folder name.
+const SLUG = BOOK.slug ||
+  (location.pathname.replace(/\/index\.html?$/, '').split('/').filter(Boolean).pop() || 'book');
+
+const favRead  = () => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch(e){ return []; } };
+const favWrite = v  => { try { localStorage.setItem(FAV_KEY, JSON.stringify(v)); } catch(e){} };
+let FAVS = favRead();
+
+const favHas = id => FAVS.some(f => f.slug === SLUG && f.id === id);
+
+// Whichever plate you are actually looking at — the open one, or the centred one.
+function favCurrent(){
+  // Called during boot too, before the rail's own bindings exist — a miss here
+  // just means no star is lit yet, and the first railSync corrects it.
+  try {
+    if(MODES.entry && !MODES.entry.hidden && soloAt > -1) return SEQ[soloAt].e;
+    if(MODES.plates && !MODES.plates.hidden){
+      const s = SEQ[railIndex()];
+      if(s) return s.e;
+    }
+  } catch(err){}
+  return null;
+}
+
+function favToggle(){
+  const e = favCurrent();
+  if(!e) return;
+  const at = FAVS.findIndex(f => f.slug === SLUG && f.id === e.id);
+  if(at > -1) FAVS.splice(at, 1);
+  else FAVS.push({ slug:SLUG, id:e.id, title:e.title, book:BOOK.title, plate:e.plate || '' });
+  favWrite(FAVS);
+  favSyncStars();
+  favRender();
+}
+
+function favSyncStars(){
+  const e = favCurrent();
+  const on = !!e && favHas(e.id);
+  for(const id of ['railStar','soloStar']){
+    const b = el(id);
+    if(!b) continue;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.setAttribute('aria-label', on ? 'Remove from favorites' : 'Keep this plate');
+  }
+}
+
+function favRender(){
+  FAVS = favRead();
+  const n = el('favN');
+  n.textContent = FAVS.length;
+  n.hidden = !FAVS.length;
+  if(!FAVS.length){
+    el('favList').innerHTML = '<p class="fav-empty">Nothing kept yet. Open a plate and tap the star.</p>';
+    return;
+  }
+  const groups = [];
+  for(const f of FAVS){
+    let g = groups.find(x => x.slug === f.slug);
+    if(!g){ g = { slug:f.slug, book:f.book, items:[] }; groups.push(g); }
+    g.items.push(f);
+  }
+  el('favList').innerHTML = groups.map(g => `
+    <section class="fav-group">
+      <h3>${esc(g.book)}</h3>
+      ${g.items.map(f => `
+        <div class="fav-row">
+          <a class="fav-link" href="${g.slug === SLUG ? '#' + esc(f.id) : FAV_BASE + esc(g.slug) + '/#' + esc(f.id)}">
+            ${f.plate ? `<img src="${FAV_BASE + esc(g.slug) + '/' + esc(f.plate)}" alt="" loading="lazy">` : ''}
+            <span class="fav-t">${esc(f.title)}</span>
+          </a>
+          <button class="fav-x" type="button" data-slug="${esc(g.slug)}" data-id="${esc(f.id)}" aria-label="Remove ${esc(f.title)}">
+            <svg viewBox="0 0 24 24"><path ${RS} d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>`).join('')}
+    </section>`).join('');
+}
+
+function favOpen(on){
+  const d = el('favDrawer'), sc = el('favScrim');
+  if(on === !d.hidden) return;
+  if(on){
+    favRender();
+    d.hidden = false; sc.hidden = false;
+    requestAnimationFrame(() => { d.classList.add('open'); sc.classList.add('open'); });
+    document.body.classList.add('drawer-open');
+    el('favBtn').setAttribute('aria-expanded', 'true');
+  } else {
+    d.classList.remove('open'); sc.classList.remove('open');
+    document.body.classList.remove('drawer-open');
+    el('favBtn').setAttribute('aria-expanded', 'false');
+    const done = () => { if(!d.classList.contains('open')){ d.hidden = true; sc.hidden = true; } };
+    FAV_MOTION ? setTimeout(done, 300) : done();
+  }
+}
+
+function favClose(){
+  favOpen(false);
+  if(location.hash === '#favorites'){
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+}
+
+el('favBtn').addEventListener('click', () => favOpen(el('favDrawer').hidden));
+el('favClose').addEventListener('click', favClose);
+el('favScrim').addEventListener('click', favClose);
+el('favList').addEventListener('click', ev => {
+  const x = ev.target.closest('.fav-x');
+  if(x){
+    ev.preventDefault();
+    FAVS = favRead().filter(f => !(f.slug === x.dataset.slug && f.id === x.dataset.id));
+    favWrite(FAVS); favRender(); favSyncStars();
+    return;
+  }
+  // Tapping a favorite in this book is a hash move, so close and let route() run.
+  if(ev.target.closest('.fav-link')) favClose();
+});
+addEventListener('keydown', ev => { if(ev.key === 'Escape') favClose(); });
+// Another tab kept a plate — pick it up without a reload.
+addEventListener('storage', ev => { if(ev.key === FAV_KEY){ FAVS = favRead(); favRender(); favSyncStars(); } });
+
+// Delegated, so this binds before the rail's own script has run.
+document.addEventListener('click', ev => {
+  if(ev.target.closest && ev.target.closest('#railStar')) favToggle();
+});
+// scroll doesn't bubble — capture catches the rail's own scrolling.
+document.addEventListener('scroll', favSyncStars, true);
+requestAnimationFrame(() => { favRender(); favSyncStars(); });
 
 function route(){
   const hash = location.hash.replace(/^#/, "");
@@ -963,7 +1214,10 @@ function route(){
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
-  if(hash === ""){ setMode(FIRST); return; }
+  if(hash === ""){ setMode(FIRST); favOpen(false); return; }
+
+  // The drawer is a linkable state, like every other view on this page.
+  if(hash === "favorites"){ if(!booted) setMode(FIRST); favOpen(true); return; }
 
   // A plate's own page. This is where tapping a plate lands.
   const at = SEQ.findIndex(x => x.e.id === hash);
