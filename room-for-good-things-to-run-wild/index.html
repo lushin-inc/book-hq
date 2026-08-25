@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D0F13" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Book HQ</title>
+<!-- Applied before first paint so a stored dark choice never flashes light. -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-wght-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/poppins-latin-600-normal.woff2" crossorigin>
+<style>
+/* ── Type ────────────────────────────────────────────────────────────
+   Same two faces as the shelf: Poppins carries titles and labels, Inter
+   carries everything you read. Both ship with the page, so it opens the
+   same offline and never flashes fallback type on the way in. */
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* ── Tokens ──────────────────────────────────────────────────────────
+   Lifted from the shelf so the two pages are one surface. Only --accent
+   would change per book if a book ever needed its own. */
+:root,:root[data-theme="light"]{
+  --bg:#F4F5F7; --surface:#FFFFFF; --field:#EDF0F4; --coverbg:#EAEEF3;
+  --ink:#171A21; --muted:#697386; --prose:#3D4757; --line:#E6E8EE;
+  --accent:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+  --plate:20rem; --measure:33rem;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:Poppins,var(--ui);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --field:#1E222A; --coverbg:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --prose:#C8CED8; --line:#262B33;
+  --accent:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:7.5rem}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
+
+/* ── Motion ─────────────────────────────────────────────────────────
+   One easing curve for everything that opens, moves or arrives. */
+:root{ --ease:cubic-bezier(.32,.72,0,1); }
+@keyframes lift{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes rise{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+header{animation:lift .55s var(--ease) both}
+.bar{animation:fade .5s ease .1s both}   /* opacity only — a transform breaks sticky */
+main{animation:lift .55s var(--ease) .16s both}
+body.theming,body.theming *{
+  transition:background-color .45s ease,color .45s ease,border-color .45s ease !important;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+p{margin:0}
+a{color:var(--accent);text-decoration:none}
+img{border:0}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem}
+
+/* ── Header ─────────────────────────────────────────────────────────
+   The jacket stacks above the title. Beside it the title breaks onto two
+   lines and the byline onto three. It carries the shelf tile's treatment —
+   same radius, same hairline, same shadow — so arriving here feels like the
+   tile you tapped got bigger. */
+header{padding:1.4rem 0 1.4rem}
+/* Back to the shelf. Above the jacket rather than in the mode bar — this link
+   leaves the page, and the bar is for moving around inside it. */
+.home{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:44px;
+  font-family:var(--display);font-weight:500;font-size:.8rem;letter-spacing:.01em;
+  color:var(--muted);transition:color .2s ease;
+}
+.home:hover{color:var(--ink)}
+.home:active{opacity:.6}
+.home .ar{font-size:.95rem;line-height:1}
+.masthead{display:block}
+.cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
+  border-radius:14px;overflow:hidden;background:var(--coverbg);
+  border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+/* The jacket is an object, not ink — never inverted, only dimmed so it sits
+   in a dark page instead of glaring out of it. */
+:root[data-theme="dark"] .cover img{filter:brightness(.86)}
+.book-title{margin:0;font-family:var(--display);font-weight:600;
+  font-size:1.62rem;line-height:1.22;letter-spacing:-.014em;color:var(--ink)}
+.byline{margin-top:.35rem;font-size:.94rem;color:var(--muted)}
+.subtitle{margin-top:.15rem;font-size:.88rem;color:var(--muted);opacity:.78}
+
+/* Companion files are things you go and get, so they read as buttons. */
+.links{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.55rem}
+.links:empty{display:none}
+.links a{
+  display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  max-width:22rem;   /* a single companion file shouldn't span the whole column */
+  background:var(--field);border:1px solid var(--line);border-radius:12px;
+  font-weight:500;font-size:.86rem;color:var(--ink);
+  transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
+}
+.links a .mk{flex:none;color:var(--accent);font-size:.95rem;line-height:1}
+.links a:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.links a:active{opacity:.6}
+
+/* ── Mode bar ───────────────────────────────────────────────────────
+   No boxes. Three words and a hairline that travels to the live one. */
+.bar{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  margin:0 -1.1rem;padding:.45rem 1.1rem;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.2rem;
+}
+.bar a{
+  white-space:nowrap;
+  font-family:var(--display);font-weight:500;font-size:.76rem;letter-spacing:.01em;
+  padding:0 .75rem;min-height:44px;display:flex;align-items:center;
+  background:transparent;color:var(--muted);transition:color .3s ease;
+}
+.bar a.on{color:var(--ink)}
+@media (max-width:430px){
+  .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
+  .bar a{padding:0 .55rem;font-size:.74rem}
+}
+.bar a:active{opacity:.55}
+.bar-ind{
+  position:absolute;left:0;bottom:0;height:2px;background:var(--accent);border-radius:2px;
+  transition:transform .42s var(--ease),width .42s var(--ease);
+  transform-origin:left center;pointer-events:none;
+}
+.bar-ind.instant{transition:none}
+#themeBtn{
+  margin-left:auto;flex:none;width:44px;height:44px;border-radius:10px;
+  display:grid;place-items:center;padding:0;
+  background:transparent;color:var(--muted);border:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,opacity .2s ease;
+}
+#themeBtn:hover{background:var(--field);color:var(--ink)}
+#themeBtn:active{opacity:.5}
+#themeBtn svg{width:20px;height:20px}
+#themeBtn.swap{animation:fade .38s ease both}
+
+/* ── Shared section furniture ───────────────────────────────────────── */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sec-intro{margin:0 0 1rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.sec-intro + .sec-intro{margin-top:-.25rem}
+section{scroll-margin-top:7.5rem}
+.open-sec .sec-head{padding-bottom:.8rem}
+.coll-sec .sec-head{padding-bottom:.6rem}
+
+/* ── Argument ───────────────────────────────────────────────────────
+   The question is the one hero on the page. It gets the air to act like it. */
+#argument{padding:2.6rem 0 .4rem;scroll-margin-top:7.5rem}
+#argument .q{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.32;
+  letter-spacing:-.018em;color:var(--ink);text-wrap:pretty}
+#argument .a{margin:1.05rem 0 0;max-width:var(--measure);font-size:1.16rem;line-height:1.75;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+#argument .a + .a{margin-top:1.25rem}
+
+/* ── Framework ──────────────────────────────────────────────────────── */
+#framework{padding-top:2.2rem}
+.fw-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fw-mark{flex:none;width:2rem;font-family:var(--display);font-weight:600;color:var(--accent)}
+.fw-mark.seq{font-size:.95rem;line-height:1.5}
+.fw-mark.letter{font-size:1.05rem;line-height:1.4}
+.fw-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.fw-gloss{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Insights / Actions ─────────────────────────────────────────────
+   Each entry is a card, the same object the shelf is built from. */
+#insights,#actions,#vocabulary{padding-top:2.4rem}
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:.6rem;scroll-margin-top:7.5rem;
+  transition:box-shadow .2s ease;
+}
+.entry[data-open="1"]{box-shadow:var(--shadow-hover)}
+.entry-head{display:flex;gap:.85rem;align-items:baseline;
+  padding:1rem 2.6rem 1rem 1rem;cursor:pointer;position:relative}
+.entry-mark{flex:none;width:2.6rem;font-family:var(--display);font-weight:500;
+  font-size:.66rem;letter-spacing:.09em;color:var(--muted)}
+.entry-title{flex:1;margin:0;font-family:var(--display);font-weight:600;font-size:1.03rem;
+  line-height:1.34;letter-spacing:-.011em;text-wrap:pretty;transition:opacity .18s ease}
+.entry-head:active .entry-title,.entry-head:active .entry-mark{opacity:.55}
+
+/* The sign is two hairlines. Opening rotates the upright onto the crossbar and
+   fades it, so a plus resolves into a minus rather than being swapped for one. */
+.entry-sign{position:absolute;right:1rem;top:1.15rem;width:1rem;height:1.4rem}
+.entry-sign i{position:absolute;left:50%;top:50%;background:var(--accent);
+  transition:transform .34s var(--ease),opacity .34s var(--ease)}
+.entry-sign i:first-child{width:.72rem;height:1.5px;border-radius:2px;transform:translate(-50%,-50%)}
+.entry-sign i:last-child{width:1.5px;height:.72rem;border-radius:2px;transform:translate(-50%,-50%)}
+.entry[data-open="1"] .entry-sign i:last-child{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+
+/* Height eases via grid rows — no measuring, and it interrupts cleanly. */
+.entry-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .44s var(--ease)}
+.entry[data-open="1"] .entry-wrap{grid-template-rows:1fr}
+.entry-body{overflow:hidden;min-height:0;padding:0 1rem;opacity:0;transform:translateY(5px);
+  transition:opacity .3s ease,transform .34s var(--ease)}
+.entry[data-open="1"] .entry-body{opacity:1;transform:none;transition-delay:.08s}
+.entry-body > :last-child{margin-bottom:1.35rem}
+/* Reading type. Set for a dyslexic reader first, and these numbers are the
+   whole of it — do not tune them by eye:
+     measure     ~58 characters. Past ~65 the return sweep starts missing lines.
+     leading     1.75. The gap between lines has to beat the gap between words.
+     tracking    a touch positive. Letters that touch get read as one shape.
+     paragraph   a full blank line, so there is always a place to rest.
+     colour      --prose, never --muted. Muted is for labels and counters. */
+.lede,.evidence,.op-p{
+  max-width:var(--measure);font-size:1.13rem;line-height:1.75;
+  letter-spacing:.008em;word-spacing:.02em;text-wrap:pretty;
+}
+.lede{color:var(--ink)}
+.evidence{color:var(--prose)}
+.lede + .lede,.evidence + .evidence,.lede + .evidence{margin-top:1.25rem}
+/* The plate opens the body — the drawing before the prose that unpacks it. */
+.entry figure{margin:.15rem 0 1.2rem;width:min(var(--plate),100%)}
+.entry figure img{display:block;width:100%}
+/* What it changes in practice. A filled pill promises a short pull-line; these
+   run eighty to a hundred words, so the promise broke every time. A rule down
+   the side marks the same passage without pretending it is a caption. */
+.operative{margin-top:1.35rem;padding-left:1rem;border-left:2px solid var(--accent)}
+.op-p{margin:0;color:var(--ink)}
+.op-p + .op-p{margin-top:1.25rem}
+.caveat{max-width:var(--measure);margin-top:1.1rem;font-size:1rem;line-height:1.7;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.caveat + .caveat{margin-top:1.25rem}
+
+/* ── Vocabulary ─────────────────────────────────────────────────────── */
+.voc-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  scroll-margin-top:7.5rem}
+.voc-mark{flex:none;width:0}
+.voc-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.voc-def{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Plates ─────────────────────────────────────────────────────────
+   A rail you swipe, not a column you scroll. One drawing at a time, snapped
+   to centre, and only that one visible — the neighbours stay in the flow so
+   the native snap still works, but they are faded out and made untappable so
+   nothing competes with the plate you are looking at. The drawings sit
+   straight on the paper — they are the interface in this view, so the
+   container gets out of their way. */
+#plates{padding:1.9rem 0 0}
+.rail-wrap{position:relative}
+.rail{
+  --slide:min(30rem,78vw);
+  display:flex;gap:1.6rem;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  margin:0 -1.1rem;padding:0 calc(50% - var(--slide)/2 + 1.1rem);
+}
+.rail::-webkit-scrollbar{display:none}
+.tile{
+  flex:0 0 var(--slide);scroll-snap-align:center;
+  background:transparent;padding:0;display:block;min-width:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s var(--ease);
+}
+/* Only the centred plate is visible or tappable. The rest keep their place in
+   the rail so scroll-snap still has something to snap to. NOTE: `act` on a
+   tile means "action tile", not "active" — the centred one is `cur`. */
+.tile.cur{opacity:1;pointer-events:auto}
+.tile.cur:active{opacity:.55}
+.tile img{display:block;width:100%;max-width:100%;pointer-events:none;-webkit-user-drag:none}
+.tile .cap{display:block;padding-top:.7rem;font-family:var(--display);font-weight:500;
+  font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
+.tile.act .cap{color:var(--accent)}
+.tile.empty{min-height:7.5rem;border:1px dashed var(--line);border-radius:14px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:.6rem}
+.tile.empty .ph{font-size:.74rem;line-height:1.4;color:var(--muted)}
+.enter .rail{animation:fade .45s var(--ease) both}
+
+/* Where you are in the set, and the only two controls. */
+.rail-foot{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:1.1rem 0 .2rem}
+.rail-count{font-family:var(--display);font-weight:500;font-size:.75rem;letter-spacing:.08em;
+  color:var(--muted);min-width:4.2rem;text-align:center;font-variant-numeric:tabular-nums}
+.rail-btn{
+  width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease,opacity .2s ease;
+}
+.rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
+.rail-btn:disabled{opacity:.32;cursor:default}
+.rail-btn svg{width:18px;height:18px}
+/* The buttons stay on touch as well. They used to be hidden there because the
+   peeking neighbours advertised the swipe; with the neighbours hidden, these
+   and the counter are the only sign there is more than one plate. */
+@media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
+
+/* ── One plate on its own ───────────────────────────────────────────
+   Arrived at by tapping a plate. One drawing, its own text, and a way to the
+   next one. Nothing else competes with it — that is the whole point of the
+   view, so resist adding anything here. */
+#mode-entry{padding:1.9rem 0 0}
+.solo-mark{font-family:var(--display);font-weight:500;font-size:.66rem;
+  letter-spacing:.09em;color:var(--muted)}
+.solo-title{margin:.45rem 0 0;font-family:var(--display);font-weight:600;
+  font-size:1.32rem;line-height:1.3;letter-spacing:-.016em;color:var(--ink);text-wrap:pretty}
+/* The deck. One sentence carrying the point, above the drawing, so the entry
+   can be taken in without committing to three hundred words. A newspaper deck,
+   not a second headline: the reading face, not the display one, and lighter
+   than the title above it. `takeaway` is optional — a book without one loses
+   the line and nothing else. */
+.solo-take{margin:.85rem 0 0;max-width:var(--measure);font-size:1.22rem;line-height:1.55;
+  letter-spacing:.004em;color:var(--ink);text-wrap:pretty}
+.solo figure{margin:1.5rem auto;width:min(30rem,100%)}
+.solo figure img{display:block;width:100%}
+.solo-nav{display:flex;align-items:center;justify-content:center;gap:.9rem;
+  margin-top:2.2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.solo .operative{margin-top:1.2rem}
+
+/* ── Plates in either paper ─────────────────────────────────────────
+   The drawings ship as ink on a transparent ground, so they need no blend
+   mode — which also means nothing above them can quietly break them. Dark
+   paper just inverts the ink. */
+:root[data-theme="dark"] .entry figure img,
+:root[data-theme="dark"] .solo figure img,
+:root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
+
+footer{height:calc(4rem + env(safe-area-inset-bottom))}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
+    <div class="masthead">
+      <div class="cover" id="bCover" hidden></div>
+      <div>
+        <h1 class="book-title" id="bTitle"></h1>
+        <p class="byline" id="bByline"></p>
+        <p class="subtitle" id="bSub"></p>
+      </div>
+    </div>
+    <nav class="links" id="bLinks"></nav>
+  </header>
+
+  <nav class="bar">
+    <a href="#plates" data-mode="plates">Plates</a>
+    <a href="#index" data-mode="index">The book</a>
+    <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
+    <span class="bar-ind instant" id="barInd"></span>
+  </nav>
+
+  <main>
+    <div id="mode-plates"></div>
+    <div id="mode-index" hidden></div>
+    <div id="mode-entry" hidden></div>
+  </main>
+
+  <footer></footer>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   THE BOOK. One object — this is the only thing that changes per book.
+   Add an insight / action / term by adding one entry to the array.
+   `plate` and `caveat` are optional; omitting either degrades cleanly.
+   ════════════════════════════════════════════════════════════════════ */
+const BOOK = {
+ "slug": "room-for-good-things-to-run-wild",
+ "title": "Room for Good Things to Run Wild",
+ "subtitle": "How Ordinary People Become Every Day Saints",
+ "author": "Josh Nadeau",
+ "cover": "img/cover.jpg",
+ "links": [
+  {
+   "mark": "\u2193",
+   "label": "Spoken Companion",
+   "href": "Spoken_Companion.docx"
+  }
+ ],
+ "argument": {
+  "question": "Why does knowing all the right things fail to change a person?",
+  "answer": [
+   "Because a person is a body and a soul together, and information reaches only half of them. Nadeau had a master's degree in what he believed and drank before work. What actually forms a person is what the body repeatedly does \u2014 so the failure was never a shortage of conviction. Nothing he believed had been practised into him, and the things he did practise were teaching him something else the whole time."
+  ]
+ },
+ "framework": {
+  "name": "The Liturgy of the Everyday Saint",
+  "intro": [
+   "The book is built in five acts, and each one closes with a short list of lines gathered from its chapters. The final pages collect all of them into one list the author calls a liturgy \u2014 not a summary to be read but something to be said and practised. The five acts are its movements, and each does a different job."
+  ],
+  "steps": [
+   {
+    "mark": "I",
+    "term": "The Anatomy of Anguish",
+    "gloss": "Name what is actually wrong. Not weak willpower or insufficient belief, but a person cut in half, demanding a function from faculties he had already cut out."
+   },
+   {
+    "mark": "II",
+    "term": "The Shape of Immanence",
+    "gloss": "Be found rather than find. Grace was already waiting at the bottom, which means the first move was never yours to make and the question changes from how do I reach him to how do I let myself be reached."
+   },
+   {
+    "mark": "III",
+    "term": "The Architecture of Incarnation",
+    "gloss": "Build the life, don't just clear the ground. Putting sin to death without furnishing anything in its place leaves a swept, empty room, and something always moves in."
+   },
+   {
+    "mark": "IV",
+    "term": "The Symphony of Embodiment",
+    "gloss": "Practise the body into what the soul is meant to love. Goodness, truth and beauty are participated in rather than learned, and the body is how a person participates in anything."
+   },
+   {
+    "mark": "V",
+    "term": "The Melody of New Beginnings",
+    "gloss": "Go back to the ordinary. Nothing about the pattern required England or Spain, which is why the book ends at the same bank, the same alley and the same 5:30 in the morning."
+   }
+  ]
+ },
+ "insights": [
+  {
+   "id": "insight-1",
+   "n": 1,
+   "title": "Remove the Organ, Demand the Function",
+   "plate": "img/insight-01.png",
+   "alt": "A hand-cranked gramophone box sits on a low table, its horn pointing up and to the left with three short sound lines beside it. The drive socket in the side of the box is empty. A stick figure stands to the right, frowning, one hand cupped behind his ear, holding the detached crank down at his side beside a label reading CRANK.",
+   "lede": [
+    "The diagnosis Nadeau borrows from C. S. Lewis is that we remove the organ and demand the function. He wanted to become good and had spent years cutting out the equipment goodness runs on \u2014 feeling, wonder, desire, and the body itself \u2014 then held himself in contempt for producing nothing."
+   ],
+   "evidence": [
+    "Fear did most of the cutting, and not the trembling kind. It was a passive fear: too afraid to admit a weakness, ask a real question, or take responsibility for his own life. He describes the result as trying to walk without feet. In protecting himself he had removed what he needed in order to change."
+   ],
+   "operative": [
+    "This reframes almost every failure of self-improvement. Before asking why the discipline is not working, ask what faculty the discipline needs and whether it is still there. A man who has trained himself not to feel cannot be moved. A man who has traded wonder for explanation cannot be struck by anything. The demand is not the problem; the missing organ is."
+   ],
+   "takeaway": "He cut out the faculties virtue runs on, then blamed himself for producing none."
+  },
+  {
+   "id": "insight-2",
+   "n": 2,
+   "title": "Knowing Is Not Becoming",
+   "plate": "img/insight-02.png",
+   "alt": "A stick figure sits at a laid table holding an open card labelled MENU up in front of his face. The plate in front of him is empty, knife and fork untouched. Behind him a hot meal sits on a serving hatch; one arrow curves from the meal down to the empty plate, and a second arrow, marked with an X, curves toward the back of his head.",
+   "lede": [
+    "Information is not formation. Nadeau was catechized from childhood, holds a master's degree in his own faith, and wrote papers and sermons on the love of God \u2014 and could not say he had ever felt it. He knew every definition and none of it had landed anywhere below his skull."
+   ],
+   "evidence": [
+    "He runs the ordinary version of this and it is hard to argue with. People who know lust is wrong are addicted to porn. People who know they should not be ruled by appetite take the extra slice anyway. People who know laziness is a corruption stay lazy. James pointed out that the demons believe, and it slows them down not at all."
+   ],
+   "operative": [
+    "It means the correct answer, delivered correctly, can change nothing at all \u2014 which is why the pub conversation where a friend told him to pray more and drink less was accurate and useless in the same breath. Later he puts the mechanism plainly: we cannot be reasoned out of what we were never reasoned into. Nobody argued us into how we live."
+   ],
+   "takeaway": "A master's degree in what he believed, and a drink before work. Knowing never installed it."
+  },
+  {
+   "id": "insight-3",
+   "n": 3,
+   "title": "A Ghost Is Not a Man",
+   "plate": "img/insight-03.png",
+   "alt": "A stick figure with a head, torso and two outstretched arms and no legs hovers beside a flight of five steps, three short motion marks below him where his legs would be. Bare footprints climb the steps ahead of him, left there by someone else.",
+   "lede": [
+    "What he calls a functional Gnosticism ran under everything. Nobody in his church would say the material world is evil or the body a prison; everyone lived as though it were. The person was reduced to a soul, the soul to a mind, and the body left as a husk that carries the important part around."
+   ],
+   "evidence": [
+    "A seminary classmate asked whether he was hungry, then answered that he was already feasting on the passage in front of him. A professor said the same thing without the smugness: scholars who never use their bodies in their work write about how to live with the blind spot still in. Chesterton's correction is that a corpse is not a man, and neither is a ghost."
+   ],
+   "operative": [
+    "It cuts both ways, which is what makes it lethal. If the body does not matter, poisoning it does not matter either, provided the numbing works. And if its appetites are suspect, tending the soul means denying every pleasure. Aislinn found the better sentence: every book says you are a few steps from the life you want, and you cannot take them, because you are not using your legs."
+   ],
+   "takeaway": "Neither a corpse nor a ghost is a person. What the body practises, the soul believes."
+  },
+  {
+   "id": "insight-4",
+   "n": 4,
+   "title": "Emptying a House Is Not Furnishing It",
+   "plate": "img/insight-04.png",
+   "alt": "A room drawn in cross-section, bare except for a broom leaning in the corner and a small pile of sweepings labelled SWEPT. The door stands wide open and eight identical stick figures file in through it, three already inside and five queued outside in a line.",
+   "lede": [
+    "He put down the bottle and apathy moved in. Then anger, then bitterness, then blame. Bitterness looks less sinister than being drunk before work and it unmakes a person just as efficiently, which is how he discovered that clearing a life out is only half of a job."
+   ],
+   "evidence": [
+    "The tradition he came from was expert at the first half. Mortification is putting sin to death, and he had read four hundred pages on it. Vivification is meant to be the other half, bringing life in \u2014 and every time he pressed on what it actually meant, the answer turned back into the first half in different words. Two sides of a coin, same face on both."
+   ],
+   "operative": [
+    "Jesus draws it as a house: the unclean spirit leaves, wanders, finds no rest, comes home to a place swept and in order, and brings seven worse than itself. Nature abhors a vacuum. So the practical work is furnishing \u2014 a hearth, tables, chairs, art \u2014 and virtue is put on rather than vice merely put off. Pride is fought with humility, greed with generosity, anger with patience."
+   ],
+   "takeaway": "He put down the bottle and anger moved in. A cleared room never stays empty."
+  },
+  {
+   "id": "insight-5",
+   "n": 5,
+   "title": "Desire Points Past the Pleasure",
+   "plate": "img/insight-05.png",
+   "alt": "A leaning tower of objects \u2014 a bottle cracking into the ground at the base, then a stack of coins, a bed, a trophy and a television \u2014 with a stick figure balanced on the top, both arms stretched up toward an arrow that points past him off the top of the frame.",
+   "lede": [
+    "His second plan was apathy. Stop wanting anything and you cannot be discontent; cut the passions off at the source and nothing can hurt. He was sitting in a courtyard off Bay Street with a cigar when Steinbeck's line arrived: the sickness stays the same, only the symptoms change."
+   ],
+   "evidence": [
+    "The passions do not die easily and do not go quietly. Mostly they pretend to be dead and come back as apathy, or as what he calls a duplicitous purity \u2014 the brittle claim that nothing here owns me. Poke that veneer long enough and it collapses, and the rubble is full of hidden rebellions. Apathy destroys the free and loving heart, which is the equipment contentment actually runs on."
+   ],
+   "operative": [
+    "So hunger is not the enemy; it matters what you feed it, and starvation is not an option. Lewis supplies the turn: a desire nothing in this world satisfies most likely means you were made for another one, and earthly pleasures were meant to arouse it rather than satisfy it. Nadeau had asked drink, success and relationships to bear an infinite load. They collapsed, and rage followed every collapse."
+   ],
+   "takeaway": "He tried to cure discontent by wanting nothing. Killing hunger is not feeding it."
+  },
+  {
+   "id": "insight-6",
+   "n": 6,
+   "title": "The Ordinary Is Holy",
+   "plate": "img/insight-06.png",
+   "alt": "A wooden tabletop seen from above, its surface covered in overlapping ring marks, scratches and dents from long use. Two pint glasses stand on it, each in a fresh ring. A small plate at one corner reads MADE IN ENGLAND, and a stick figure's hand reaches onto the surface from the near edge.",
+   "lede": [
+    "In a British caf\u00e9 he looked under the table and found a stamp: made in England, roughly a hundred and fifty years earlier. What struck him was how used it was \u2014 how many elbows, how many glasses, how many conversations. It was marked by time, and that was the whole of its value."
+   ],
+   "evidence": [
+    "Set against that is what he calls the myth of extraordinary. Success in every field has collapsed into celebrity, church included, and at a conference dinner he heard church leaders measure legacy in numbers, longevity and reach. His counter-example was John's famous friend, of whom the memorable thing was how little he thought of himself \u2014 leaving a room, he almost seemed able to fit under the door."
+   ],
+   "operative": [
+    "So: you will be forgotten, one generation or maybe three, and Nadeau means it as good news. Ordinary is not mediocre and not worthless; it is the frame we were built in. And a legacy is not optional \u2014 Steinbeck's version is that you pass something on whether or not you try, because leave a field fallow and weeds still grow. The only variable is what comes up."
+   ],
+   "takeaway": "You will be forgotten, and that is good news. Ordinary is where a life happens."
+  }
+ ],
+ "actions": [
+  {
+   "id": "action-1",
+   "n": 1,
+   "title": "Audit the Liturgies You Already Have",
+   "plate": "img/action-01.png",
+   "alt": "Three panels. A stick figure holds his head in distress a few paces from a shelf holding a bottle, labelled FIRST; then walks away from the shelf carrying the bottle; then, labelled GROOVE, stands in a deep channel worn into the ground along that same path, its sides rising above his knees.",
+   "lede": [
+    "Write down what you actually reach for in the first ten seconds of pain, boredom or loneliness. Then write what that act has been teaching you. The bourbon at 5:30 in the morning was teaching him, one repetition at a time, where salvation was kept."
+   ],
+   "operative": [
+    "Do it before adding anything new, because the schedule is already full. Everything repeated is formation whether or not anyone calls it that: the phone before your feet hit the floor, the scroll, the drink, the second screen. You are not choosing whether to be formed. You are choosing by what."
+   ],
+   "caveat": [
+    "Resist grading yourself. The list is diagnostic, and treating it as a verdict is how he ended up trading drunkenness for apathy \u2014 a shell game with the same sickness underneath."
+   ],
+   "takeaway": "Whatever you reach for first when the pain hits is what you have taught yourself to call salvation."
+  },
+  {
+   "id": "action-2",
+   "n": 2,
+   "title": "Practise the Virtue That Takes the Room",
+   "plate": "img/action-02.png",
+   "alt": "Three numbered panels of a stick figure at an upright piano. In the first his head is bent right down over the keys with two notes above; in the second, still bent over the keys, with more notes; in the third his head is up and turned away while a long unbroken run of notes streams up and to the right.",
+   "lede": [
+    "For each thing you are trying to stop, name the virtue that will occupy the space, then practise that instead. Pride is fought with humility, greed with generosity, lust with chastity, anger with patience, gluttony with temperance, envy with charity, laziness with diligence."
+   ],
+   "operative": [
+    "Learn it the way scales are learned rather than the way music theory is learned. The point is not to understand generosity; it is for the hands to know it, so that when the moment arrives the impulse is already there. That takes reps in real situations, which is why he calls discipline a form of freedom rather than its opposite."
+   ],
+   "caveat": [
+    "One at a time. Seven virtues on a list is a list, not a practice, and the whole complaint of the book is against programs that promise the finished body in a weekend."
+   ],
+   "takeaway": "Name the virtue that moves into the space, then practise it like scales until your hands know it."
+  },
+  {
+   "id": "action-3",
+   "n": 3,
+   "title": "Give One Rhythm a Second Job",
+   "plate": "img/action-03.png",
+   "alt": "Three panels. A stick figure pours a kettle into a French press; then stands beside the press with his head bowed and hands together while a stopwatch reads six; then walks out through a door with a steaming mug. A timeline arrow runs along the bottom with a loop at the stopwatch.",
+   "lede": [
+    "Take something you already do with your body every day and let it carry attention as well. His last chapter is the whole method in one page: thirty grams of coffee in a press, half a litre of water over it, six minutes to steep, and the Our Father said while it does."
+   ],
+   "operative": [
+    "Use the ones with waiting built in \u2014 the commute, the walk, the washing up, the sets between lifts. In Spain it was a mountain four mornings a week, which is where they talked and thought and got stronger at the same time. The body arrives at the thing before the mind can argue about it."
+   ],
+   "caveat": [
+    "Don't add a rhythm you don't already have. He did not invent the hike or the coffee; he gave a second use to what his week contained anyway."
+   ],
+   "takeaway": "Give one rhythm you already have a second job. The body arrives before the mind can argue."
+  },
+  {
+   "id": "action-4",
+   "n": 4,
+   "title": "Get Under a Wing, Not Into a Program",
+   "plate": "img/action-04.png",
+   "alt": "Two panels inside a boxing ring. In the first a stick figure stands with both gloves hanging at his sides as a punch lands on the side of his head, an X marking the gap in his guard. In the second his gloves are up beside his chin, a second stick figure holding the guard in place with one hand and pointing down at his feet with the other.",
+   "lede": [
+    "Ask one person further along than you for ordinary time rather than curriculum. What he asked for, and got, was to see the inside of a life: beers at the York with Ben, a fireplace and a whiskey with John and Carrie, questions answered with stories rather than prescriptions."
+   ],
+   "operative": [
+    "The boxing club is the model. He got better because a coach watched him take the same left hook week after week, then showed him where his hand goes and how to tighten his feet. Heavy bags are one thing; it is different when the bag hits back. Nothing in his church life had ever hit back."
+   ],
+   "caveat": [
+    "The person has to be able to see you, which means you have to be seeable. He spent one whole conversation hiding behind research he could cite instead of answering the question he had been asked."
+   ],
+   "takeaway": "Ask to see the inside of a life, not a reading list. Someone has to watch your guard."
+  },
+  {
+   "id": "action-5",
+   "n": 5,
+   "title": "Start Where You Are Actually Strong",
+   "plate": "img/action-05.png",
+   "alt": "Three panels showing the same stick figure hanging from the same pull-up bar, unchanged in each. Beneath them a tally of one stroke, then three strokes, then eight, with an arrow rising from left to right below.",
+   "lede": [
+    "Set the practice to the body you have. A shorter prayer. One psalm. One chapter of a gospel. Then let the threshold move. On the calisthenics bars by the Spanish beach some men ripped off thirty pull-ups and some managed one, and each of them was doing the only useful thing."
+   ],
+   "operative": [
+    "Formation is not competition, and comparison is the enemy of growth. He had a bad knee out of hockey and soccer and running, which meant physical therapy and tempered squats, and no amount of measuring himself against anyone changed that. The number that matters is your own last one."
+   ],
+   "caveat": [
+    "Be suspicious of a routine sold as a program. The strong men know we look up to them, and a packaged regimen priced to our not-enoughness is the same salesmanship the book opens by refusing."
+   ],
+   "takeaway": "Start where you are: a shorter prayer, one psalm. Comparison is the enemy of growth."
+  }
+ ],
+ "vocabulary": {
+  "intro": [
+   "Nadeau borrows heavily and names his sources as he goes \u2014 Chesterton, Lewis, Dostoevsky, Gregory of Nyssa, John Paul II, Augustine. A handful of terms carry most of the weight, and two of them are ordinary words used in an unusual way."
+  ],
+  "terms": [
+   {
+    "term": "The hidden music",
+    "def": "His name for what calls to a person from underneath their life. He is insistent that hidden is not secret: nothing is being withheld and nothing is for sale. The hearer is simply deaf, and hiddenness is what makes a search possible."
+   },
+   {
+    "term": "Functional Gnosticism",
+    "def": "Holding orthodox beliefs about the goodness of the body while living as though only the soul matters. Nobody says the words; everybody keeps the practice."
+   },
+   {
+    "term": "Liturgy",
+    "def": "Any repeated embodied act that teaches the whole person what to love. He uses the word for a church service, a morning bourbon and a mountain hike without changing its meaning, which is the point."
+   },
+   {
+    "term": "Mortification and vivification",
+    "def": "Putting sin to death, and bringing life in. His charge is that the second is usually defined as more of the first, so the house gets swept and never furnished."
+   },
+   {
+    "term": "Beholding",
+    "def": "Sustained attention that changes the one attending. From Gregory of Nyssa: seeing produces a deeper desire to see, so there is no ceiling and no arrival."
+   },
+   {
+    "term": "Divine expansion",
+    "def": "His reframe of self-denial. The call to lose yourself is a call out of a small dark prison rather than a demand to be diminished \u2014 and God is not a rival to your freedom."
+   },
+   {
+    "term": "The transcendentals",
+    "def": "Goodness, truth and beauty, held as interdependent rather than separate. Anything genuinely beautiful will also be good and true, which is why beauty can be trusted as a way in."
+   },
+   {
+    "term": "Holy imagination",
+    "def": "The sanctified ability to picture a life that is not yet yours. He takes it from a professor's offhand answer and from Lewis: reason is the organ of truth, imagination the organ of meaning."
+   }
+  ]
+ },
+ "quickReference": [
+  {
+   "kind": "line",
+   "label": "The question",
+   "text": "Information reaches half a person. Formation happens in the half it misses."
+  },
+  {
+   "kind": "line",
+   "label": "Remove the organ",
+   "text": "Ask what faculty the discipline needs before asking why it isn't working."
+  },
+  {
+   "kind": "line",
+   "label": "Knowing is not becoming",
+   "text": "We cannot be reasoned out of what we were never reasoned into."
+  },
+  {
+   "kind": "line",
+   "label": "A ghost is not a man",
+   "text": "Whatever the body practises, the soul eventually comes to believe."
+  },
+  {
+   "kind": "line",
+   "label": "Furnish the house",
+   "text": "Clearing a vice out leaves a room, and something always takes it."
+  },
+  {
+   "kind": "line",
+   "label": "Desire is a signpost",
+   "text": "Apathy is not purity. Hunger is not the enemy; starvation is not an option."
+  },
+  {
+   "kind": "line",
+   "label": "The ordinary is holy",
+   "text": "You will be forgotten. Ordinary is neither mediocre nor worthless."
+  },
+  {
+   "kind": "line",
+   "label": "Audit first",
+   "text": "Name what you reach for in the first ten seconds of pain."
+  },
+  {
+   "kind": "line",
+   "label": "Practise like scales",
+   "text": "One virtue at a time, until the impulse arrives before the decision."
+  },
+  {
+   "kind": "line",
+   "label": "A second job",
+   "text": "Give one rhythm you already have a second use \u2014 commute, dishes, coffee."
+  },
+  {
+   "kind": "line",
+   "label": "Under a wing",
+   "text": "Ask for ordinary shared time, not curriculum. Someone who sees your guard drop."
+  },
+  {
+   "kind": "line",
+   "label": "Your own threshold",
+   "text": "Formation is not competition. The number that matters is your own last one."
+  }
+ ],
+ "closingLine": "Becoming a saint does not depend on place. It depends on perspective and commitment \u2014 which is why the book ends at the same bank, the same back alley and the same 5:30 in the morning where it started."
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   Render
+   ════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el  = id => document.getElementById(id);
+
+document.title = BOOK.title;
+if(BOOK.cover){
+  el('bCover').innerHTML = `<img src="${esc(BOOK.cover)}" alt="Cover of ${esc(BOOK.title)} by ${esc(BOOK.author)}">`;
+  el('bCover').hidden = false;
+  // If the file is missing, drop the slot rather than showing a broken image.
+  el('bCover').querySelector('img').onerror = () => { el('bCover').hidden = true; };
+  // Home-screen icon, since this mostly gets opened from a phone.
+  for(const rel of ["icon","apple-touch-icon"]){
+    const l = document.createElement('link');
+    l.rel = rel; l.href = BOOK.cover;
+    document.head.appendChild(l);
+  }
+}
+el('bTitle').textContent  = BOOK.title;
+el('bByline').textContent = BOOK.author || "";
+el('bSub').textContent    = BOOK.subtitle || "";
+if(!BOOK.subtitle) el('bSub').hidden = true;
+el('bLinks').innerHTML = (BOOK.links || []).map(l =>
+  `<a href="${esc(l.href)}"${/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : ''}><span class="mk" aria-hidden="true">${esc(l.mark)}</span>${esc(l.label)}</a>`
+).join("");
+
+const asList = v => (v == null || v === "" ? [] : Array.isArray(v) ? v.filter(Boolean) : [v]);
+/* Every prose field arrives as a list of paragraphs — build_page.py breaks the
+   long ones at sentence boundaries before the page ever sees them. */
+const proseHTML = (v, cls) => asList(v).map(p => `<p class="${cls}">${esc(p)}</p>`).join("");
+const ledeHTML = v => proseHTML(v, "lede");
+
+function entryHTML(e, kind, n){
+  const label = (kind === "insight" ? "INS " : "ACT ") + n;
+  return `
+  <article class="entry${e.plate ? '' : ' no-plate'}" id="${esc(e.id)}" data-open="0">
+    <div class="entry-head">
+      <span class="entry-mark">${label}</span>
+      <h3 class="entry-title">${esc(e.title)}</h3>
+      <span class="entry-sign" aria-hidden="true"><i></i><i></i></span>
+    </div>
+    <div class="entry-wrap"><div class="entry-body">
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+    </div></div>
+  </article>`;
+}
+
+function secHead(name){
+  return `<div class="sec-head"><h2>${esc(name)}</h2></div>`;
+}
+
+const any = v => Array.isArray(v) ? v.length > 0 : !!v;
+
+const argumentHTML = () => !BOOK.argument ? '' : `
+  <div id="argument">
+    <p class="q">${esc(BOOK.argument.question)}</p>
+    ${proseHTML(BOOK.argument.answer, "a")}
+  </div>`;
+
+const frameworkHTML = () => !(BOOK.framework && any(BOOK.framework.steps)) ? '' : `
+  <section id="framework" class="open-sec">
+    ${secHead(BOOK.framework.name)}
+    ${proseHTML(BOOK.framework.intro, "sec-intro")}
+    ${BOOK.framework.steps.map(st => `
+      <div class="fw-row">
+        <span class="fw-mark ${/^\d/.test(st.mark) ? 'seq' : 'letter'}">${esc(st.mark)}</span>
+        <div>
+          <div class="fw-term">${esc(st.term)}</div>
+          <p class="fw-gloss">${esc(st.gloss)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+const listHTML = (items, kind, name) => !any(items) ? '' : `
+  <section id="${kind}s" class="coll-sec">
+    ${secHead(name)}
+    ${items.map((e,i) => entryHTML(e, kind, i+1)).join("")}
+  </section>`;
+
+const vocabHTML = () => !(BOOK.vocabulary && any(BOOK.vocabulary.terms)) ? '' : `
+  <section id="vocabulary" class="open-sec">
+    ${secHead("Vocabulary")}
+    ${proseHTML(BOOK.vocabulary.intro, "sec-intro")}
+    ${BOOK.vocabulary.terms.map(t => `
+      <div class="voc-row" id="${esc(t.id)}">
+        <span class="voc-mark"></span>
+        <div>
+          <div class="voc-term">${esc(t.term)}</div>
+          <p class="voc-def">${esc(t.def)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+// The entries are not repeated here — they live in Plates, one at a time, and
+// listing them again just duplicated every word on the page. What is left is
+// the only copy of the book's argument and its terms.
+el('mode-index').innerHTML =
+  argumentHTML() + frameworkHTML() + vocabHTML();
+
+function tileHTML(e, kind, n, i){
+  const cls = kind === "action" ? "tile act" : "tile";
+  const st = ` style="--i:${i}"`;
+  if(!e.plate){
+    return `<a class="${cls} empty" href="#${esc(e.id)}"${st}>
+      <span class="ph">${esc(e.title)}</span>
+      <span class="cap">Plate coming</span>
+    </a>`;
+  }
+  return `<a class="${cls}" href="#${esc(e.id)}"${st}>
+    <img src="${esc(e.plate)}" alt="${esc(e.alt || '')}">
+    <span class="cap">${esc(e.title)}</span>
+  </a>`;
+}
+
+const RS = 'stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+// One flat list in slot order — the rail, the solo view and its prev/next all
+// count against this, so they can never disagree about what "next" means.
+const SEQ = [
+  ...(BOOK.insights || []).map((e,i) => ({e, kind:"insight", n:i+1})),
+  ...(BOOK.actions  || []).map((e,i) => ({e, kind:"action",  n:i+1}))
+];
+const slides = [
+  ...(BOOK.insights || []).map((e,i) => tileHTML(e,"insight",i+1,i)),
+  ...(BOOK.actions  || []).map((e,i) => tileHTML(e,"action", i+1,(BOOK.insights||[]).length+i))
+];
+el('mode-plates').innerHTML = !slides.length ? '' : `
+  <div class="rail-wrap">
+    <div class="rail" id="rail" tabindex="0" aria-label="Plates, use arrow keys">${slides.join("")}</div>
+    <div class="rail-foot">
+      <button class="rail-btn" id="railPrev" type="button" aria-label="Previous plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+      <span class="rail-count" id="railCount"></span>
+      <button class="rail-btn" id="railNext" type="button" aria-label="Next plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </div>`;
+
+/* ════════════════════════════════════════════════════════════════════
+   Behavior — mode is driven entirely by location.hash, so every state
+   is linkable and the back button works.
+   ════════════════════════════════════════════════════════════════════ */
+const MODES = {};
+// A book without quick reference has no One page, and one without drawings has
+// no Plates. Drop the empty ones rather than offering a blank view.
+for(const k of ['plates','index']){
+  const v = el('mode-' + k);
+  if(v.innerHTML.trim()) MODES[k] = v;
+  else { v.remove(); document.querySelector(`.bar a[data-mode="${k}"]`)?.remove(); }
+}
+const FIRST = Object.keys(MODES)[0] || 'index';
+// The solo view has no tab — you reach it by tapping a plate — so it is never
+// pruned for being empty. It renders on demand.
+MODES.entry = el('mode-entry');
+const barInd = el('barInd');
+let booted = false;
+
+// The hairline travels to the live word. On first paint it is placed, not moved.
+function placeIndicator(mode){
+  const a = document.querySelector(`.bar a[data-mode="${mode}"]`);
+  if(!a) return;
+  barInd.style.width = a.offsetWidth + "px";
+  barInd.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+
+function setMode(mode){
+  if(!MODES[mode]) mode = FIRST;
+  const changed = MODES[mode].hidden || !booted;
+  for(const k in MODES) MODES[k].hidden = (k !== mode);
+  if(mode === 'plates') requestAnimationFrame(railSync);
+  // A solo plate belongs to Plates, so the bar keeps pointing there.
+  const lit = mode === 'entry' ? (MODES.plates ? 'plates' : FIRST) : mode;
+  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === lit));
+  placeIndicator(lit);
+
+  // Replay the arrival on the incoming view, but not on the very first paint —
+  // the page-level entrance already covers that.
+  if(changed && booted){
+    const v = MODES[mode];
+    v.classList.remove('enter');
+    void v.offsetWidth;          // restart the animation
+    v.classList.add('enter');
+  }
+}
+
+
+
+/* One plate, on its own. Built on demand from the same entry data the index
+   uses, so there is no second copy of the content to keep in step. */
+function renderSolo(i){
+  const { e, kind, n } = SEQ[i];
+  MODES.entry.innerHTML = `
+    <article class="solo">
+      <div class="solo-mark">${kind === "insight" ? "INS " : "ACT "}${n}</div>
+      <h2 class="solo-title">${esc(e.title)}</h2>
+      ${e.takeaway ? `<p class="solo-take">${esc(e.takeaway)}</p>` : ''}
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+      <nav class="solo-nav">
+        <button class="rail-btn" id="soloPrev" type="button" aria-label="Previous plate"${i === 0 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+        <span class="rail-count">${String(i+1).padStart(2,'0')} / ${String(SEQ.length).padStart(2,'0')}</span>
+        <button class="rail-btn" id="soloNext" type="button" aria-label="Next plate"${i === SEQ.length-1 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+      </nav>
+    </article>`;
+  soloAt = i;
+  el('soloPrev').addEventListener('click', () => soloGo(-1));
+  el('soloNext').addEventListener('click', () => soloGo(1));
+}
+let soloAt = -1;
+function soloGo(step){
+  const j = soloAt + step;
+  if(j < 0 || j >= SEQ.length) return;
+  location.hash = SEQ[j].e.id;      // through the hash, so back works
+}
+
+function route(){
+  const hash = location.hash.replace(/^#/, "");
+
+  if((hash === "plates" || hash === "index") && MODES[hash]){
+    setMode(hash);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  if(hash === ""){ setMode(FIRST); return; }
+
+  // A plate's own page. This is where tapping a plate lands.
+  const at = SEQ.findIndex(x => x.e.id === hash);
+  if(at > -1){
+    renderSolo(at);
+    setMode('entry');
+    // Land on the plate, not the top of the page. Tapping a drawing should put
+    // that drawing under the bar with the first paragraph already showing
+    // beneath it, so you read on from there instead of scrolling back down past
+    // the jacket. Measured off #mode-entry, whose top sits above the image, so
+    // it is stable whether or not the image has loaded yet.
+    const bar = document.querySelector('.bar');
+    const top = MODES.entry.getBoundingClientRect().top + window.scrollY
+              - (bar ? bar.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: booted ? 'smooth' : 'auto' });
+    return;
+  }
+
+  // Anything else that names something on the index — a vocabulary row.
+  if(MODES.index){
+    setMode("index");
+    const target = document.getElementById(hash);
+    if(target){
+      const top = target.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
+      return;
+    }
+  }
+  setMode(FIRST);
+}
+
+window.addEventListener('hashchange', route);
+route();
+requestAnimationFrame(() => {           // hand the indicator its transition back
+  barInd.classList.remove('instant');
+  booted = true;
+});
+// The words change width when the real mono face lands — re-measure once.
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => {
+    const on = document.querySelector('.bar a.on');
+    if(on){
+      barInd.classList.add('instant');
+      placeIndicator(on.dataset.mode);
+      requestAnimationFrame(() => barInd.classList.remove('instant'));
+    }
+  });
+}
+addEventListener('resize', () => {
+  barInd.classList.add('instant');
+  placeIndicator(document.querySelector('.bar a.on').dataset.mode);
+  requestAnimationFrame(() => barInd.classList.remove('instant'));
+});
+
+/* ── Plates rail ─────────────────────────────────────────────────────
+   Swipe on touch; arrows and the keyboard on anything with a pointer. The
+   snap is CSS, so the gesture stays native and the JS only reports position. */
+const rail = el('rail');
+const MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function railIndex(){
+  if(!rail) return 0;
+  const r = rail.getBoundingClientRect(), mid = r.left + r.width / 2;
+  let best = 0, bd = Infinity;
+  [...rail.children].forEach((t, i) => {
+    const b = t.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid);
+    if(d < bd){ bd = d; best = i; }
+  });
+  return best;
+}
+function railSync(){
+  if(!rail) return;
+  const i = railIndex(), n = rail.children.length;
+  el('railCount').textContent = String(i + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+  el('railPrev').disabled = i === 0;
+  el('railNext').disabled = i === n - 1;
+  [...rail.children].forEach((t, k) => t.classList.toggle('cur', k === i));
+}
+function railGo(step){
+  if(!rail) return;
+  const t = rail.children[Math.max(0, Math.min(rail.children.length - 1, railIndex() + step))];
+  if(!t) return;
+  const r = rail.getBoundingClientRect(), b = t.getBoundingClientRect();
+  rail.scrollBy({ left: (b.left + b.width/2) - (r.left + r.width/2), behavior: MOTION ? 'smooth' : 'auto' });
+}
+
+if(rail){
+  let ticking = false;
+  rail.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { railSync(); ticking = false; });
+  }, { passive: true });
+
+  el('railPrev').addEventListener('click', () => railGo(-1));
+  el('railNext').addEventListener('click', () => railGo(1));
+
+  // A swipe must not count as a tap on the plate underneath it.
+  let downX = 0, downY = 0;
+  rail.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; }, { passive: true });
+  rail.addEventListener('click', e => {
+    if(Math.abs(e.clientX - downX) > 10 || Math.abs(e.clientY - downY) > 10){
+      e.preventDefault(); e.stopPropagation();
+    }
+  }, true);
+
+  addEventListener('keydown', e => {
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const step = e.key === 'ArrowRight' ? 1 : -1;
+    if(MODES.plates && !MODES.plates.hidden){ e.preventDefault(); railGo(step); }
+    else if(!MODES.entry.hidden){ e.preventDefault(); soloGo(step); }
+  });
+  addEventListener('resize', railSync);
+  railSync();
+}
+
+/* ── Theme ───────────────────────────────────────────────────────────
+   Dark by default, and it shares the shelf's storage key — pick a side once
+   and every page in Book HQ agrees. The guard keeps it working where storage
+   is blocked (private browsing). */
+const THEME_BG = { light: "#F4F5F7", dark: "#0D0F13" };
+const themeBtn = el('themeBtn');
+const TS = 'stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const TICON = {
+  sun:`<svg viewBox="0 0 24 24"><circle ${TS} cx="12" cy="12" r="4"/><path ${TS} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${TS} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`
+};
+
+function paintTheme(theme){
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.innerHTML = dark ? TICON.sun : TICON.moon;
+  themeBtn.setAttribute('aria-label', dark ? "Switch to light mode" : "Switch to dark mode");
+  el('themeColor').setAttribute('content', THEME_BG[dark ? "dark" : "light"]);
+}
+
+let theme = "dark";
+try{ theme = localStorage.getItem('bookhq-theme') || "dark"; }catch(e){}
+paintTheme(theme);
+
+themeBtn.addEventListener('click', () => {
+  theme = theme === "dark" ? "light" : "dark";
+  // Ease the colour change for the length of the swap only, so the transition
+  // never sits on the page slowing everything else down.
+  document.body.classList.add('theming');
+  themeBtn.classList.remove('swap'); void themeBtn.offsetWidth; themeBtn.classList.add('swap');
+  paintTheme(theme);
+  setTimeout(() => document.body.classList.remove('theming'), 520);
+  try{ localStorage.setItem('bookhq-theme', theme); }catch(e){}
+});
+</script>
+</body>
+</html>
