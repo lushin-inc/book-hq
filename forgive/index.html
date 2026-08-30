@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D0F13" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Book HQ</title>
+<!-- Applied before first paint so a stored dark choice never flashes light. -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-wght-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/poppins-latin-600-normal.woff2" crossorigin>
+<style>
+/* ── Type ────────────────────────────────────────────────────────────
+   Same two faces as the shelf: Poppins carries titles and labels, Inter
+   carries everything you read. Both ship with the page, so it opens the
+   same offline and never flashes fallback type on the way in. */
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* ── Tokens ──────────────────────────────────────────────────────────
+   Lifted from the shelf so the two pages are one surface. Only --accent
+   would change per book if a book ever needed its own. */
+:root,:root[data-theme="light"]{
+  --bg:#F4F5F7; --surface:#FFFFFF; --field:#EDF0F4; --coverbg:#EAEEF3;
+  --ink:#171A21; --muted:#697386; --prose:#3D4757; --line:#E6E8EE;
+  --accent:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+  --plate:20rem; --measure:33rem;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:Poppins,var(--ui);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --field:#1E222A; --coverbg:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --prose:#C8CED8; --line:#262B33;
+  --accent:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:7.5rem}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
+
+/* ── Motion ─────────────────────────────────────────────────────────
+   One easing curve for everything that opens, moves or arrives. */
+:root{ --ease:cubic-bezier(.32,.72,0,1); }
+@keyframes lift{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes rise{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+header{animation:lift .55s var(--ease) both}
+.bar{animation:fade .5s ease .1s both}   /* opacity only — a transform breaks sticky */
+main{animation:lift .55s var(--ease) .16s both}
+body.theming,body.theming *{
+  transition:background-color .45s ease,color .45s ease,border-color .45s ease !important;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+p{margin:0}
+a{color:var(--accent);text-decoration:none}
+img{border:0}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem}
+
+/* ── Header ─────────────────────────────────────────────────────────
+   The jacket stacks above the title. Beside it the title breaks onto two
+   lines and the byline onto three. It carries the shelf tile's treatment —
+   same radius, same hairline, same shadow — so arriving here feels like the
+   tile you tapped got bigger. */
+header{padding:1.4rem 0 1.4rem}
+/* Back to the shelf. Above the jacket rather than in the mode bar — this link
+   leaves the page, and the bar is for moving around inside it. */
+.home{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:44px;
+  font-family:var(--display);font-weight:500;font-size:.8rem;letter-spacing:.01em;
+  color:var(--muted);transition:color .2s ease;
+}
+.home:hover{color:var(--ink)}
+.home:active{opacity:.6}
+.home .ar{font-size:.95rem;line-height:1}
+.masthead{display:block}
+.cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
+  border-radius:14px;overflow:hidden;background:var(--coverbg);
+  border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+/* The jacket is an object, not ink — never inverted, only dimmed so it sits
+   in a dark page instead of glaring out of it. */
+:root[data-theme="dark"] .cover img{filter:brightness(.86)}
+.book-title{margin:0;font-family:var(--display);font-weight:600;
+  font-size:1.62rem;line-height:1.22;letter-spacing:-.014em;color:var(--ink)}
+.byline{margin-top:.35rem;font-size:.94rem;color:var(--muted)}
+.subtitle{margin-top:.15rem;font-size:.88rem;color:var(--muted);opacity:.78}
+
+/* Companion files are things you go and get, so they read as buttons. */
+.links{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.55rem}
+.links:empty{display:none}
+.links a{
+  display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  max-width:22rem;   /* a single companion file shouldn't span the whole column */
+  background:var(--field);border:1px solid var(--line);border-radius:12px;
+  font-weight:500;font-size:.86rem;color:var(--ink);
+  transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
+}
+.links a .mk{flex:none;color:var(--accent);font-size:.95rem;line-height:1}
+.links a:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.links a:active{opacity:.6}
+
+/* ── Mode bar ───────────────────────────────────────────────────────
+   No boxes. Three words and a hairline that travels to the live one. */
+.bar{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  margin:0 -1.1rem;padding:.45rem 1.1rem;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.2rem;
+}
+.bar a{
+  white-space:nowrap;
+  font-family:var(--display);font-weight:500;font-size:.76rem;letter-spacing:.01em;
+  padding:0 .75rem;min-height:44px;display:flex;align-items:center;
+  background:transparent;color:var(--muted);transition:color .3s ease;
+}
+.bar a.on{color:var(--ink)}
+@media (max-width:430px){
+  .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
+  .bar a{padding:0 .55rem;font-size:.74rem}
+}
+.bar a:active{opacity:.55}
+.bar-ind{
+  position:absolute;left:0;bottom:0;height:2px;background:var(--accent);border-radius:2px;
+  transition:transform .42s var(--ease),width .42s var(--ease);
+  transform-origin:left center;pointer-events:none;
+}
+.bar-ind.instant{transition:none}
+#themeBtn{
+  margin-left:auto;flex:none;width:44px;height:44px;border-radius:10px;
+  display:grid;place-items:center;padding:0;
+  background:transparent;color:var(--muted);border:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,opacity .2s ease;
+}
+#themeBtn:hover{background:var(--field);color:var(--ink)}
+#themeBtn:active{opacity:.5}
+#themeBtn svg{width:20px;height:20px}
+#themeBtn.swap{animation:fade .38s ease both}
+
+/* ── Shared section furniture ───────────────────────────────────────── */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sec-intro{margin:0 0 1rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.sec-intro + .sec-intro{margin-top:-.25rem}
+section{scroll-margin-top:7.5rem}
+.open-sec .sec-head{padding-bottom:.8rem}
+.coll-sec .sec-head{padding-bottom:.6rem}
+
+/* ── Argument ───────────────────────────────────────────────────────
+   The question is the one hero on the page. It gets the air to act like it. */
+#argument{padding:2.6rem 0 .4rem;scroll-margin-top:7.5rem}
+#argument .q{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.32;
+  letter-spacing:-.018em;color:var(--ink);text-wrap:pretty}
+#argument .a{margin:1.05rem 0 0;max-width:var(--measure);font-size:1.16rem;line-height:1.75;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+#argument .a + .a{margin-top:1.25rem}
+
+/* ── Framework ──────────────────────────────────────────────────────── */
+#framework{padding-top:2.2rem}
+.fw-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fw-mark{flex:none;width:2rem;font-family:var(--display);font-weight:600;color:var(--accent)}
+.fw-mark.seq{font-size:.95rem;line-height:1.5}
+.fw-mark.letter{font-size:1.05rem;line-height:1.4}
+.fw-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.fw-gloss{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Insights / Actions ─────────────────────────────────────────────
+   Each entry is a card, the same object the shelf is built from. */
+#insights,#actions,#vocabulary{padding-top:2.4rem}
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:.6rem;scroll-margin-top:7.5rem;
+  transition:box-shadow .2s ease;
+}
+.entry[data-open="1"]{box-shadow:var(--shadow-hover)}
+.entry-head{display:flex;gap:.85rem;align-items:baseline;
+  padding:1rem 2.6rem 1rem 1rem;cursor:pointer;position:relative}
+.entry-mark{flex:none;width:2.6rem;font-family:var(--display);font-weight:500;
+  font-size:.66rem;letter-spacing:.09em;color:var(--muted)}
+.entry-title{flex:1;margin:0;font-family:var(--display);font-weight:600;font-size:1.03rem;
+  line-height:1.34;letter-spacing:-.011em;text-wrap:pretty;transition:opacity .18s ease}
+.entry-head:active .entry-title,.entry-head:active .entry-mark{opacity:.55}
+
+/* The sign is two hairlines. Opening rotates the upright onto the crossbar and
+   fades it, so a plus resolves into a minus rather than being swapped for one. */
+.entry-sign{position:absolute;right:1rem;top:1.15rem;width:1rem;height:1.4rem}
+.entry-sign i{position:absolute;left:50%;top:50%;background:var(--accent);
+  transition:transform .34s var(--ease),opacity .34s var(--ease)}
+.entry-sign i:first-child{width:.72rem;height:1.5px;border-radius:2px;transform:translate(-50%,-50%)}
+.entry-sign i:last-child{width:1.5px;height:.72rem;border-radius:2px;transform:translate(-50%,-50%)}
+.entry[data-open="1"] .entry-sign i:last-child{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+
+/* Height eases via grid rows — no measuring, and it interrupts cleanly. */
+.entry-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .44s var(--ease)}
+.entry[data-open="1"] .entry-wrap{grid-template-rows:1fr}
+.entry-body{overflow:hidden;min-height:0;padding:0 1rem;opacity:0;transform:translateY(5px);
+  transition:opacity .3s ease,transform .34s var(--ease)}
+.entry[data-open="1"] .entry-body{opacity:1;transform:none;transition-delay:.08s}
+.entry-body > :last-child{margin-bottom:1.35rem}
+/* Reading type. Set for a dyslexic reader first, and these numbers are the
+   whole of it — do not tune them by eye:
+     measure     ~58 characters. Past ~65 the return sweep starts missing lines.
+     leading     1.75. The gap between lines has to beat the gap between words.
+     tracking    a touch positive. Letters that touch get read as one shape.
+     paragraph   a full blank line, so there is always a place to rest.
+     colour      --prose, never --muted. Muted is for labels and counters. */
+.lede,.evidence,.op-p{
+  max-width:var(--measure);font-size:1.13rem;line-height:1.75;
+  letter-spacing:.008em;word-spacing:.02em;text-wrap:pretty;
+}
+.lede{color:var(--ink)}
+.evidence{color:var(--prose)}
+.lede + .lede,.evidence + .evidence,.lede + .evidence{margin-top:1.25rem}
+/* The plate opens the body — the drawing before the prose that unpacks it. */
+.entry figure{margin:.15rem 0 1.2rem;width:min(var(--plate),100%)}
+.entry figure img{display:block;width:100%}
+/* What it changes in practice. A filled pill promises a short pull-line; these
+   run eighty to a hundred words, so the promise broke every time. A rule down
+   the side marks the same passage without pretending it is a caption. */
+.operative{margin-top:1.35rem;padding-left:1rem;border-left:2px solid var(--accent)}
+.op-p{margin:0;color:var(--ink)}
+.op-p + .op-p{margin-top:1.25rem}
+.caveat{max-width:var(--measure);margin-top:1.1rem;font-size:1rem;line-height:1.7;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.caveat + .caveat{margin-top:1.25rem}
+
+/* ── Vocabulary ─────────────────────────────────────────────────────── */
+.voc-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  scroll-margin-top:7.5rem}
+.voc-mark{flex:none;width:0}
+.voc-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.voc-def{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Plates ─────────────────────────────────────────────────────────
+   A rail you swipe, not a column you scroll. One drawing at a time, snapped
+   to centre, and only that one visible — the neighbours stay in the flow so
+   the native snap still works, but they are faded out and made untappable so
+   nothing competes with the plate you are looking at. The drawings sit
+   straight on the paper — they are the interface in this view, so the
+   container gets out of their way. */
+#plates{padding:1.9rem 0 0}
+.rail-wrap{position:relative}
+.rail{
+  --slide:min(30rem,78vw);
+  display:flex;gap:1.6rem;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  margin:0 -1.1rem;padding:0 calc(50% - var(--slide)/2 + 1.1rem);
+}
+.rail::-webkit-scrollbar{display:none}
+.tile{
+  flex:0 0 var(--slide);scroll-snap-align:center;
+  background:transparent;padding:0;display:block;min-width:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s var(--ease);
+}
+/* Only the centred plate is visible or tappable. The rest keep their place in
+   the rail so scroll-snap still has something to snap to. NOTE: `act` on a
+   tile means "action tile", not "active" — the centred one is `cur`. */
+.tile.cur{opacity:1;pointer-events:auto}
+.tile.cur:active{opacity:.55}
+.tile img{display:block;width:100%;max-width:100%;pointer-events:none;-webkit-user-drag:none}
+.tile .cap{display:block;padding-top:.7rem;font-family:var(--display);font-weight:500;
+  font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
+.tile.act .cap{color:var(--accent)}
+.tile.empty{min-height:7.5rem;border:1px dashed var(--line);border-radius:14px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:.6rem}
+.tile.empty .ph{font-size:.74rem;line-height:1.4;color:var(--muted)}
+.enter .rail{animation:fade .45s var(--ease) both}
+
+/* Where you are in the set, and the only two controls. */
+.rail-foot{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:1.1rem 0 .2rem}
+.rail-count{font-family:var(--display);font-weight:500;font-size:.75rem;letter-spacing:.08em;
+  color:var(--muted);min-width:4.2rem;text-align:center;font-variant-numeric:tabular-nums}
+.rail-btn{
+  width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease,opacity .2s ease;
+}
+.rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
+.rail-btn:disabled{opacity:.32;cursor:default}
+.rail-btn svg{width:18px;height:18px}
+/* The buttons stay on touch as well. They used to be hidden there because the
+   peeking neighbours advertised the swipe; with the neighbours hidden, these
+   and the counter are the only sign there is more than one plate. */
+@media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
+
+/* ── One plate on its own ───────────────────────────────────────────
+   Arrived at by tapping a plate. One drawing, its own text, and a way to the
+   next one. Nothing else competes with it — that is the whole point of the
+   view, so resist adding anything here. */
+#mode-entry{padding:1.9rem 0 0}
+.solo-mark{font-family:var(--display);font-weight:500;font-size:.66rem;
+  letter-spacing:.09em;color:var(--muted)}
+.solo-title{margin:.45rem 0 0;font-family:var(--display);font-weight:600;
+  font-size:1.32rem;line-height:1.3;letter-spacing:-.016em;color:var(--ink);text-wrap:pretty}
+/* The deck. One sentence carrying the point, above the drawing, so the entry
+   can be taken in without committing to three hundred words. A newspaper deck,
+   not a second headline: the reading face, not the display one, and lighter
+   than the title above it. `takeaway` is optional — a book without one loses
+   the line and nothing else. */
+.solo-take{margin:.85rem 0 0;max-width:var(--measure);font-size:1.22rem;line-height:1.55;
+  letter-spacing:.004em;color:var(--ink);text-wrap:pretty}
+.solo figure{margin:1.5rem auto;width:min(30rem,100%)}
+.solo figure img{display:block;width:100%}
+.solo-nav{display:flex;align-items:center;justify-content:center;gap:.9rem;
+  margin-top:2.2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.solo .operative{margin-top:1.2rem}
+
+/* ── Plates in either paper ─────────────────────────────────────────
+   The drawings ship as ink on a transparent ground, so they need no blend
+   mode — which also means nothing above them can quietly break them. Dark
+   paper just inverts the ink. */
+:root[data-theme="dark"] .entry figure img,
+:root[data-theme="dark"] .solo figure img,
+:root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
+
+footer{height:calc(4rem + env(safe-area-inset-bottom))}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
+    <div class="masthead">
+      <div class="cover" id="bCover" hidden></div>
+      <div>
+        <h1 class="book-title" id="bTitle"></h1>
+        <p class="byline" id="bByline"></p>
+        <p class="subtitle" id="bSub"></p>
+      </div>
+    </div>
+    <nav class="links" id="bLinks"></nav>
+  </header>
+
+  <nav class="bar">
+    <a href="#plates" data-mode="plates">Plates</a>
+    <a href="#index" data-mode="index">The book</a>
+    <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
+    <span class="bar-ind instant" id="barInd"></span>
+  </nav>
+
+  <main>
+    <div id="mode-plates"></div>
+    <div id="mode-index" hidden></div>
+    <div id="mode-entry" hidden></div>
+  </main>
+
+  <footer></footer>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   THE BOOK. One object — this is the only thing that changes per book.
+   Add an insight / action / term by adding one entry to the array.
+   `plate` and `caveat` are optional; omitting either degrades cleanly.
+   ════════════════════════════════════════════════════════════════════ */
+const BOOK = {
+ "title": "Forgive",
+ "subtitle": "Why Should I and How Can I?",
+ "author": "Timothy Keller",
+ "slug": "forgive",
+ "cover": "img/cover.jpg",
+ "argument": {
+  "question": "When someone wrongs you, they owe you. If you cancel that debt, where does it go?",
+  "answer": [
+   "It goes to you. A debt cancelled is not a debt that vanishes — it is a debt somebody absorbs, and in forgiveness that somebody is the person who was wronged. This is why forgiveness is free to receive and never free to give, and it is why excusing feels easier: excusing declares that no debt was ever incurred, so nothing has to be paid and nothing is actually forgiven.",
+   "Naming the wrong accurately and then paying its cost inward is the whole transaction. Everything else follows from it — why the resentment lifts, why the offender gets a real chance to change, and why none of this requires pretending the wrong was small."
+  ]
+ },
+ "framework": {
+  "name": "Paying It Inward",
+  "intro": [
+   "Forgiveness is a sequence, not a mood. Each step does one job, and skipping any of them produces something that looks like forgiveness and is not: skip the first and you forgive a vague feeling instead of an act, skip the fourth and you have only excused."
+  ],
+  "steps": [
+   {
+    "mark": "01",
+    "term": "Name the wrong",
+    "gloss": "Identify what was actually done. Not a mood, not a pattern — the specific act. A debt you cannot state is a debt you cannot cancel."
+   },
+   {
+    "mark": "02",
+    "term": "Tell the person",
+    "gloss": "Say it to them, so they know what they did. A debt nobody has named cannot be repented of, and silence is not mercy."
+   },
+   {
+    "mark": "03",
+    "term": "Separate the act from the person",
+    "gloss": "Hold the deed and the human apart. Here you see their humanity and admit your own. The act stays exactly as bad as it was."
+   },
+   {
+    "mark": "04",
+    "term": "Take the loss",
+    "gloss": "Pay the debt inward. Absorb the cost and stop collecting on it — in your thoughts, in your speech, and in how you treat them."
+   },
+   {
+    "mark": "05",
+    "term": "Then pursue reconciliation",
+    "gloss": "Close the distance the wrong opened, and back their work to change. Reconciliation follows forgiveness; it does not substitute for it."
+   }
+  ]
+ },
+ "insights": [
+  {
+   "id": "insight-1",
+   "n": 1,
+   "title": "A Wrong Is a Debt",
+   "plate": "img/insight-01.png",
+   "alt": "A tall leaning column of about a dozen sacks marked with dollar signs runs diagonally across the frame. A very tall stick figure at the right holds the topmost sack and is lifting the whole column, the bottom sack drawn with motion lines as it leaves the ground. A small stick figure below holds up a single coin.",
+   "lede": [
+    "Wrongdoing puts something on the books. When a person harms you they take something from you — money, time, safety, standing, years — and having taken it, they owe it. That is not a metaphor laid over the situation afterward. It is the shape the situation already has, and it is why being wronged feels like being owed rather than merely being upset."
+   ],
+   "evidence": [
+    "Jesus puts the arithmetic in a parable. A king summons a servant who owes him ten thousand talents. A servant earned roughly one talent in a year, so ten thousand of them is not a large debt but an unpayable one — the man could work every year of his life and not close it. The servant begs. The king cancels the whole sum."
+   ],
+   "operative": [
+    "To forgive is to cancel a debt you are genuinely owed: you stop holding it against the person, and the entry closes. It does not ask you to decide the debt was small, or that you misread what happened. The debt was real, the amount accurate, and you released it anyway. Anything that needs the wrong to shrink first is a different transaction wearing forgiveness as a name."
+   ],
+   "takeaway": "To forgive is to cancel a debt you are genuinely owed — not to decide the debt was never real."
+  },
+  {
+   "id": "insight-2",
+   "n": 2,
+   "title": "Cancelled Is Not Erased",
+   "plate": "img/insight-02.png",
+   "alt": "An open ledger lies on a low table at the left. A long ruled paper strip rises out of it and arcs over the shoulder of a stick figure, who leans forward carrying it. A second stick figure walks away to the right with both hands open and empty.",
+   "lede": [
+    "When the king cancels the debt, the money does not reappear. Ten thousand talents leave the servant's account and land somewhere, and where they land is on the king. This is the part that gets lost when forgiveness is described as letting go: something is being carried, and after the cancellation the person carrying it is the one who was owed."
+   ],
+   "evidence": [
+    "Forgiveness is a free gift you have not earned but that still has to be paid. That is the Christian claim at its centre and the point at which it parts company with every other account of mercy. God's forgiveness is not extended by waiving the debt into thin air. Jesus paid the ultimate price for the sin of the world; the debt was settled, not overlooked."
+   ],
+   "operative": [
+    "So forgiveness costs the forgiver, and the cost is the test. If releasing someone took nothing out of you, check whether you forgave them or simply decided it was not worth the trouble. Real cancellation has weight — the sensation of absorbing a loss that was not yours and choosing not to pass it back. That weight is not a sign of failure. It is the receipt."
+   ],
+   "takeaway": "Forgiveness is free to receive and never free to give. Someone absorbs the loss, and forgiving means it's you."
+  },
+  {
+   "id": "insight-3",
+   "n": 3,
+   "title": "What You Don't Cancel, You Carry",
+   "plate": "img/insight-03.png",
+   "alt": "A shovel stands in a mound of earth. A thorned vine grows tall out of the mound and coils around the body and legs of a stick figure beside it. A runner of the same vine trails across the ground and loops around the ankles of a second, smaller stick figure standing well apart.",
+   "lede": [
+    "Refusing to forgive is not a neutral position. The debt does not sit quietly on the books waiting for a decision. Withheld forgiveness turns into resentment, resentment goes underground where you stop noticing it, and from underground it grows. Bitterness kept long enough springs up and does its damage to the person keeping it."
+   ],
+   "evidence": [
+    "Cancelling the debt does three things at once. It kills the resentment in the person who was wronged. It gives the person who did the wrong a real chance to change, which they do not have while they are only being collected from. And where that change happens, it cuts the chain of abuse — the hurt stops being handed down to whoever is next."
+   ],
+   "operative": [
+    "This reframes who forgiveness is for. It is offered to the offender and owed to yourself and everyone downstream of you. Hurt that is not cancelled gets transmitted, usually without intent, and usually to people who had nothing to do with the original wrong — a family, a team, a friendship never involved. Your duty to your community is to forgive, because the alternative does not stay inside you."
+   ],
+   "takeaway": "Unforgiveness does not stay where you put it. Buried resentment grows, and passes the hurt to people who did nothing."
+  },
+  {
+   "id": "insight-4",
+   "n": 4,
+   "title": "Justice Is Not the Opposite of Forgiveness",
+   "plate": "img/insight-04.png",
+   "alt": "A single stick figure stands with both arms extended. One arm holds an open book with blank pages out to the left. The other lowers a solid block onto the near pan of a balance scale at the right, tipping it down.",
+   "lede": [
+    "The usual assumption is that forgiveness and justice run against each other, so that every degree of mercy is a degree of accountability given up. They are not on the same ledger. You can cancel what a person owes you personally and still insist, without contradiction, that the consequence in the world stands."
+   ],
+   "evidence": [
+    "The God of this account is a God of love and fury at once. He grieves when someone commits an injustice, and he is angry when his creation is defiled and destroyed. Anger at wrong is not a failure of love here; it is what love does when it sees what has been done to something it made."
+   ],
+   "operative": [
+    "There is a second reason to pursue justice, usually missed: consequences serve the perpetrator. Someone never made to reckon with what they did has no route to repentance, and repentance is the only door back — to the people they harmed and to God. Letting a person escape the consequence is not generosity. It leaves them exactly where they are, which is the one place nobody should be left."
+   ],
+   "takeaway": "You can cancel a debt and still require the consequence. Forgiveness and justice work on different ledgers."
+  },
+  {
+   "id": "insight-5",
+   "n": 5,
+   "title": "The Culture That Cannot Forgive",
+   "plate": "img/insight-05.png",
+   "alt": "A stick figure stands on a low cylindrical pedestal with a rope tied at its waist running out to each side. Four stick figures lean back hauling on the left rope, labelled FORGIVE; four more haul on the right rope, labelled PUNISH.",
+   "lede": [
+    "In 2006 a gunman walked into a school in Pennsylvania and shot ten Amish children; five of them died. The families who had lost daughters went to the killer's family, told them they held no grudge, and sat with them in their grief. The response people find hardest to explain is not the shooting. It is the visit."
+   ],
+   "evidence": [
+    "Two habits of modern Western culture make that visit almost unimaginable. The first is a therapeutic outlook that puts individual interests ahead of the common good, so personal feeling outranks the work of mending a bond. The second is a shame-and-honour culture quick to acclaim its virtuous citizens and quicker to shut them down, which turns public life into a competition over outrage at the smallest offence."
+   ],
+   "operative": [
+    "Both habits land on the person who was harmed. Victims of abuse are pressed to forgive unconditionally, as though saying sorry settled it and consequences were optional. Victims who want justice are handed a role in a public humiliation and elevated to the seat where mercy gets granted on cue. Neither is forgiveness, both leave people wounded, and the pressure to pick one is worth naming before you answer it."
+   ],
+   "takeaway": "A culture that competes over outrage cannot forgive. It pressures victims to absolve or to prosecute, wounding them either way."
+  },
+  {
+   "id": "insight-6",
+   "n": 6,
+   "title": "Honour Is Not Forgiveness",
+   "plate": "img/insight-06.png",
+   "alt": "A stick figure walks with its head bent to look at a medal on a ribbon around its neck, held up in one hand with short lines radiating from it. An elderly stick figure with a bun, glasses, a shoulder bag and a cane walks past in the opposite direction, unnoticed.",
+   "lede": [
+    "Here is a test question. Walking home at night you pass an elderly woman with her purse under her arm. What stops you from taking it — your honour, or your concern for her? Both answers produce identical behaviour, and they come from different worlds."
+   ],
+   "evidence": [
+    "The honour cultures of the Greeks, Romans and Anglo-Saxons ran on the first answer. A noble did not steal because stealing was beneath him, and the stain would injure his own pride. Aristotle taught contempt for those below you. When those cultures took up Christianity they kept their honour intact and misread the book, which produced the Crusades and centuries of treating women and serfs as less."
+   ],
+   "operative": [
+    "Taking the higher moral ground is not mercy, because you are still the subject of the sentence. The second answer moves the subject: you worry about the woman, her safety, the people who depend on what is in that purse. It rests on dignity held before it is earned and not lost by doing wrong — the only ground on which a debt can be cancelled rather than declined."
+   ],
+   "takeaway": "Refusing to do wrong because it would stain you is not mercy. Your honour is still about you."
+  }
+ ],
+ "actions": [
+  {
+   "id": "action-1",
+   "n": 1,
+   "title": "Name It, Then Say It",
+   "plate": "img/action-01.png",
+   "alt": "Two panels side by side. In the left, a stick figure stands alone beneath a dense scribbled ball of tangled line. In the right, the same figure faces a second stick figure, and the tangle has become one straight line running from its mouth to the second figure's open hand.",
+   "lede": [
+    "Write down what was actually done, as a specific act rather than a summary of how you feel. Then tell the person, plainly, so they know what it is. Both halves are the step: naming it privately leaves the debt unstated to the only other party to it."
+   ],
+   "operative": [
+    "Use it when you notice you are avoiding someone, or narrating them to third parties, or running a grievance you could not state in one sentence if asked. It has worked when the other person could repeat back the specific thing they did — not that you are upset, but what they did."
+   ],
+   "caveat": [
+    "Telling them is not the same as demanding an apology, and it is not the opening move of a case. You are making the debt visible, which is the only condition under which it can be repented of or cancelled."
+   ],
+   "takeaway": "Identify the specific wrong, then tell the person. A debt nobody has named cannot be cancelled or repented of."
+  },
+  {
+   "id": "action-2",
+   "n": 2,
+   "title": "Separate the Act From the Person",
+   "plate": "img/action-02.png",
+   "alt": "A stick figure with a drawn face stands at the left with a large jagged shard covering its body. A second stick figure grips the shard with both hands and slides it sideways off, motion lines trailing behind, so the two shapes read as separate objects.",
+   "lede": [
+    "Hold the deed and the human being apart. They arrive fused — the worst thing a person did becomes your whole account of who they are — and pulling them apart is a deliberate act, not a feeling that arrives on its own. What you are looking for is their humanity, and alongside it an honest view of your own."
+   ],
+   "operative": [
+    "Use it when you catch yourself describing the person entirely in terms of the wrong. You will know it has worked when you can hold the act at full weight and still say something true about them that has nothing to do with it. For a Christian there is a further move here: you were saved by grace on exactly these terms."
+   ],
+   "caveat": [
+    "This is not minimising. The act stays precisely as bad as it was, and separating it from the person is what lets you keep it that bad without the person disappearing behind it."
+   ],
+   "takeaway": "Hold the deed and the human apart. See their humanity, admit your own, and let the act stay bad."
+  },
+  {
+   "id": "action-3",
+   "n": 3,
+   "title": "Pay the Debt Inward",
+   "plate": "img/action-03.png",
+   "alt": "A thick book labelled ACCOUNT lies on a table with a padlock clicked shut through its edge. A stick figure stands beside a round stone well with its arm raised, having just released a key, which is drawn falling toward the well's open mouth.",
+   "lede": [
+    "Take the loss. Absorb what it cost you, and stop collecting — in what you think about them, in how you speak about them to other people, and in how you treat them when you are in a room together. Those are the three places an account gets quietly reopened."
+   ],
+   "operative": [
+    "Use it once the wrong is named and the person is separate from it; before that, there is nothing accurate to absorb. It has worked when the incident stops surfacing as leverage — when you no longer reach for it in an argument and no longer replay it to yourself as evidence."
+   ],
+   "caveat": [
+    "Excusing is not this, and it is the counterfeit closest to hand. To excuse is to say no debt was ever incurred: nothing is paid, so nothing is forgiven, and the resentment stays exactly where it was with no name on it."
+   ],
+   "takeaway": "Take the loss yourself and stop collecting — in your thoughts, in your speech, and in how you treat them."
+  },
+  {
+   "id": "action-4",
+   "n": 4,
+   "title": "Forgive Now, Rebuild on Evidence",
+   "plate": "img/action-04.png",
+   "alt": "A stick figure on the left holds a pair of open scissors, a cut rope end hanging loose. Across a wide gap in the ground, the freed stick figure lowers a plank onto three already laid across it, with a stack of more planks at its feet.",
+   "lede": [
+    "Cancel the debt immediately and let the relationship come back at its own speed. These are two different works with two different clocks. Forgiveness is yours to complete today; reconciliation needs the other person to do something, and it arrives when they have done it."
+   ],
+   "operative": [
+    "Use it wherever the person has not done the work on themselves, or where restoring the old arrangement would put you or somebody else back within reach of the same harm. Success looks like a genuinely cancelled debt held alongside a relationship rebuilt plank by plank, on evidence rather than on the strength of a promise."
+   ],
+   "caveat": [
+    "Do not let this become a permanent position with forgiveness as its cover. Where there is real repentance the aim is reconciliation and fellowship — the distance closed, not managed."
+   ],
+   "takeaway": "Cancel the debt now. Let the relationship return at the speed of their changed behaviour, not your decision."
+  },
+  {
+   "id": "action-5",
+   "n": 5,
+   "title": "Ask With a Structure, Not a Sentence",
+   "plate": "img/action-05.png",
+   "alt": "A stick figure stands on a raised platform with one hand flat over its chest and its head bowed. The platform rests on three tall posts, and beside each post another stick figure steadies it with one hand.",
+   "lede": [
+    "When you are the one who did the harm, admit the transgression plainly and then do the work that keeps it from happening again. That work is not resolve. It is structure: the arrangements and the people you put in place to keep yourself in check when the resolve runs out."
+   ],
+   "operative": [
+    "Use it the second time you find yourself apologising for the same thing. It has worked when somebody other than you can tell whether you are doing what you said, and has agreed to say so."
+   ],
+   "caveat": [
+    "Saying sorry is not enough on its own, and treating it as enough is what keeps abuse running. There have to be consequences, and they have to be real enough that the harm cannot simply continue around them."
+   ],
+   "takeaway": "When you did the harm, an apology without an accountability structure is a promise with nothing holding it."
+  }
+ ],
+ "vocabulary": {
+  "intro": [
+   "Nine of them. Most of the confusion about forgiveness is a collision between the first three."
+  ],
+  "terms": [
+   {
+    "term": "Forgiveness",
+    "def": "Cancelling a debt you are genuinely owed, so that you no longer hold it against the person who owes it."
+   },
+   {
+    "term": "The inward debt",
+    "def": "The cost of the wrong, absorbed privately by the person who was wronged rather than collected from the one who caused it."
+   },
+   {
+    "term": "Excusing",
+    "def": "Declaring that no debt was incurred. Nothing is paid, so nothing is forgiven, and the resentment survives underneath."
+   },
+   {
+    "term": "Reconciliation",
+    "def": "The repair of the relationship itself. It follows forgiveness, requires the offender's work, and is not owed automatically."
+   },
+   {
+    "term": "Repentance",
+    "def": "The offender's own work — admitting the wrong plainly and changing, rather than apologising and continuing."
+   },
+   {
+    "term": "Grace",
+    "def": "Forgiveness given to those who have not earned it and cannot repay it. Free to receive; paid for by someone."
+   },
+   {
+    "term": "Honour culture",
+    "def": "A moral system in which conduct is governed by what would stain the actor's standing, rather than by what is owed to the other person."
+   },
+   {
+    "term": "Talent",
+    "def": "A unit of money worth roughly a year of a servant's wages, which is why ten thousand of them is an unpayable sum."
+   },
+   {
+    "term": "Inherent dignity",
+    "def": "Worth a person holds before doing anything to earn it, and does not forfeit by doing wrong."
+   }
+  ]
+ },
+ "quickReference": [
+  {
+   "kind": "line",
+   "label": "Forgiveness",
+   "text": "Cancelling a debt you are genuinely owed. Free to receive, never free to give."
+  },
+  {
+   "kind": "line",
+   "label": "Excusing",
+   "text": "Declaring no debt was owed. Nothing is paid, so nothing is forgiven."
+  },
+  {
+   "kind": "line",
+   "label": "Unforgiveness",
+   "text": "Buried resentment grows, and passes the hurt to people who did nothing."
+  },
+  {
+   "kind": "line",
+   "label": "Justice",
+   "text": "Runs alongside forgiveness, never against it. Consequences serve the offender too."
+  },
+  {
+   "kind": "line",
+   "label": "First",
+   "text": "Name the specific wrong, and tell the person who did it."
+  },
+  {
+   "kind": "line",
+   "label": "Second",
+   "text": "Separate the act from the person. The act stays exactly as bad."
+  },
+  {
+   "kind": "line",
+   "label": "Third",
+   "text": "Pay the debt inward. Stop collecting in thought, in speech, in treatment."
+  },
+  {
+   "kind": "line",
+   "label": "Fourth",
+   "text": "Reconciliation follows. Trust returns at the speed of changed behaviour."
+  },
+  {
+   "kind": "line",
+   "label": "If you did it",
+   "text": "Admit it plainly, then build the structure that keeps you in check."
+  }
+ ],
+ "closingLine": "Wrongdoing opens a distance. Forgiveness is the only thing that closes it from your side.",
+ "links": [
+  {
+   "mark": "↓",
+   "label": "Spoken Companion",
+   "href": "Spoken_Companion.docx"
+  }
+ ]
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   Render
+   ════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el  = id => document.getElementById(id);
+
+document.title = BOOK.title;
+if(BOOK.cover){
+  el('bCover').innerHTML = `<img src="${esc(BOOK.cover)}" alt="Cover of ${esc(BOOK.title)} by ${esc(BOOK.author)}">`;
+  el('bCover').hidden = false;
+  // If the file is missing, drop the slot rather than showing a broken image.
+  el('bCover').querySelector('img').onerror = () => { el('bCover').hidden = true; };
+  // Home-screen icon, since this mostly gets opened from a phone.
+  for(const rel of ["icon","apple-touch-icon"]){
+    const l = document.createElement('link');
+    l.rel = rel; l.href = BOOK.cover;
+    document.head.appendChild(l);
+  }
+}
+el('bTitle').textContent  = BOOK.title;
+el('bByline').textContent = BOOK.author || "";
+el('bSub').textContent    = BOOK.subtitle || "";
+if(!BOOK.subtitle) el('bSub').hidden = true;
+el('bLinks').innerHTML = (BOOK.links || []).map(l =>
+  `<a href="${esc(l.href)}"${/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : ''}><span class="mk" aria-hidden="true">${esc(l.mark)}</span>${esc(l.label)}</a>`
+).join("");
+
+const asList = v => (v == null || v === "" ? [] : Array.isArray(v) ? v.filter(Boolean) : [v]);
+/* Every prose field arrives as a list of paragraphs — build_page.py breaks the
+   long ones at sentence boundaries before the page ever sees them. */
+const proseHTML = (v, cls) => asList(v).map(p => `<p class="${cls}">${esc(p)}</p>`).join("");
+const ledeHTML = v => proseHTML(v, "lede");
+
+function entryHTML(e, kind, n){
+  const label = (kind === "insight" ? "INS " : "ACT ") + n;
+  return `
+  <article class="entry${e.plate ? '' : ' no-plate'}" id="${esc(e.id)}" data-open="0">
+    <div class="entry-head">
+      <span class="entry-mark">${label}</span>
+      <h3 class="entry-title">${esc(e.title)}</h3>
+      <span class="entry-sign" aria-hidden="true"><i></i><i></i></span>
+    </div>
+    <div class="entry-wrap"><div class="entry-body">
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+    </div></div>
+  </article>`;
+}
+
+function secHead(name){
+  return `<div class="sec-head"><h2>${esc(name)}</h2></div>`;
+}
+
+const any = v => Array.isArray(v) ? v.length > 0 : !!v;
+
+const argumentHTML = () => !BOOK.argument ? '' : `
+  <div id="argument">
+    <p class="q">${esc(BOOK.argument.question)}</p>
+    ${proseHTML(BOOK.argument.answer, "a")}
+  </div>`;
+
+const frameworkHTML = () => !(BOOK.framework && any(BOOK.framework.steps)) ? '' : `
+  <section id="framework" class="open-sec">
+    ${secHead(BOOK.framework.name)}
+    ${proseHTML(BOOK.framework.intro, "sec-intro")}
+    ${BOOK.framework.steps.map(st => `
+      <div class="fw-row">
+        <span class="fw-mark ${/^\d/.test(st.mark) ? 'seq' : 'letter'}">${esc(st.mark)}</span>
+        <div>
+          <div class="fw-term">${esc(st.term)}</div>
+          <p class="fw-gloss">${esc(st.gloss)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+const listHTML = (items, kind, name) => !any(items) ? '' : `
+  <section id="${kind}s" class="coll-sec">
+    ${secHead(name)}
+    ${items.map((e,i) => entryHTML(e, kind, i+1)).join("")}
+  </section>`;
+
+const vocabHTML = () => !(BOOK.vocabulary && any(BOOK.vocabulary.terms)) ? '' : `
+  <section id="vocabulary" class="open-sec">
+    ${secHead("Vocabulary")}
+    ${proseHTML(BOOK.vocabulary.intro, "sec-intro")}
+    ${BOOK.vocabulary.terms.map(t => `
+      <div class="voc-row" id="${esc(t.id)}">
+        <span class="voc-mark"></span>
+        <div>
+          <div class="voc-term">${esc(t.term)}</div>
+          <p class="voc-def">${esc(t.def)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+// The entries are not repeated here — they live in Plates, one at a time, and
+// listing them again just duplicated every word on the page. What is left is
+// the only copy of the book's argument and its terms.
+el('mode-index').innerHTML =
+  argumentHTML() + frameworkHTML() + vocabHTML();
+
+function tileHTML(e, kind, n, i){
+  const cls = kind === "action" ? "tile act" : "tile";
+  const st = ` style="--i:${i}"`;
+  if(!e.plate){
+    return `<a class="${cls} empty" href="#${esc(e.id)}"${st}>
+      <span class="ph">${esc(e.title)}</span>
+      <span class="cap">Plate coming</span>
+    </a>`;
+  }
+  return `<a class="${cls}" href="#${esc(e.id)}"${st}>
+    <img src="${esc(e.plate)}" alt="${esc(e.alt || '')}">
+    <span class="cap">${esc(e.title)}</span>
+  </a>`;
+}
+
+const RS = 'stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+// One flat list in slot order — the rail, the solo view and its prev/next all
+// count against this, so they can never disagree about what "next" means.
+const SEQ = [
+  ...(BOOK.insights || []).map((e,i) => ({e, kind:"insight", n:i+1})),
+  ...(BOOK.actions  || []).map((e,i) => ({e, kind:"action",  n:i+1}))
+];
+const slides = [
+  ...(BOOK.insights || []).map((e,i) => tileHTML(e,"insight",i+1,i)),
+  ...(BOOK.actions  || []).map((e,i) => tileHTML(e,"action", i+1,(BOOK.insights||[]).length+i))
+];
+el('mode-plates').innerHTML = !slides.length ? '' : `
+  <div class="rail-wrap">
+    <div class="rail" id="rail" tabindex="0" aria-label="Plates, use arrow keys">${slides.join("")}</div>
+    <div class="rail-foot">
+      <button class="rail-btn" id="railPrev" type="button" aria-label="Previous plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+      <span class="rail-count" id="railCount"></span>
+      <button class="rail-btn" id="railNext" type="button" aria-label="Next plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </div>`;
+
+/* ════════════════════════════════════════════════════════════════════
+   Behavior — mode is driven entirely by location.hash, so every state
+   is linkable and the back button works.
+   ════════════════════════════════════════════════════════════════════ */
+const MODES = {};
+// A book without quick reference has no One page, and one without drawings has
+// no Plates. Drop the empty ones rather than offering a blank view.
+for(const k of ['plates','index']){
+  const v = el('mode-' + k);
+  if(v.innerHTML.trim()) MODES[k] = v;
+  else { v.remove(); document.querySelector(`.bar a[data-mode="${k}"]`)?.remove(); }
+}
+const FIRST = Object.keys(MODES)[0] || 'index';
+// The solo view has no tab — you reach it by tapping a plate — so it is never
+// pruned for being empty. It renders on demand.
+MODES.entry = el('mode-entry');
+const barInd = el('barInd');
+let booted = false;
+
+// The hairline travels to the live word. On first paint it is placed, not moved.
+function placeIndicator(mode){
+  const a = document.querySelector(`.bar a[data-mode="${mode}"]`);
+  if(!a) return;
+  barInd.style.width = a.offsetWidth + "px";
+  barInd.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+
+function setMode(mode){
+  if(!MODES[mode]) mode = FIRST;
+  const changed = MODES[mode].hidden || !booted;
+  for(const k in MODES) MODES[k].hidden = (k !== mode);
+  if(mode === 'plates') requestAnimationFrame(railSync);
+  // A solo plate belongs to Plates, so the bar keeps pointing there.
+  const lit = mode === 'entry' ? (MODES.plates ? 'plates' : FIRST) : mode;
+  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === lit));
+  placeIndicator(lit);
+
+  // Replay the arrival on the incoming view, but not on the very first paint —
+  // the page-level entrance already covers that.
+  if(changed && booted){
+    const v = MODES[mode];
+    v.classList.remove('enter');
+    void v.offsetWidth;          // restart the animation
+    v.classList.add('enter');
+  }
+}
+
+
+
+/* One plate, on its own. Built on demand from the same entry data the index
+   uses, so there is no second copy of the content to keep in step. */
+function renderSolo(i){
+  const { e, kind, n } = SEQ[i];
+  MODES.entry.innerHTML = `
+    <article class="solo">
+      <div class="solo-mark">${kind === "insight" ? "INS " : "ACT "}${n}</div>
+      <h2 class="solo-title">${esc(e.title)}</h2>
+      ${e.takeaway ? `<p class="solo-take">${esc(e.takeaway)}</p>` : ''}
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+      <nav class="solo-nav">
+        <button class="rail-btn" id="soloPrev" type="button" aria-label="Previous plate"${i === 0 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+        <span class="rail-count">${String(i+1).padStart(2,'0')} / ${String(SEQ.length).padStart(2,'0')}</span>
+        <button class="rail-btn" id="soloNext" type="button" aria-label="Next plate"${i === SEQ.length-1 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+      </nav>
+    </article>`;
+  soloAt = i;
+  el('soloPrev').addEventListener('click', () => soloGo(-1));
+  el('soloNext').addEventListener('click', () => soloGo(1));
+}
+let soloAt = -1;
+function soloGo(step){
+  const j = soloAt + step;
+  if(j < 0 || j >= SEQ.length) return;
+  location.hash = SEQ[j].e.id;      // through the hash, so back works
+}
+
+function route(){
+  const hash = location.hash.replace(/^#/, "");
+
+  if((hash === "plates" || hash === "index") && MODES[hash]){
+    setMode(hash);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  if(hash === ""){ setMode(FIRST); return; }
+
+  // A plate's own page. This is where tapping a plate lands.
+  const at = SEQ.findIndex(x => x.e.id === hash);
+  if(at > -1){
+    renderSolo(at);
+    setMode('entry');
+    // Land on the plate, not the top of the page. Tapping a drawing should put
+    // that drawing under the bar with the first paragraph already showing
+    // beneath it, so you read on from there instead of scrolling back down past
+    // the jacket. Measured off #mode-entry, whose top sits above the image, so
+    // it is stable whether or not the image has loaded yet.
+    const bar = document.querySelector('.bar');
+    const top = MODES.entry.getBoundingClientRect().top + window.scrollY
+              - (bar ? bar.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: booted ? 'smooth' : 'auto' });
+    return;
+  }
+
+  // Anything else that names something on the index — a vocabulary row.
+  if(MODES.index){
+    setMode("index");
+    const target = document.getElementById(hash);
+    if(target){
+      const top = target.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
+      return;
+    }
+  }
+  setMode(FIRST);
+}
+
+window.addEventListener('hashchange', route);
+route();
+requestAnimationFrame(() => {           // hand the indicator its transition back
+  barInd.classList.remove('instant');
+  booted = true;
+});
+// The words change width when the real mono face lands — re-measure once.
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => {
+    const on = document.querySelector('.bar a.on');
+    if(on){
+      barInd.classList.add('instant');
+      placeIndicator(on.dataset.mode);
+      requestAnimationFrame(() => barInd.classList.remove('instant'));
+    }
+  });
+}
+addEventListener('resize', () => {
+  barInd.classList.add('instant');
+  placeIndicator(document.querySelector('.bar a.on').dataset.mode);
+  requestAnimationFrame(() => barInd.classList.remove('instant'));
+});
+
+/* ── Plates rail ─────────────────────────────────────────────────────
+   Swipe on touch; arrows and the keyboard on anything with a pointer. The
+   snap is CSS, so the gesture stays native and the JS only reports position. */
+const rail = el('rail');
+const MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function railIndex(){
+  if(!rail) return 0;
+  const r = rail.getBoundingClientRect(), mid = r.left + r.width / 2;
+  let best = 0, bd = Infinity;
+  [...rail.children].forEach((t, i) => {
+    const b = t.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid);
+    if(d < bd){ bd = d; best = i; }
+  });
+  return best;
+}
+function railSync(){
+  if(!rail) return;
+  const i = railIndex(), n = rail.children.length;
+  el('railCount').textContent = String(i + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+  el('railPrev').disabled = i === 0;
+  el('railNext').disabled = i === n - 1;
+  [...rail.children].forEach((t, k) => t.classList.toggle('cur', k === i));
+}
+function railGo(step){
+  if(!rail) return;
+  const t = rail.children[Math.max(0, Math.min(rail.children.length - 1, railIndex() + step))];
+  if(!t) return;
+  const r = rail.getBoundingClientRect(), b = t.getBoundingClientRect();
+  rail.scrollBy({ left: (b.left + b.width/2) - (r.left + r.width/2), behavior: MOTION ? 'smooth' : 'auto' });
+}
+
+if(rail){
+  let ticking = false;
+  rail.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { railSync(); ticking = false; });
+  }, { passive: true });
+
+  el('railPrev').addEventListener('click', () => railGo(-1));
+  el('railNext').addEventListener('click', () => railGo(1));
+
+  // A swipe must not count as a tap on the plate underneath it.
+  let downX = 0, downY = 0;
+  rail.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; }, { passive: true });
+  rail.addEventListener('click', e => {
+    if(Math.abs(e.clientX - downX) > 10 || Math.abs(e.clientY - downY) > 10){
+      e.preventDefault(); e.stopPropagation();
+    }
+  }, true);
+
+  addEventListener('keydown', e => {
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const step = e.key === 'ArrowRight' ? 1 : -1;
+    if(MODES.plates && !MODES.plates.hidden){ e.preventDefault(); railGo(step); }
+    else if(!MODES.entry.hidden){ e.preventDefault(); soloGo(step); }
+  });
+  addEventListener('resize', railSync);
+  railSync();
+}
+
+/* ── Theme ───────────────────────────────────────────────────────────
+   Dark by default, and it shares the shelf's storage key — pick a side once
+   and every page in Book HQ agrees. The guard keeps it working where storage
+   is blocked (private browsing). */
+const THEME_BG = { light: "#F4F5F7", dark: "#0D0F13" };
+const themeBtn = el('themeBtn');
+const TS = 'stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const TICON = {
+  sun:`<svg viewBox="0 0 24 24"><circle ${TS} cx="12" cy="12" r="4"/><path ${TS} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${TS} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`
+};
+
+function paintTheme(theme){
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.innerHTML = dark ? TICON.sun : TICON.moon;
+  themeBtn.setAttribute('aria-label', dark ? "Switch to light mode" : "Switch to dark mode");
+  el('themeColor').setAttribute('content', THEME_BG[dark ? "dark" : "light"]);
+}
+
+let theme = "dark";
+try{ theme = localStorage.getItem('bookhq-theme') || "dark"; }catch(e){}
+paintTheme(theme);
+
+themeBtn.addEventListener('click', () => {
+  theme = theme === "dark" ? "light" : "dark";
+  // Ease the colour change for the length of the swap only, so the transition
+  // never sits on the page slowing everything else down.
+  document.body.classList.add('theming');
+  themeBtn.classList.remove('swap'); void themeBtn.offsetWidth; themeBtn.classList.add('swap');
+  paintTheme(theme);
+  setTimeout(() => document.body.classList.remove('theming'), 520);
+  try{ localStorage.setItem('bookhq-theme', theme); }catch(e){}
+});
+</script>
+</body>
+</html>
