@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D0F13" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Book HQ</title>
+<!-- Applied before first paint so a stored dark choice never flashes light. -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-wght-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/poppins-latin-600-normal.woff2" crossorigin>
+<style>
+/* ── Type ────────────────────────────────────────────────────────────
+   Same two faces as the shelf: Poppins carries titles and labels, Inter
+   carries everything you read. Both ship with the page, so it opens the
+   same offline and never flashes fallback type on the way in. */
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* ── Tokens ──────────────────────────────────────────────────────────
+   Lifted from the shelf so the two pages are one surface. Only --accent
+   would change per book if a book ever needed its own. */
+:root,:root[data-theme="light"]{
+  --bg:#F4F5F7; --surface:#FFFFFF; --field:#EDF0F4; --coverbg:#EAEEF3;
+  --ink:#171A21; --muted:#697386; --prose:#3D4757; --line:#E6E8EE;
+  --accent:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+  --plate:20rem; --measure:33rem;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:Poppins,var(--ui);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --field:#1E222A; --coverbg:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --prose:#C8CED8; --line:#262B33;
+  --accent:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:7.5rem}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
+
+/* ── Motion ─────────────────────────────────────────────────────────
+   One easing curve for everything that opens, moves or arrives. */
+:root{ --ease:cubic-bezier(.32,.72,0,1); }
+@keyframes lift{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes rise{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+header{animation:lift .55s var(--ease) both}
+.bar{animation:fade .5s ease .1s both}   /* opacity only — a transform breaks sticky */
+main{animation:lift .55s var(--ease) .16s both}
+body.theming,body.theming *{
+  transition:background-color .45s ease,color .45s ease,border-color .45s ease !important;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+p{margin:0}
+a{color:var(--accent);text-decoration:none}
+img{border:0}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem}
+
+/* ── Header ─────────────────────────────────────────────────────────
+   The jacket stacks above the title. Beside it the title breaks onto two
+   lines and the byline onto three. It carries the shelf tile's treatment —
+   same radius, same hairline, same shadow — so arriving here feels like the
+   tile you tapped got bigger. */
+header{padding:1.4rem 0 1.4rem}
+/* Back to the shelf. Above the jacket rather than in the mode bar — this link
+   leaves the page, and the bar is for moving around inside it. */
+.home{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:44px;
+  font-family:var(--display);font-weight:500;font-size:.8rem;letter-spacing:.01em;
+  color:var(--muted);transition:color .2s ease;
+}
+.home:hover{color:var(--ink)}
+.home:active{opacity:.6}
+.home .ar{font-size:.95rem;line-height:1}
+.masthead{display:block}
+.cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
+  border-radius:14px;overflow:hidden;background:var(--coverbg);
+  border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+/* The jacket is an object, not ink — never inverted, only dimmed so it sits
+   in a dark page instead of glaring out of it. */
+:root[data-theme="dark"] .cover img{filter:brightness(.86)}
+.book-title{margin:0;font-family:var(--display);font-weight:600;
+  font-size:1.62rem;line-height:1.22;letter-spacing:-.014em;color:var(--ink)}
+.byline{margin-top:.35rem;font-size:.94rem;color:var(--muted)}
+.subtitle{margin-top:.15rem;font-size:.88rem;color:var(--muted);opacity:.78}
+
+/* Companion files are things you go and get, so they read as buttons. */
+.links{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.55rem}
+.links:empty{display:none}
+.links a{
+  display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  max-width:22rem;   /* a single companion file shouldn't span the whole column */
+  background:var(--field);border:1px solid var(--line);border-radius:12px;
+  font-weight:500;font-size:.86rem;color:var(--ink);
+  transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
+}
+.links a .mk{flex:none;color:var(--accent);font-size:.95rem;line-height:1}
+.links a:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.links a:active{opacity:.6}
+
+/* ── Mode bar ───────────────────────────────────────────────────────
+   No boxes. Three words and a hairline that travels to the live one. */
+.bar{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  margin:0 -1.1rem;padding:.45rem 1.1rem;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.2rem;
+}
+.bar a{
+  white-space:nowrap;
+  font-family:var(--display);font-weight:500;font-size:.76rem;letter-spacing:.01em;
+  padding:0 .75rem;min-height:44px;display:flex;align-items:center;
+  background:transparent;color:var(--muted);transition:color .3s ease;
+}
+.bar a.on{color:var(--ink)}
+@media (max-width:430px){
+  .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
+  .bar a{padding:0 .55rem;font-size:.74rem}
+}
+.bar a:active{opacity:.55}
+.bar-ind{
+  position:absolute;left:0;bottom:0;height:2px;background:var(--accent);border-radius:2px;
+  transition:transform .42s var(--ease),width .42s var(--ease);
+  transform-origin:left center;pointer-events:none;
+}
+.bar-ind.instant{transition:none}
+#themeBtn{
+  margin-left:auto;flex:none;width:44px;height:44px;border-radius:10px;
+  display:grid;place-items:center;padding:0;
+  background:transparent;color:var(--muted);border:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,opacity .2s ease;
+}
+#themeBtn:hover{background:var(--field);color:var(--ink)}
+#themeBtn:active{opacity:.5}
+#themeBtn svg{width:20px;height:20px}
+#themeBtn.swap{animation:fade .38s ease both}
+
+/* ── Shared section furniture ───────────────────────────────────────── */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sec-intro{margin:0 0 1rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.sec-intro + .sec-intro{margin-top:-.25rem}
+section{scroll-margin-top:7.5rem}
+.open-sec .sec-head{padding-bottom:.8rem}
+.coll-sec .sec-head{padding-bottom:.6rem}
+
+/* ── Argument ───────────────────────────────────────────────────────
+   The question is the one hero on the page. It gets the air to act like it. */
+#argument{padding:2.6rem 0 .4rem;scroll-margin-top:7.5rem}
+#argument .q{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.32;
+  letter-spacing:-.018em;color:var(--ink);text-wrap:pretty}
+#argument .a{margin:1.05rem 0 0;max-width:var(--measure);font-size:1.16rem;line-height:1.75;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+#argument .a + .a{margin-top:1.25rem}
+
+/* ── Framework ──────────────────────────────────────────────────────── */
+#framework{padding-top:2.2rem}
+.fw-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fw-mark{flex:none;width:2rem;font-family:var(--display);font-weight:600;color:var(--accent)}
+.fw-mark.seq{font-size:.95rem;line-height:1.5}
+.fw-mark.letter{font-size:1.05rem;line-height:1.4}
+.fw-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.fw-gloss{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Insights / Actions ─────────────────────────────────────────────
+   Each entry is a card, the same object the shelf is built from. */
+#insights,#actions,#vocabulary{padding-top:2.4rem}
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:.6rem;scroll-margin-top:7.5rem;
+  transition:box-shadow .2s ease;
+}
+.entry[data-open="1"]{box-shadow:var(--shadow-hover)}
+.entry-head{display:flex;gap:.85rem;align-items:baseline;
+  padding:1rem 2.6rem 1rem 1rem;cursor:pointer;position:relative}
+.entry-mark{flex:none;width:2.6rem;font-family:var(--display);font-weight:500;
+  font-size:.66rem;letter-spacing:.09em;color:var(--muted)}
+.entry-title{flex:1;margin:0;font-family:var(--display);font-weight:600;font-size:1.03rem;
+  line-height:1.34;letter-spacing:-.011em;text-wrap:pretty;transition:opacity .18s ease}
+.entry-head:active .entry-title,.entry-head:active .entry-mark{opacity:.55}
+
+/* The sign is two hairlines. Opening rotates the upright onto the crossbar and
+   fades it, so a plus resolves into a minus rather than being swapped for one. */
+.entry-sign{position:absolute;right:1rem;top:1.15rem;width:1rem;height:1.4rem}
+.entry-sign i{position:absolute;left:50%;top:50%;background:var(--accent);
+  transition:transform .34s var(--ease),opacity .34s var(--ease)}
+.entry-sign i:first-child{width:.72rem;height:1.5px;border-radius:2px;transform:translate(-50%,-50%)}
+.entry-sign i:last-child{width:1.5px;height:.72rem;border-radius:2px;transform:translate(-50%,-50%)}
+.entry[data-open="1"] .entry-sign i:last-child{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+
+/* Height eases via grid rows — no measuring, and it interrupts cleanly. */
+.entry-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .44s var(--ease)}
+.entry[data-open="1"] .entry-wrap{grid-template-rows:1fr}
+.entry-body{overflow:hidden;min-height:0;padding:0 1rem;opacity:0;transform:translateY(5px);
+  transition:opacity .3s ease,transform .34s var(--ease)}
+.entry[data-open="1"] .entry-body{opacity:1;transform:none;transition-delay:.08s}
+.entry-body > :last-child{margin-bottom:1.35rem}
+/* Reading type. Set for a dyslexic reader first, and these numbers are the
+   whole of it — do not tune them by eye:
+     measure     ~58 characters. Past ~65 the return sweep starts missing lines.
+     leading     1.75. The gap between lines has to beat the gap between words.
+     tracking    a touch positive. Letters that touch get read as one shape.
+     paragraph   a full blank line, so there is always a place to rest.
+     colour      --prose, never --muted. Muted is for labels and counters. */
+.lede,.evidence,.op-p{
+  max-width:var(--measure);font-size:1.13rem;line-height:1.75;
+  letter-spacing:.008em;word-spacing:.02em;text-wrap:pretty;
+}
+.lede{color:var(--ink)}
+.evidence{color:var(--prose)}
+.lede + .lede,.evidence + .evidence,.lede + .evidence{margin-top:1.25rem}
+/* The plate opens the body — the drawing before the prose that unpacks it. */
+.entry figure{margin:.15rem 0 1.2rem;width:min(var(--plate),100%)}
+.entry figure img{display:block;width:100%}
+/* What it changes in practice. A filled pill promises a short pull-line; these
+   run eighty to a hundred words, so the promise broke every time. A rule down
+   the side marks the same passage without pretending it is a caption. */
+.operative{margin-top:1.35rem;padding-left:1rem;border-left:2px solid var(--accent)}
+.op-p{margin:0;color:var(--ink)}
+.op-p + .op-p{margin-top:1.25rem}
+.caveat{max-width:var(--measure);margin-top:1.1rem;font-size:1rem;line-height:1.7;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.caveat + .caveat{margin-top:1.25rem}
+
+/* ── Vocabulary ─────────────────────────────────────────────────────── */
+.voc-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  scroll-margin-top:7.5rem}
+.voc-mark{flex:none;width:0}
+.voc-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.voc-def{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Plates ─────────────────────────────────────────────────────────
+   A rail you swipe, not a column you scroll. One drawing at a time, snapped
+   to centre, and only that one visible — the neighbours stay in the flow so
+   the native snap still works, but they are faded out and made untappable so
+   nothing competes with the plate you are looking at. The drawings sit
+   straight on the paper — they are the interface in this view, so the
+   container gets out of their way. */
+#plates{padding:1.9rem 0 0}
+.rail-wrap{position:relative}
+.rail{
+  --slide:min(30rem,78vw);
+  display:flex;gap:1.6rem;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  margin:0 -1.1rem;padding:0 calc(50% - var(--slide)/2 + 1.1rem);
+}
+.rail::-webkit-scrollbar{display:none}
+.tile{
+  flex:0 0 var(--slide);scroll-snap-align:center;
+  background:transparent;padding:0;display:block;min-width:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s var(--ease);
+}
+/* Only the centred plate is visible or tappable. The rest keep their place in
+   the rail so scroll-snap still has something to snap to. NOTE: `act` on a
+   tile means "action tile", not "active" — the centred one is `cur`. */
+.tile.cur{opacity:1;pointer-events:auto}
+.tile.cur:active{opacity:.55}
+.tile img{display:block;width:100%;max-width:100%;pointer-events:none;-webkit-user-drag:none}
+.tile .cap{display:block;padding-top:.7rem;font-family:var(--display);font-weight:500;
+  font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
+.tile.act .cap{color:var(--accent)}
+.tile.empty{min-height:7.5rem;border:1px dashed var(--line);border-radius:14px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:.6rem}
+.tile.empty .ph{font-size:.74rem;line-height:1.4;color:var(--muted)}
+.enter .rail{animation:fade .45s var(--ease) both}
+
+/* Where you are in the set, and the only two controls. */
+.rail-foot{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:1.1rem 0 .2rem}
+.rail-count{font-family:var(--display);font-weight:500;font-size:.75rem;letter-spacing:.08em;
+  color:var(--muted);min-width:4.2rem;text-align:center;font-variant-numeric:tabular-nums}
+.rail-btn{
+  width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease,opacity .2s ease;
+}
+.rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
+.rail-btn:disabled{opacity:.32;cursor:default}
+.rail-btn svg{width:18px;height:18px}
+/* The buttons stay on touch as well. They used to be hidden there because the
+   peeking neighbours advertised the swipe; with the neighbours hidden, these
+   and the counter are the only sign there is more than one plate. */
+@media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
+
+/* ── One plate on its own ───────────────────────────────────────────
+   Arrived at by tapping a plate. One drawing, its own text, and a way to the
+   next one. Nothing else competes with it — that is the whole point of the
+   view, so resist adding anything here. */
+#mode-entry{padding:1.9rem 0 0}
+.solo-mark{font-family:var(--display);font-weight:500;font-size:.66rem;
+  letter-spacing:.09em;color:var(--muted)}
+.solo-title{margin:.45rem 0 0;font-family:var(--display);font-weight:600;
+  font-size:1.32rem;line-height:1.3;letter-spacing:-.016em;color:var(--ink);text-wrap:pretty}
+/* The deck. One sentence carrying the point, above the drawing, so the entry
+   can be taken in without committing to three hundred words. A newspaper deck,
+   not a second headline: the reading face, not the display one, and lighter
+   than the title above it. `takeaway` is optional — a book without one loses
+   the line and nothing else. */
+.solo-take{margin:.85rem 0 0;max-width:var(--measure);font-size:1.22rem;line-height:1.55;
+  letter-spacing:.004em;color:var(--ink);text-wrap:pretty}
+.solo figure{margin:1.5rem auto;width:min(30rem,100%)}
+.solo figure img{display:block;width:100%}
+.solo-nav{display:flex;align-items:center;justify-content:center;gap:.9rem;
+  margin-top:2.2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.solo .operative{margin-top:1.2rem}
+
+/* ── Plates in either paper ─────────────────────────────────────────
+   The drawings ship as ink on a transparent ground, so they need no blend
+   mode — which also means nothing above them can quietly break them. Dark
+   paper just inverts the ink. */
+:root[data-theme="dark"] .entry figure img,
+:root[data-theme="dark"] .solo figure img,
+:root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
+
+footer{height:calc(4rem + env(safe-area-inset-bottom))}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
+    <div class="masthead">
+      <div class="cover" id="bCover" hidden></div>
+      <div>
+        <h1 class="book-title" id="bTitle"></h1>
+        <p class="byline" id="bByline"></p>
+        <p class="subtitle" id="bSub"></p>
+      </div>
+    </div>
+    <nav class="links" id="bLinks"></nav>
+  </header>
+
+  <nav class="bar">
+    <a href="#plates" data-mode="plates">Plates</a>
+    <a href="#index" data-mode="index">The book</a>
+    <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
+    <span class="bar-ind instant" id="barInd"></span>
+  </nav>
+
+  <main>
+    <div id="mode-plates"></div>
+    <div id="mode-index" hidden></div>
+    <div id="mode-entry" hidden></div>
+  </main>
+
+  <footer></footer>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   THE BOOK. One object — this is the only thing that changes per book.
+   Add an insight / action / term by adding one entry to the array.
+   `plate` and `caveat` are optional; omitting either degrades cleanly.
+   ════════════════════════════════════════════════════════════════════ */
+const BOOK = {
+ "slug": "confident-mind",
+ "title": "The Confident Mind",
+ "subtitle": "A Battle-Tested Guide to Unshakable Performance",
+ "author": "Nathaniel Zinsser",
+ "cover": "img/cover.jpg",
+ "argument": {
+  "question": "Where does the certainty you need at the moment of truth actually come from?",
+  "answer": [
+   "Not from what has happened to you. From how you have been thinking about what has happened to you. Confidence is not a trait, a mood, or a reward for a good week. It is a running total — the sum of every thought you have entertained about yourself and your work, changing with each new entry, and therefore something you deposit into or withdraw from every hour of every day.",
+   "That is why a defensive end with ten sacks in ten games can believe he is terrible, and why a figure skater can fall through his warm-up and skate a gold-medal program twenty minutes later. Nothing that happens enters the account directly. A thought about it does, and the thought is yours to choose.",
+   "The practical definition follows from this: confidence is a sense of certainty about your ability that lets you bypass conscious thought and execute unconsciously. Not a feeling added on top of the skill — the absence of everything that would get in the skill's way."
+  ]
+ },
+ "framework": {
+  "name": "The Mental Bank Account",
+  "intro": [
+   "One metaphor carries the whole book, and it is meant literally rather than poetically. A balance rises and falls by deposits and withdrawals; so does a sense of certainty. What follows is the account's full operation — what it sits on, the three sources you fund it from, how it is defended, and how it is spent. The order matters. You cannot open the vault on game day and find money you never put in."
+  ],
+  "steps": [
+   {
+    "mark": "1",
+    "term": "The four foundations",
+    "gloss": "Four realities you stop arguing with before any of the rest works: your thoughts drive your physical state, you will never be perfect, your nervous system will fire up before anything that matters, and practice pays out late and unevenly."
+   },
+   {
+    "mark": "2",
+    "term": "Deposits from the past",
+    "gloss": "Your memory is a video library and you are the editor. The Top 10 list mines the whole career; the daily ESP entry banks one moment of effort, one success and one instance of progress; the immediate progress review carries the best rep of the last drill into the next one."
+   },
+   {
+    "mark": "3",
+    "term": "Deposits in the present",
+    "gloss": "Affirmations — statements about the reality you want, phrased as if it is already here. First person, present tense, positive, precise, powerful. Hung on a trigger you meet constantly, so the count runs into the thousands rather than the dozens."
+   },
+   {
+    "mark": "4",
+    "term": "Deposits on the future",
+    "gloss": "Envisioning: a controlled, multi-sensory, emotionally genuine rehearsal run from inside your own body. Detailed enough that the real arena feels like a return rather than an arrival."
+   },
+   {
+    "mark": "5",
+    "term": "Anti-theft",
+    "gloss": "Explain every setback as temporary, limited and non-representative. Get in the last word on your own negative self-talk — acknowledge it, stop it, replace it. Then go further with the shooter's mentality, where a miss makes the next hit feel more likely rather than less."
+   },
+   {
+    "mark": "6",
+    "term": "Opening the vault",
+    "gloss": "The pre-performance routine: take stock of what is actually in the account, take stock of the situation — the task, the hidden opponent, the room — and then decide that you have enough. Saver to spender. Workhorse to racehorse."
+   },
+   {
+    "mark": "7",
+    "term": "Spending it, engagement by engagement",
+    "gloss": "CBA before every rep, pitch, shift, patient or meeting. Cue your conviction with a short powerful phrase, breathe your body, attach your attention to the one thing that matters right now."
+   },
+   {
+    "mark": "8",
+    "term": "The audit",
+    "gloss": "The after action review, in three questions. What happened. So what does that tell you. Now what will you do. It ends by banking the highlights, which is what makes the next first victory cheaper than the last one."
+   }
+  ]
+ },
+ "vocabulary": {
+  "intro": [
+   "Most of these are ordinary words used with unusual precision, and the precision is the point. A performer who has a name for the thing that just happened in their head can do something about it."
+  ],
+  "terms": [
+   {
+    "term": "The first victory",
+    "def": "Sun Tzu's phrase, and the book's organising idea: the victory won in your own mind before you enter the arena. Victorious warriors win first and then go to war; defeated warriors go to war first and then seek to win."
+   },
+   {
+    "term": "Confidence",
+    "def": "A sense of certainty about your ability that allows you to bypass conscious thought and execute unconsciously. Note what is absent from this definition: any requirement that the certainty be justified."
+   },
+   {
+    "term": "The mental bank account",
+    "def": "The running total of every thought you have entertained about yourself and your field. It rises on memories of effort, success and progress, and falls on replayed setbacks and rehearsed future trouble."
+   },
+   {
+    "term": "The daily ESP",
+    "def": "A five-minute end-of-day journal entry with three headings: effort, success, progress. One instance of each, however small. Three deposits minimum, every day, regardless of what the day looked like."
+   },
+   {
+    "term": "Immediate progress review",
+    "def": "The same filtering done between activities rather than at the end of the day. Take the best rep of the drill you just finished into the drill you are walking to. A dozen small deposits per session instead of one."
+   },
+   {
+    "term": "Affirmation",
+    "def": "A statement of the reality you want, made in the present tense as though it is already true. To affirm is to say yes. Five specifications: first person, present tense, positive, precise, powerful."
+   },
+   {
+    "term": "Envisioning",
+    "def": "The deliberate production of an emotionally powerful, multi-sensory imagined experience of a desired event — sight, sound, touch, smell, position and movement, not pictures alone. Distinguished from daydreaming by control, detail and genuine feeling."
+   },
+   {
+    "term": "Explanatory style",
+    "def": "Martin Seligman's term for how you explain the causes of what happens to you. Pessimists read bad events as permanent, pervasive and personal. The corrective is to read them as temporary, limited and non-representative."
+   },
+   {
+    "term": "The shooter's mentality",
+    "def": "Two beliefs held at once, neither of them logical: a miss means the next one is more likely to go in, and a hit means the next one is too. Not defensible as probability. Extremely effective as a state of mind."
+   }
+  ]
+ },
+ "insights": [
+  {
+   "id": "insight-1",
+   "n": 1,
+   "title": "Certainty is quiet",
+   "lede": [
+    "Confidence is not a loud belief laid over a skill. It is the absence of everything that would interfere with the skill. The working definition is a sense of certainty about your ability that allows you to bypass conscious thought and execute unconsciously — and the reason it has to be phrased that way is that human beings are wired to execute well-learned skills without watching themselves do it."
+   ],
+   "plate": "img/insight-01.png",
+   "alt": "A flight of stairs in profile. A stick figure part way down, mid-stride, with a thick line running from its head, looping down and wrapping twice around its own ankles, pulled taut. At the foot of the stairs the same stick figure lies sprawled.",
+   "evidence": [
+    "The psychologist Sian Beilock offers a demonstration anyone can run. If you were shuffling quickly down a flight of stairs and someone asked you to think about exactly what both your knees were doing, there is a good chance you would end up in a pile at the bottom.",
+    "You already perform far more delicate things with total confidence. Ten fingers tie a shoelace through a sequence of tensions and releases and leave the right length of lace at the end, and no part of that reaches your conscious mind."
+   ],
+   "operative": [
+    "Conscious, deliberate thought consumes a sizeable portion of the nervous system's capacity to take in what is happening, retrieve the right response, and send instructions back out to the hands, feet, throat and tongue.",
+    "Every thought about how you are doing is taken out of the same budget as the doing. This is also why competence and confidence are different problems. The student who has learned all the material but doubts she has will not recall it cleanly, because the chatter blocks the retrieval."
+   ],
+   "takeaway": "Watch your own knees on the stairs and you fall. Certainty is what is left when the commentary stops."
+  },
+  {
+   "id": "insight-2",
+   "n": 2,
+   "title": "Confidence is a running total, and nothing enters it by itself",
+   "lede": [
+    "It is tempting to think of confidence as a balance that events adjust for you — win and it goes up, lose and it goes down. It does not work that way. Nothing that happens to you enters the account. A thought about what happened enters the account. Success builds confidence only if you let it, and failure erodes it only if you let it."
+   ],
+   "plate": "img/insight-02.png",
+   "alt": "An open bank vault door with a bare interior and empty shelves. On the floor outside it, a tall heap of trophies and medals. A stick figure stands beside the heap looking into the empty vault.",
+   "evidence": [
+    "In 1998 Michael Strahan recorded ten sacks in ten games, coming off an All-Pro season in which he led the league with fourteen. He told Sports Illustrated that he thought he sucked, that it was like we had no hope.",
+    "Asked what being on the field looked like in his mind, he described chasing the quarterback, almost getting there, not getting there, and then everything goes black. Twenty years of highlights were sitting outside the account because the picture he replayed was of the near miss."
+   ],
+   "operative": [
+    "The same asymmetry runs the other way, which is the encouraging half. Ilya Kulik's warm-up before the 1998 Olympic short program was a mess — slips, wobbles, no clean jumps. He skated near-perfect minutes later and won gold. Asked where the confidence came from, he shrugged: just from my mind. Two performers, opposite raw material, and in both cases the balance tracked what they chose to replay rather than what had actually occurred."
+   ],
+   "takeaway": "Ten sacks in ten games and he thought he was terrible. Nothing enters the account except a thought."
+  },
+  {
+   "id": "insight-3",
+   "n": 3,
+   "title": "The jitters are the delivery, not the warning",
+   "lede": [
+    "The racing heart, the sweating palms, the twitching hands and the stomach turning over are almost universally read as evidence that something is wrong. They are the opposite. They are the receipt for a delivery your body just made because it worked out that something important is about to happen."
+   ],
+   "plate": "img/insight-03.png",
+   "alt": "A stick figure standing at a starting line with a fuel pump nozzle inserted into its side. A hose runs back to a pump whose dial needle is swung fully over. Short motion lines shake at the figure's hands and feet, and three butterfly shapes sit at its belly.",
+   "evidence": [
+    "Zinsser lays out the mechanism plainly. The unconscious part of the brain that registers an upcoming performance signals the adrenal glands, two small wads of tissue above the kidneys, whose one job is to release adrenaline into the bloodstream. The heart, receiving it, pumps harder and louder.",
+    "Muscles primed by faster neural signalling twitch in anticipation. The hundred million neurons connecting brain to gut fire faster, and the smooth muscle in the stomach vibrates. Pupils widen. What you feel is the dose arriving, custom-made, correctly timed, and free."
+   ],
+   "operative": [
+    "The misreading is learned, and learned early. Your first experiences of performance came before you had any skill, so arousal was reliably followed by disappointment and the two got wired together. It can be rewired.",
+    "Michael Johnson, asked after the 1996 Games whether his heart was pounding in the blocks, said definitely, I was nervous — and when I'm nervous, I'm comfortable. Bill Belichick, forty-four years and six Super Bowls in, admitted he still gets nervous before every game. Expecting it is what makes it usable."
+   ],
+   "takeaway": "The pounding heart is adrenaline arriving on time. Champions expect the feeling and read it as fuel."
+  },
+  {
+   "id": "insight-4",
+   "n": 4,
+   "title": "The plateau is where the improvement is made",
+   "lede": [
+    "Practice does not pay out in a straight line. It pays out in long flat stretches interrupted by sudden bursts — and the longer you stay in a field, the longer the flats get and the smaller the bursts. This is the shape of every serious pursuit and almost nobody is told about it, which is why so many people conclude from a plateau that they do not have what it takes."
+   ],
+   "plate": "img/insight-04.png",
+   "alt": "In the upper half, a line running flat for a long stretch, then stepping up, then flat again, then a smaller step. Directly beneath the long flat stretch, a single cable with coils of insulation being wrapped around it, thickest under the middle of the flat.",
+   "evidence": [
+    "Neuroanatomy offers an account of where the work goes. Each nerve fibre is sheathed in myelin, a fatty insulation that behaves like the covering on household wiring; the more a circuit fires, the more myelin is laid down, and the faster and more precisely the signal travels through it.",
+    "Zinsser cites a figure of up to a hundredfold increase in impulse speed once the sheath is thick enough. The catch is that laying it down is slow. The change is real, continuous and invisible."
+   ],
+   "operative": [
+    "George Leonard put it in terms of learning systems: at the threshold there is an apparent spurt of learning, but this learning has been going on all along. The burst is not when you improve. It is when the accumulated improvement becomes visible.",
+    "That reframes the flat stretch entirely — not something to be endured until progress resumes, but the place progress is manufactured. Everyone you are competing against is on the same schedule. Working with it slightly better than they do is the whole advantage."
+   ],
+   "takeaway": "The flat stretch is not stalled progress. It is where the wiring thickens, invisibly, until the jump shows up."
+  },
+  {
+   "id": "insight-5",
+   "n": 5,
+   "title": "A rep you imagine runs down the same wire as a rep you take",
+   "lede": [
+    "Vivid imagination is not a private slideshow with no consequences. It engages many of the same neural structures the real action engages, and the body responds accordingly — which means mental rehearsal is a way of getting reps that cost your joints nothing, and also that rehearsed failure carves its groove just as faithfully as rehearsed success."
+   ],
+   "plate": "img/insight-05.png",
+   "alt": "A stick figure in profile with a bare plate on the table in front of it. Above its head, a thought bubble containing a lemon half. A single line runs from the lemon in the bubble down through the head and neck to a small gland at the jaw, where one drop is falling.",
+   "evidence": [
+    "Zinsser's demonstration is a lemon. Picture one on a plate, feel its waxy skin, cut it, lift a half to your face, bite into it. Your nostrils flare, the muscles around your mouth tighten, and you produce saliva — for a fruit that does not exist.",
+    "In 1929 Edmund Jacobson recorded electrical activity in the thigh and calf of a sprinter lying still on a table imagining a hundred-metre dash; the extensors and flexors fired in the same alternating sequence as in running. A more recent study by Kai Miller's group at the University of Washington found imagined finger movements producing roughly a quarter of the motor cortex activity of real ones."
+   ],
+   "operative": [
+    "Two things follow. Control is not optional — if an image of a mistake appears, you do what a director does and call cut, then reset the scene and run it to the ending you want.",
+    "And perspective matters: rehearse from inside your own body, seeing what you would actually see, rather than watching yourself from the stands. Picture a rollercoaster from the car park and then from the front seat. Only one of those changes your heart rate."
+   ],
+   "takeaway": "Bite an imaginary lemon and you really salivate. Rehearsed reps run down the wire the real ones use."
+  },
+  {
+   "id": "insight-6",
+   "n": 6,
+   "title": "A belief that helps you beats a belief that is accurate",
+   "lede": [
+    "There is a moment in every performance where strict logic stops being useful. Logic says the best predictor of future behaviour is past behaviour, so the opponent who beat you will beat you again and the shot you have been missing will keep missing. Accuracy about what has already happened has no vote on what happens next, and treating it as though it does is often just negativity wearing a lab coat."
+   ],
+   "plate": "img/insight-06.png",
+   "alt": "A basketball hoop on a post. Beneath it a heap of balls resting on the ground. Beside the heap a tall upright gauge, with a marker pushed near the top of the gauge by the height of the heap. A stick figure stands with one ball raised, looking at the hoop.",
+   "evidence": [
+    "Bob Rotella once assembled a panel of Virginia's best athletes to describe their most confident moment. One of them, Stuart Anderson, told a story about a high school playoff game in which he had made one shot from fourteen. Score tied, final timeout, and the coach drew up the last play for somebody else. Anderson interrupted him: give me the ball, I want the shot, I'm due to get one in.",
+    "He got the ball. He made it. The graduate students, all of them studying probability, asked how missing could improve his odds. After missing four or five in a row, he said, I figured my odds were way better than fifty percent. And on a hot streak? Then I think I'm going to make everything I look at."
+   ],
+   "operative": [
+    "You have run this software before. At six years old you held a belief that you could ride a bicycle with no evidence for it and recent evidence against it, and that belief is the only reason you got back on.",
+    "Zinsser calls it constructive delusion and treats it as a prerequisite rather than a flaw. Keep logic for the small hour-by-hour decisions and the single-skill drills. Throw it out for complex execution and for long horizons, where its only function is to talk you out of trying."
+   ],
+   "takeaway": "He had made one shot from fourteen and asked for the last one. Useful beat accurate, and it went in."
+  }
+ ],
+ "actions": [
+  {
+   "id": "action-1",
+   "n": 1,
+   "title": "Put the day through the filter and keep three things",
+   "lede": [
+    "At the end of each working day, take five minutes and a notebook. Write E and record one instance of honest effort — the drill where you dialled in, the stack of paper you finally sorted. Write S and record one thing you got right, however small. Write P and record one thing you got better at, even if you did not get it right. Three deposits, every day, whatever kind of day it was."
+   ],
+   "plate": "img/action-01.png",
+   "alt": "A large funnel. A jumble of small shapes pours into the top. Below the spout, an open notebook with three ruled lines, each beginning with a large capital letter, E, S and P. Three shapes are dropping through into it.",
+   "operative": [
+    "Do the same thing at a smaller scale between activities and the count multiplies. Walking from one drill to the next, from one patient to the next, out of one class and toward another, take the single best rep of what you have just finished and carry it with you — a highlight with a very small h.",
+    "A basketball player who does this arrives at the end of practice with a dozen already banked and a better practice behind them. Tony Gwynn ran the professional version: after every game he cut his at-bats into three video files, one for solid contact, one for good decisions, and a third for the bad ones, which he deleted."
+   ],
+   "caveat": [
+    "Clients regularly say they could not find an E or an S or a P. The answer is that they are not looking carefully enough — go back through the day hour by hour and it is there. The deeper resistance is a belief that remembering your good moments is somehow improper or unrealistic. Consider what you are remembering instead."
+   ],
+   "takeaway": "Every day, bank one instance of effort, one success, one bit of progress. Five minutes, three deposits."
+  },
+  {
+   "id": "action-2",
+   "n": 2,
+   "title": "Write the statement to five specifications, then hang it on a doorway",
+   "lede": [
+    "Compose three statements about the reality you want, phrased as though it is already here. Each one must be first person, present tense, positively worded, precise, and powerful. Then write three more: one for a quality you do not yet have, one for an action you do not yet take, one for an outcome you have not yet achieved. Then attach them to something you pass constantly."
+   ],
+   "plate": "img/action-02.png",
+   "alt": "Two panels. In the first, a small card on which one line is written by a stick-figure hand, with five short tick marks down the side labelled I, NOW, YES, EXACT and STRONG. In the second, a corridor of doorways receding in perspective, a stick figure walking through one, and a coin dropping into a slot in each door frame.",
+   "operative": [
+    "Alessandra Ross, a middle-distance runner whose personal best was two minutes and two seconds, repeated I run a one fifty-six eight hundred every time she walked through a doorway for nine months. At roughly fifty doorways a day that is thirteen thousand repetitions. Within a month she noticed the self-image starting to hold.",
+    "She never ran the one fifty-six; she did set two consecutive personal bests at the Olympic trials, the only competitor in her event to do so. Dan Jansen used the other trigger — writing I love the thousand a dozen times a night for two years before finally winning his event in world record time."
+   ],
+   "caveat": [
+    "Positive wording is not a stylistic preference. I never miss my second serve and my second serve lands just inside the line sound similar and are not: the part of the brain that runs the serve recognises the active verb missing and pulls up the memories that go with it, reinforcing exactly what you were trying to avoid. State what you want more of."
+   ],
+   "takeaway": "Write it first person, present tense, positive, precise, powerful. Then say it at every doorway you pass."
+  },
+  {
+   "id": "action-3",
+   "n": 3,
+   "title": "Rehearse the breakthrough in the room where it will happen",
+   "lede": [
+    "Pick the outcome that gives you goosebumps. Find the actual room — visit it, or find photographs of it. List the handful of moments that will decide it. Then sit somewhere comfortable, settle, and run those moments in order, from inside your own body, in full sensory detail, with the emotion turned up. Finish by letting yourself enjoy the win."
+   ],
+   "plate": "img/action-03.png",
+   "alt": "Two panels. In the first, a stick figure sits in a chair with its eyes closed; a line runs from its head to a podium on which stands a solid outlined cut-out silhouette the same shape as the figure. In the second, the same podium without the line, and the stick figure stepping into that cut-out and filling it exactly.",
+   "operative": [
+    "The target is a sense of having been there before. Sylvie Bernier knew the time of her 1984 Olympic final, where the scoreboard would be, where the coaches would sit; when she reached the podium it was like I had been there before. Around twenty minutes is as long as most people can hold the control, detail and feeling required, so a short performance can be run whole and a long one has to be run as key moments.",
+    "Then rehearse the disruptions separately. Name three things that could throw you, spend ten seconds on the problem and at least thirty on getting back in control — the ratio is the point. Do enough of them and even an unrehearsed surprise finds the subroutine already built."
+   ],
+   "caveat": [
+    "This works because your nervous system takes it seriously, which means a rehearsed failure is also taken seriously. Keep the content controlled. If an image of a mistake appears, stop the scene, reset it, and run it through to the ending you want."
+   ],
+   "takeaway": "Rehearse the real room from inside your own body, then rehearse recovering from what could go wrong."
+  },
+  {
+   "id": "action-4",
+   "n": 4,
+   "title": "Explain the setback as temporary, limited, and not you",
+   "lede": [
+    "The moment something goes wrong, say three things to yourself, in this order. It happened that one time. It happened in that one place. That is not how I really am. Each sentence blocks one of the three routes by which a single bad moment turns into a general belief about yourself."
+   ],
+   "plate": "img/action-04.png",
+   "alt": "A stick figure standing on a floor with a single dark blot near its feet. Three straight barrier walls are set around the blot: one between it and a row of day-boxes stretching away to the right, one between it and the rest of the floor, and one between it and the stick figure.",
+   "operative": [
+    "The three traps are distinct and they escalate. Temporary blocks here I go again. Limited blocks now the whole day is going down the drain — the golfer who puts one drive in the trees keeps it from spreading to his irons and his putting. Non-representative blocks the last and worst one, maybe I'm not good enough.",
+    "Martin Seligman gave his Attributional Styles Questionnaire to the entire incoming West Point class of 1988; the cadets who quit during basic training or the following year had significantly more pessimistic explanatory styles than those who stayed. Maddie Burns, a college lacrosse goalkeeper, concedes seven goals in an average game and treats each one as just that one time, seven times a game."
+   ],
+   "caveat": [
+    "This is not denial and it does not dissolve responsibility. You still acknowledge what happened, you still take the consequences, and you still go and fix the thing. What you refuse is the generalisation — the move from a fact about one moment to a verdict on your whole capability."
+   ],
+   "takeaway": "It happened once, it happened there, and it is not who you are. Three sentences, three escape routes blocked."
+  },
+  {
+   "id": "action-5",
+   "n": 5,
+   "title": "Cue, breathe, attach — before every single engagement",
+   "lede": [
+    "Before each rep, pitch, shift, patient, call or meeting, run three steps in about ten seconds. Cue your conviction with a short powerful phrase. Breathe your body — belly out on the inhale, abs in on the exhale, two or three times, finishing on a strong settling breath out. Attach your attention to the single thing that matters right now, and let yourself become genuinely curious about it."
+   ],
+   "plate": "img/action-05.png",
+   "alt": "Three panels in a row. In the first, a stick figure with a speech line from its mouth carrying a short phrase in capitals. In the second, the same figure in profile with its belly pushed out and an arrow curving down and out at the belly. In the third, the same figure with two straight lines running from its eyes and converging on a single ball.",
+   "operative": [
+    "The cue is a statement, not a question, and it names a process rather than an outcome. Be a wall. Time to cruise. Do it like you know it. Here's my chance. Michael Phelps's coach Bob Bowman described watching an Olympic coach tell an already-nervous skater this is what you've worked so hard for; she was so tight the two of them missed a high five, and she skated badly.",
+    "The rival's coach made small talk and one technical point. Process talk lowers arousal; outcome talk raises it. An offensive lineman runs this sixty times in a game. A neurosurgeon runs it between the steps of an operation. Danny Brière ran it in ninety seconds on the bench between shifts."
+   ],
+   "caveat": [
+    "Breathing is the one autonomic function with a manual override, so do it properly. A correct inhale is down and out — the diaphragm drops, the belly expands on all sides, the lower ribs lift. It is not the upward shoulder lift most people were taught. The exhale is up and in, abdominals and obliques drawing toward the spine."
+   ],
+   "takeaway": "Cue the conviction, breathe belly-out then abs-in, attach your attention. Ten seconds, before every single engagement."
+  }
+ ],
+ "quickReference": [
+  {
+   "kind": "line",
+   "label": "The definition",
+   "text": "Certainty about your ability sufficient to bypass conscious thought and execute unconsciously. Confidence is the absence of interference, not an addition."
+  },
+  {
+   "kind": "line",
+   "label": "The account",
+   "text": "A running total of thoughts, not a record of events. Deposits: effort, success, progress, and the future you want. Withdrawals: replayed setbacks and rehearsed trouble."
+  },
+  {
+   "kind": "line",
+   "label": "Four foundations",
+   "text": "Thoughts drive physical state. You will never be perfect. Your nerves will fire before anything that matters. Practice pays late and unevenly."
+  },
+  {
+   "kind": "line",
+   "label": "Three sources",
+   "text": "Past — Top 10, daily ESP, immediate progress review. Present — affirmations on a trigger. Future — envisioning, and the flat tire drill."
+  },
+  {
+   "kind": "line",
+   "label": "Five specs for an affirmation",
+   "text": "First person. Present tense. Positive. Precise. Powerful. State what you want more of, never what you are trying to avoid."
+  },
+  {
+   "kind": "line",
+   "label": "Four specs for envisioning",
+   "text": "Control the content. Maximum sensory detail. Internal perspective. Real emotion. Twenty minutes is the ceiling."
+  },
+  {
+   "kind": "line",
+   "label": "Three safeguards",
+   "text": "Temporary, limited, non-representative. Acknowledge, silence, replace. Then the shooter's mentality: a miss means the next one is due."
+  },
+  {
+   "kind": "line",
+   "label": "In the arena",
+   "text": "Take stock of the account, the task, the hidden opponent and the room. Decide you are enough, then statements only. Every engagement: cue the conviction, breathe down and out, attach the attention."
+  },
+  {
+   "kind": "line",
+   "label": "Afterwards",
+   "text": "What happened, so what does it tell you, now what will you do. Eighty percent of the review on the gems after a loss, sixty after a win."
+  }
+ ],
+ "closingLine": "Victorious warriors win first and then go to war. Defeated warriors go to war first and then seek to win.",
+ "links": [
+  {
+   "mark": "↓",
+   "label": "Spoken Companion",
+   "href": "Spoken_Companion.docx"
+  }
+ ]
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   Render
+   ════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el  = id => document.getElementById(id);
+
+document.title = BOOK.title;
+if(BOOK.cover){
+  el('bCover').innerHTML = `<img src="${esc(BOOK.cover)}" alt="Cover of ${esc(BOOK.title)} by ${esc(BOOK.author)}">`;
+  el('bCover').hidden = false;
+  // If the file is missing, drop the slot rather than showing a broken image.
+  el('bCover').querySelector('img').onerror = () => { el('bCover').hidden = true; };
+  // Home-screen icon, since this mostly gets opened from a phone.
+  for(const rel of ["icon","apple-touch-icon"]){
+    const l = document.createElement('link');
+    l.rel = rel; l.href = BOOK.cover;
+    document.head.appendChild(l);
+  }
+}
+el('bTitle').textContent  = BOOK.title;
+el('bByline').textContent = BOOK.author || "";
+el('bSub').textContent    = BOOK.subtitle || "";
+if(!BOOK.subtitle) el('bSub').hidden = true;
+el('bLinks').innerHTML = (BOOK.links || []).map(l =>
+  `<a href="${esc(l.href)}"${/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : ''}><span class="mk" aria-hidden="true">${esc(l.mark)}</span>${esc(l.label)}</a>`
+).join("");
+
+const asList = v => (v == null || v === "" ? [] : Array.isArray(v) ? v.filter(Boolean) : [v]);
+/* Every prose field arrives as a list of paragraphs — build_page.py breaks the
+   long ones at sentence boundaries before the page ever sees them. */
+const proseHTML = (v, cls) => asList(v).map(p => `<p class="${cls}">${esc(p)}</p>`).join("");
+const ledeHTML = v => proseHTML(v, "lede");
+
+function entryHTML(e, kind, n){
+  const label = (kind === "insight" ? "INS " : "ACT ") + n;
+  return `
+  <article class="entry${e.plate ? '' : ' no-plate'}" id="${esc(e.id)}" data-open="0">
+    <div class="entry-head">
+      <span class="entry-mark">${label}</span>
+      <h3 class="entry-title">${esc(e.title)}</h3>
+      <span class="entry-sign" aria-hidden="true"><i></i><i></i></span>
+    </div>
+    <div class="entry-wrap"><div class="entry-body">
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+    </div></div>
+  </article>`;
+}
+
+function secHead(name){
+  return `<div class="sec-head"><h2>${esc(name)}</h2></div>`;
+}
+
+const any = v => Array.isArray(v) ? v.length > 0 : !!v;
+
+const argumentHTML = () => !BOOK.argument ? '' : `
+  <div id="argument">
+    <p class="q">${esc(BOOK.argument.question)}</p>
+    ${proseHTML(BOOK.argument.answer, "a")}
+  </div>`;
+
+const frameworkHTML = () => !(BOOK.framework && any(BOOK.framework.steps)) ? '' : `
+  <section id="framework" class="open-sec">
+    ${secHead(BOOK.framework.name)}
+    ${proseHTML(BOOK.framework.intro, "sec-intro")}
+    ${BOOK.framework.steps.map(st => `
+      <div class="fw-row">
+        <span class="fw-mark ${/^\d/.test(st.mark) ? 'seq' : 'letter'}">${esc(st.mark)}</span>
+        <div>
+          <div class="fw-term">${esc(st.term)}</div>
+          <p class="fw-gloss">${esc(st.gloss)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+const listHTML = (items, kind, name) => !any(items) ? '' : `
+  <section id="${kind}s" class="coll-sec">
+    ${secHead(name)}
+    ${items.map((e,i) => entryHTML(e, kind, i+1)).join("")}
+  </section>`;
+
+const vocabHTML = () => !(BOOK.vocabulary && any(BOOK.vocabulary.terms)) ? '' : `
+  <section id="vocabulary" class="open-sec">
+    ${secHead("Vocabulary")}
+    ${proseHTML(BOOK.vocabulary.intro, "sec-intro")}
+    ${BOOK.vocabulary.terms.map(t => `
+      <div class="voc-row" id="${esc(t.id)}">
+        <span class="voc-mark"></span>
+        <div>
+          <div class="voc-term">${esc(t.term)}</div>
+          <p class="voc-def">${esc(t.def)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+// The entries are not repeated here — they live in Plates, one at a time, and
+// listing them again just duplicated every word on the page. What is left is
+// the only copy of the book's argument and its terms.
+el('mode-index').innerHTML =
+  argumentHTML() + frameworkHTML() + vocabHTML();
+
+function tileHTML(e, kind, n, i){
+  const cls = kind === "action" ? "tile act" : "tile";
+  const st = ` style="--i:${i}"`;
+  if(!e.plate){
+    return `<a class="${cls} empty" href="#${esc(e.id)}"${st}>
+      <span class="ph">${esc(e.title)}</span>
+      <span class="cap">Plate coming</span>
+    </a>`;
+  }
+  return `<a class="${cls}" href="#${esc(e.id)}"${st}>
+    <img src="${esc(e.plate)}" alt="${esc(e.alt || '')}">
+    <span class="cap">${esc(e.title)}</span>
+  </a>`;
+}
+
+const RS = 'stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+// One flat list in slot order — the rail, the solo view and its prev/next all
+// count against this, so they can never disagree about what "next" means.
+const SEQ = [
+  ...(BOOK.insights || []).map((e,i) => ({e, kind:"insight", n:i+1})),
+  ...(BOOK.actions  || []).map((e,i) => ({e, kind:"action",  n:i+1}))
+];
+const slides = [
+  ...(BOOK.insights || []).map((e,i) => tileHTML(e,"insight",i+1,i)),
+  ...(BOOK.actions  || []).map((e,i) => tileHTML(e,"action", i+1,(BOOK.insights||[]).length+i))
+];
+el('mode-plates').innerHTML = !slides.length ? '' : `
+  <div class="rail-wrap">
+    <div class="rail" id="rail" tabindex="0" aria-label="Plates, use arrow keys">${slides.join("")}</div>
+    <div class="rail-foot">
+      <button class="rail-btn" id="railPrev" type="button" aria-label="Previous plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+      <span class="rail-count" id="railCount"></span>
+      <button class="rail-btn" id="railNext" type="button" aria-label="Next plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </div>`;
+
+/* ════════════════════════════════════════════════════════════════════
+   Behavior — mode is driven entirely by location.hash, so every state
+   is linkable and the back button works.
+   ════════════════════════════════════════════════════════════════════ */
+const MODES = {};
+// A book without quick reference has no One page, and one without drawings has
+// no Plates. Drop the empty ones rather than offering a blank view.
+for(const k of ['plates','index']){
+  const v = el('mode-' + k);
+  if(v.innerHTML.trim()) MODES[k] = v;
+  else { v.remove(); document.querySelector(`.bar a[data-mode="${k}"]`)?.remove(); }
+}
+const FIRST = Object.keys(MODES)[0] || 'index';
+// The solo view has no tab — you reach it by tapping a plate — so it is never
+// pruned for being empty. It renders on demand.
+MODES.entry = el('mode-entry');
+const barInd = el('barInd');
+let booted = false;
+
+// The hairline travels to the live word. On first paint it is placed, not moved.
+function placeIndicator(mode){
+  const a = document.querySelector(`.bar a[data-mode="${mode}"]`);
+  if(!a) return;
+  barInd.style.width = a.offsetWidth + "px";
+  barInd.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+
+function setMode(mode){
+  if(!MODES[mode]) mode = FIRST;
+  const changed = MODES[mode].hidden || !booted;
+  for(const k in MODES) MODES[k].hidden = (k !== mode);
+  if(mode === 'plates') requestAnimationFrame(railSync);
+  // A solo plate belongs to Plates, so the bar keeps pointing there.
+  const lit = mode === 'entry' ? (MODES.plates ? 'plates' : FIRST) : mode;
+  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === lit));
+  placeIndicator(lit);
+
+  // Replay the arrival on the incoming view, but not on the very first paint —
+  // the page-level entrance already covers that.
+  if(changed && booted){
+    const v = MODES[mode];
+    v.classList.remove('enter');
+    void v.offsetWidth;          // restart the animation
+    v.classList.add('enter');
+  }
+}
+
+
+
+/* One plate, on its own. Built on demand from the same entry data the index
+   uses, so there is no second copy of the content to keep in step. */
+function renderSolo(i){
+  const { e, kind, n } = SEQ[i];
+  MODES.entry.innerHTML = `
+    <article class="solo">
+      <div class="solo-mark">${kind === "insight" ? "INS " : "ACT "}${n}</div>
+      <h2 class="solo-title">${esc(e.title)}</h2>
+      ${e.takeaway ? `<p class="solo-take">${esc(e.takeaway)}</p>` : ''}
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+      <nav class="solo-nav">
+        <button class="rail-btn" id="soloPrev" type="button" aria-label="Previous plate"${i === 0 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+        <span class="rail-count">${String(i+1).padStart(2,'0')} / ${String(SEQ.length).padStart(2,'0')}</span>
+        <button class="rail-btn" id="soloNext" type="button" aria-label="Next plate"${i === SEQ.length-1 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+      </nav>
+    </article>`;
+  soloAt = i;
+  el('soloPrev').addEventListener('click', () => soloGo(-1));
+  el('soloNext').addEventListener('click', () => soloGo(1));
+}
+let soloAt = -1;
+function soloGo(step){
+  const j = soloAt + step;
+  if(j < 0 || j >= SEQ.length) return;
+  location.hash = SEQ[j].e.id;      // through the hash, so back works
+}
+
+function route(){
+  const hash = location.hash.replace(/^#/, "");
+
+  if((hash === "plates" || hash === "index") && MODES[hash]){
+    setMode(hash);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  if(hash === ""){ setMode(FIRST); return; }
+
+  // A plate's own page. This is where tapping a plate lands.
+  const at = SEQ.findIndex(x => x.e.id === hash);
+  if(at > -1){
+    renderSolo(at);
+    setMode('entry');
+    // Land on the plate, not the top of the page. Tapping a drawing should put
+    // that drawing under the bar with the first paragraph already showing
+    // beneath it, so you read on from there instead of scrolling back down past
+    // the jacket. Measured off #mode-entry, whose top sits above the image, so
+    // it is stable whether or not the image has loaded yet.
+    const bar = document.querySelector('.bar');
+    const top = MODES.entry.getBoundingClientRect().top + window.scrollY
+              - (bar ? bar.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: booted ? 'smooth' : 'auto' });
+    return;
+  }
+
+  // Anything else that names something on the index — a vocabulary row.
+  if(MODES.index){
+    setMode("index");
+    const target = document.getElementById(hash);
+    if(target){
+      const top = target.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
+      return;
+    }
+  }
+  setMode(FIRST);
+}
+
+window.addEventListener('hashchange', route);
+route();
+requestAnimationFrame(() => {           // hand the indicator its transition back
+  barInd.classList.remove('instant');
+  booted = true;
+});
+// The words change width when the real mono face lands — re-measure once.
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => {
+    const on = document.querySelector('.bar a.on');
+    if(on){
+      barInd.classList.add('instant');
+      placeIndicator(on.dataset.mode);
+      requestAnimationFrame(() => barInd.classList.remove('instant'));
+    }
+  });
+}
+addEventListener('resize', () => {
+  barInd.classList.add('instant');
+  placeIndicator(document.querySelector('.bar a.on').dataset.mode);
+  requestAnimationFrame(() => barInd.classList.remove('instant'));
+});
+
+/* ── Plates rail ─────────────────────────────────────────────────────
+   Swipe on touch; arrows and the keyboard on anything with a pointer. The
+   snap is CSS, so the gesture stays native and the JS only reports position. */
+const rail = el('rail');
+const MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function railIndex(){
+  if(!rail) return 0;
+  const r = rail.getBoundingClientRect(), mid = r.left + r.width / 2;
+  let best = 0, bd = Infinity;
+  [...rail.children].forEach((t, i) => {
+    const b = t.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid);
+    if(d < bd){ bd = d; best = i; }
+  });
+  return best;
+}
+function railSync(){
+  if(!rail) return;
+  const i = railIndex(), n = rail.children.length;
+  el('railCount').textContent = String(i + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+  el('railPrev').disabled = i === 0;
+  el('railNext').disabled = i === n - 1;
+  [...rail.children].forEach((t, k) => t.classList.toggle('cur', k === i));
+}
+function railGo(step){
+  if(!rail) return;
+  const t = rail.children[Math.max(0, Math.min(rail.children.length - 1, railIndex() + step))];
+  if(!t) return;
+  const r = rail.getBoundingClientRect(), b = t.getBoundingClientRect();
+  rail.scrollBy({ left: (b.left + b.width/2) - (r.left + r.width/2), behavior: MOTION ? 'smooth' : 'auto' });
+}
+
+if(rail){
+  let ticking = false;
+  rail.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { railSync(); ticking = false; });
+  }, { passive: true });
+
+  el('railPrev').addEventListener('click', () => railGo(-1));
+  el('railNext').addEventListener('click', () => railGo(1));
+
+  // A swipe must not count as a tap on the plate underneath it.
+  let downX = 0, downY = 0;
+  rail.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; }, { passive: true });
+  rail.addEventListener('click', e => {
+    if(Math.abs(e.clientX - downX) > 10 || Math.abs(e.clientY - downY) > 10){
+      e.preventDefault(); e.stopPropagation();
+    }
+  }, true);
+
+  addEventListener('keydown', e => {
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const step = e.key === 'ArrowRight' ? 1 : -1;
+    if(MODES.plates && !MODES.plates.hidden){ e.preventDefault(); railGo(step); }
+    else if(!MODES.entry.hidden){ e.preventDefault(); soloGo(step); }
+  });
+  addEventListener('resize', railSync);
+  railSync();
+}
+
+/* ── Theme ───────────────────────────────────────────────────────────
+   Dark by default, and it shares the shelf's storage key — pick a side once
+   and every page in Book HQ agrees. The guard keeps it working where storage
+   is blocked (private browsing). */
+const THEME_BG = { light: "#F4F5F7", dark: "#0D0F13" };
+const themeBtn = el('themeBtn');
+const TS = 'stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const TICON = {
+  sun:`<svg viewBox="0 0 24 24"><circle ${TS} cx="12" cy="12" r="4"/><path ${TS} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${TS} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`
+};
+
+function paintTheme(theme){
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.innerHTML = dark ? TICON.sun : TICON.moon;
+  themeBtn.setAttribute('aria-label', dark ? "Switch to light mode" : "Switch to dark mode");
+  el('themeColor').setAttribute('content', THEME_BG[dark ? "dark" : "light"]);
+}
+
+let theme = "dark";
+try{ theme = localStorage.getItem('bookhq-theme') || "dark"; }catch(e){}
+paintTheme(theme);
+
+themeBtn.addEventListener('click', () => {
+  theme = theme === "dark" ? "light" : "dark";
+  // Ease the colour change for the length of the swap only, so the transition
+  // never sits on the page slowing everything else down.
+  document.body.classList.add('theming');
+  themeBtn.classList.remove('swap'); void themeBtn.offsetWidth; themeBtn.classList.add('swap');
+  paintTheme(theme);
+  setTimeout(() => document.body.classList.remove('theming'), 520);
+  try{ localStorage.setItem('bookhq-theme', theme); }catch(e){}
+});
+</script>
+</body>
+</html>
