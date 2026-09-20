@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D0F13" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Book HQ</title>
+<!-- Applied before first paint so a stored dark choice never flashes light. -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('bookhq-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-wght-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/poppins-latin-600-normal.woff2" crossorigin>
+<style>
+/* ── Type ────────────────────────────────────────────────────────────
+   Same two faces as the shelf: Poppins carries titles and labels, Inter
+   carries everything you read. Both ship with the page, so it opens the
+   same offline and never flashes fallback type on the way in. */
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:Poppins;src:url("fonts/poppins-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:Inter;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* ── Tokens ──────────────────────────────────────────────────────────
+   Lifted from the shelf so the two pages are one surface. Only --accent
+   would change per book if a book ever needed its own. */
+:root,:root[data-theme="light"]{
+  --bg:#F4F5F7; --surface:#FFFFFF; --field:#EDF0F4; --coverbg:#EAEEF3;
+  --ink:#171A21; --muted:#697386; --prose:#3D4757; --line:#E6E8EE;
+  --accent:#2563EB;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+  --shadow-hover:0 1px 2px rgba(16,24,40,.05), 0 22px 44px -18px rgba(16,24,40,.24);
+  --plate:20rem; --measure:33rem;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:Poppins,var(--ui);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0D0F13; --surface:#171A20; --field:#1E222A; --coverbg:#1C212A;
+  --ink:#EDEFF3; --muted:#9AA1AD; --prose:#C8CED8; --line:#262B33;
+  --accent:#60A5FA;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.65);
+  --shadow-hover:0 1px 2px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:7.5rem}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
+
+/* ── Motion ─────────────────────────────────────────────────────────
+   One easing curve for everything that opens, moves or arrives. */
+:root{ --ease:cubic-bezier(.32,.72,0,1); }
+@keyframes lift{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes rise{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+header{animation:lift .55s var(--ease) both}
+.bar{animation:fade .5s ease .1s both}   /* opacity only — a transform breaks sticky */
+main{animation:lift .55s var(--ease) .16s both}
+body.theming,body.theming *{
+  transition:background-color .45s ease,color .45s ease,border-color .45s ease !important;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+p{margin:0}
+a{color:var(--accent);text-decoration:none}
+img{border:0}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem}
+
+/* ── Header ─────────────────────────────────────────────────────────
+   The jacket stacks above the title. Beside it the title breaks onto two
+   lines and the byline onto three. It carries the shelf tile's treatment —
+   same radius, same hairline, same shadow — so arriving here feels like the
+   tile you tapped got bigger. */
+header{padding:1.4rem 0 1.4rem}
+/* Back to the shelf. Above the jacket rather than in the mode bar — this link
+   leaves the page, and the bar is for moving around inside it. */
+.home{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:44px;
+  font-family:var(--display);font-weight:500;font-size:.8rem;letter-spacing:.01em;
+  color:var(--muted);transition:color .2s ease;
+}
+.home:hover{color:var(--ink)}
+.home:active{opacity:.6}
+.home .ar{font-size:.95rem;line-height:1}
+.masthead{display:block}
+.cover{width:min(13rem,64%);display:block;margin-bottom:1.15rem;
+  border-radius:14px;overflow:hidden;background:var(--coverbg);
+  border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1}
+.cover img{display:block;width:100%;height:100%;object-fit:cover}
+/* The jacket is an object, not ink — never inverted, only dimmed so it sits
+   in a dark page instead of glaring out of it. */
+:root[data-theme="dark"] .cover img{filter:brightness(.86)}
+.book-title{margin:0;font-family:var(--display);font-weight:600;
+  font-size:1.62rem;line-height:1.22;letter-spacing:-.014em;color:var(--ink)}
+.byline{margin-top:.35rem;font-size:.94rem;color:var(--muted)}
+.subtitle{margin-top:.15rem;font-size:.88rem;color:var(--muted);opacity:.78}
+
+/* Companion files are things you go and get, so they read as buttons. */
+.links{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.55rem}
+.links:empty{display:none}
+.links a{
+  display:flex;align-items:center;gap:.6rem;min-height:52px;padding:0 .95rem;
+  max-width:22rem;   /* a single companion file shouldn't span the whole column */
+  background:var(--field);border:1px solid var(--line);border-radius:12px;
+  font-weight:500;font-size:.86rem;color:var(--ink);
+  transition:border-color .25s ease,box-shadow .25s ease,opacity .2s ease;
+}
+.links a .mk{flex:none;color:var(--accent);font-size:.95rem;line-height:1}
+.links a:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.links a:active{opacity:.6}
+
+/* ── Mode bar ───────────────────────────────────────────────────────
+   No boxes. Three words and a hairline that travels to the live one. */
+.bar{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  margin:0 -1.1rem;padding:.45rem 1.1rem;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.2rem;
+}
+.bar a{
+  white-space:nowrap;
+  font-family:var(--display);font-weight:500;font-size:.76rem;letter-spacing:.01em;
+  padding:0 .75rem;min-height:44px;display:flex;align-items:center;
+  background:transparent;color:var(--muted);transition:color .3s ease;
+}
+.bar a.on{color:var(--ink)}
+@media (max-width:430px){
+  .bar{padding-left:.9rem;padding-right:.9rem;gap:0}
+  .bar a{padding:0 .55rem;font-size:.74rem}
+}
+.bar a:active{opacity:.55}
+.bar-ind{
+  position:absolute;left:0;bottom:0;height:2px;background:var(--accent);border-radius:2px;
+  transition:transform .42s var(--ease),width .42s var(--ease);
+  transform-origin:left center;pointer-events:none;
+}
+.bar-ind.instant{transition:none}
+#themeBtn{
+  margin-left:auto;flex:none;width:44px;height:44px;border-radius:10px;
+  display:grid;place-items:center;padding:0;
+  background:transparent;color:var(--muted);border:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,opacity .2s ease;
+}
+#themeBtn:hover{background:var(--field);color:var(--ink)}
+#themeBtn:active{opacity:.5}
+#themeBtn svg{width:20px;height:20px}
+#themeBtn.swap{animation:fade .38s ease both}
+
+/* ── Shared section furniture ───────────────────────────────────────── */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem}
+.sec-head h2{margin:0;font-family:var(--display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sec-intro{margin:0 0 1rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.sec-intro + .sec-intro{margin-top:-.25rem}
+section{scroll-margin-top:7.5rem}
+.open-sec .sec-head{padding-bottom:.8rem}
+.coll-sec .sec-head{padding-bottom:.6rem}
+
+/* ── Argument ───────────────────────────────────────────────────────
+   The question is the one hero on the page. It gets the air to act like it. */
+#argument{padding:2.6rem 0 .4rem;scroll-margin-top:7.5rem}
+#argument .q{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.32;
+  letter-spacing:-.018em;color:var(--ink);text-wrap:pretty}
+#argument .a{margin:1.05rem 0 0;max-width:var(--measure);font-size:1.16rem;line-height:1.75;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+#argument .a + .a{margin-top:1.25rem}
+
+/* ── Framework ──────────────────────────────────────────────────────── */
+#framework{padding-top:2.2rem}
+.fw-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fw-mark{flex:none;width:2rem;font-family:var(--display);font-weight:600;color:var(--accent)}
+.fw-mark.seq{font-size:.95rem;line-height:1.5}
+.fw-mark.letter{font-size:1.05rem;line-height:1.4}
+.fw-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.fw-gloss{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Insights / Actions ─────────────────────────────────────────────
+   Each entry is a card, the same object the shelf is built from. */
+#insights,#actions,#vocabulary{padding-top:2.4rem}
+.entry{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);margin-bottom:.6rem;scroll-margin-top:7.5rem;
+  transition:box-shadow .2s ease;
+}
+.entry[data-open="1"]{box-shadow:var(--shadow-hover)}
+.entry-head{display:flex;gap:.85rem;align-items:baseline;
+  padding:1rem 2.6rem 1rem 1rem;cursor:pointer;position:relative}
+.entry-mark{flex:none;width:2.6rem;font-family:var(--display);font-weight:500;
+  font-size:.66rem;letter-spacing:.09em;color:var(--muted)}
+.entry-title{flex:1;margin:0;font-family:var(--display);font-weight:600;font-size:1.03rem;
+  line-height:1.34;letter-spacing:-.011em;text-wrap:pretty;transition:opacity .18s ease}
+.entry-head:active .entry-title,.entry-head:active .entry-mark{opacity:.55}
+
+/* The sign is two hairlines. Opening rotates the upright onto the crossbar and
+   fades it, so a plus resolves into a minus rather than being swapped for one. */
+.entry-sign{position:absolute;right:1rem;top:1.15rem;width:1rem;height:1.4rem}
+.entry-sign i{position:absolute;left:50%;top:50%;background:var(--accent);
+  transition:transform .34s var(--ease),opacity .34s var(--ease)}
+.entry-sign i:first-child{width:.72rem;height:1.5px;border-radius:2px;transform:translate(-50%,-50%)}
+.entry-sign i:last-child{width:1.5px;height:.72rem;border-radius:2px;transform:translate(-50%,-50%)}
+.entry[data-open="1"] .entry-sign i:last-child{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+
+/* Height eases via grid rows — no measuring, and it interrupts cleanly. */
+.entry-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .44s var(--ease)}
+.entry[data-open="1"] .entry-wrap{grid-template-rows:1fr}
+.entry-body{overflow:hidden;min-height:0;padding:0 1rem;opacity:0;transform:translateY(5px);
+  transition:opacity .3s ease,transform .34s var(--ease)}
+.entry[data-open="1"] .entry-body{opacity:1;transform:none;transition-delay:.08s}
+.entry-body > :last-child{margin-bottom:1.35rem}
+/* Reading type. Set for a dyslexic reader first, and these numbers are the
+   whole of it — do not tune them by eye:
+     measure     ~58 characters. Past ~65 the return sweep starts missing lines.
+     leading     1.75. The gap between lines has to beat the gap between words.
+     tracking    a touch positive. Letters that touch get read as one shape.
+     paragraph   a full blank line, so there is always a place to rest.
+     colour      --prose, never --muted. Muted is for labels and counters. */
+.lede,.evidence,.op-p{
+  max-width:var(--measure);font-size:1.13rem;line-height:1.75;
+  letter-spacing:.008em;word-spacing:.02em;text-wrap:pretty;
+}
+.lede{color:var(--ink)}
+.evidence{color:var(--prose)}
+.lede + .lede,.evidence + .evidence,.lede + .evidence{margin-top:1.25rem}
+/* The plate opens the body — the drawing before the prose that unpacks it. */
+.entry figure{margin:.15rem 0 1.2rem;width:min(var(--plate),100%)}
+.entry figure img{display:block;width:100%}
+/* What it changes in practice. A filled pill promises a short pull-line; these
+   run eighty to a hundred words, so the promise broke every time. A rule down
+   the side marks the same passage without pretending it is a caption. */
+.operative{margin-top:1.35rem;padding-left:1rem;border-left:2px solid var(--accent)}
+.op-p{margin:0;color:var(--ink)}
+.op-p + .op-p{margin-top:1.25rem}
+.caveat{max-width:var(--measure);margin-top:1.1rem;font-size:1rem;line-height:1.7;
+  letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+.caveat + .caveat{margin-top:1.25rem}
+
+/* ── Vocabulary ─────────────────────────────────────────────────────── */
+.voc-row{display:flex;gap:.85rem;padding:.85rem 1rem;margin-bottom:.5rem;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  scroll-margin-top:7.5rem}
+.voc-mark{flex:none;width:0}
+.voc-term{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:-.005em}
+.voc-def{margin-top:.32rem;max-width:var(--measure);font-size:1.06rem;line-height:1.74;letter-spacing:.008em;color:var(--prose);text-wrap:pretty}
+
+/* ── Plates ─────────────────────────────────────────────────────────
+   A rail you swipe, not a column you scroll. One drawing at a time, snapped
+   to centre, and only that one visible — the neighbours stay in the flow so
+   the native snap still works, but they are faded out and made untappable so
+   nothing competes with the plate you are looking at. The drawings sit
+   straight on the paper — they are the interface in this view, so the
+   container gets out of their way. */
+#plates{padding:1.9rem 0 0}
+.rail-wrap{position:relative}
+.rail{
+  --slide:min(30rem,78vw);
+  display:flex;gap:1.6rem;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  margin:0 -1.1rem;padding:0 calc(50% - var(--slide)/2 + 1.1rem);
+}
+.rail::-webkit-scrollbar{display:none}
+.tile{
+  flex:0 0 var(--slide);scroll-snap-align:center;
+  background:transparent;padding:0;display:block;min-width:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s var(--ease);
+}
+/* Only the centred plate is visible or tappable. The rest keep their place in
+   the rail so scroll-snap still has something to snap to. NOTE: `act` on a
+   tile means "action tile", not "active" — the centred one is `cur`. */
+.tile.cur{opacity:1;pointer-events:auto}
+.tile.cur:active{opacity:.55}
+.tile img{display:block;width:100%;max-width:100%;pointer-events:none;-webkit-user-drag:none}
+.tile .cap{display:block;padding-top:.7rem;font-family:var(--display);font-weight:500;
+  font-size:.9rem;line-height:1.42;letter-spacing:-.006em;color:var(--ink);text-align:center}
+.tile.act .cap{color:var(--accent)}
+.tile.empty{min-height:7.5rem;border:1px dashed var(--line);border-radius:14px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:.6rem}
+.tile.empty .ph{font-size:.74rem;line-height:1.4;color:var(--muted)}
+.enter .rail{animation:fade .45s var(--ease) both}
+
+/* Where you are in the set, and the only two controls. */
+.rail-foot{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:1.1rem 0 .2rem}
+.rail-count{font-family:var(--display);font-weight:500;font-size:.75rem;letter-spacing:.08em;
+  color:var(--muted);min-width:4.2rem;text-align:center;font-variant-numeric:tabular-nums}
+.rail-btn{
+  width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease,opacity .2s ease;
+}
+.rail-btn:hover:not(:disabled){background:var(--field);color:var(--ink);border-color:var(--accent)}
+.rail-btn:disabled{opacity:.32;cursor:default}
+.rail-btn svg{width:18px;height:18px}
+/* The buttons stay on touch as well. They used to be hidden there because the
+   peeking neighbours advertised the swipe; with the neighbours hidden, these
+   and the counter are the only sign there is more than one plate. */
+@media (prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
+
+/* ── One plate on its own ───────────────────────────────────────────
+   Arrived at by tapping a plate. One drawing, its own text, and a way to the
+   next one. Nothing else competes with it — that is the whole point of the
+   view, so resist adding anything here. */
+#mode-entry{padding:1.9rem 0 0}
+.solo-mark{font-family:var(--display);font-weight:500;font-size:.66rem;
+  letter-spacing:.09em;color:var(--muted)}
+.solo-title{margin:.45rem 0 0;font-family:var(--display);font-weight:600;
+  font-size:1.32rem;line-height:1.3;letter-spacing:-.016em;color:var(--ink);text-wrap:pretty}
+/* The deck. One sentence carrying the point, above the drawing, so the entry
+   can be taken in without committing to three hundred words. A newspaper deck,
+   not a second headline: the reading face, not the display one, and lighter
+   than the title above it. `takeaway` is optional — a book without one loses
+   the line and nothing else. */
+.solo-take{margin:.85rem 0 0;max-width:var(--measure);font-size:1.22rem;line-height:1.55;
+  letter-spacing:.004em;color:var(--ink);text-wrap:pretty}
+.solo figure{margin:1.5rem auto;width:min(30rem,100%)}
+.solo figure img{display:block;width:100%}
+.solo-nav{display:flex;align-items:center;justify-content:center;gap:.9rem;
+  margin-top:2.2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.solo .operative{margin-top:1.2rem}
+
+/* ── Plates in either paper ─────────────────────────────────────────
+   The drawings ship as ink on a transparent ground, so they need no blend
+   mode — which also means nothing above them can quietly break them. Dark
+   paper just inverts the ink. */
+:root[data-theme="dark"] .entry figure img,
+:root[data-theme="dark"] .solo figure img,
+:root[data-theme="dark"] .tile img{filter:invert(1) brightness(.94)}
+
+footer{height:calc(4rem + env(safe-area-inset-bottom))}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="../"><span class="ar" aria-hidden="true">&larr;</span>Book HQ</a>
+    <div class="masthead">
+      <div class="cover" id="bCover" hidden></div>
+      <div>
+        <h1 class="book-title" id="bTitle"></h1>
+        <p class="byline" id="bByline"></p>
+        <p class="subtitle" id="bSub"></p>
+      </div>
+    </div>
+    <nav class="links" id="bLinks"></nav>
+  </header>
+
+  <nav class="bar">
+    <a href="#plates" data-mode="plates">Plates</a>
+    <a href="#index" data-mode="index">The book</a>
+    <button id="themeBtn" type="button" aria-label="Switch to dark"></button>
+    <span class="bar-ind instant" id="barInd"></span>
+  </nav>
+
+  <main>
+    <div id="mode-plates"></div>
+    <div id="mode-index" hidden></div>
+    <div id="mode-entry" hidden></div>
+  </main>
+
+  <footer></footer>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   THE BOOK. One object — this is the only thing that changes per book.
+   Add an insight / action / term by adding one entry to the array.
+   `plate` and `caveat` are optional; omitting either degrades cleanly.
+   ════════════════════════════════════════════════════════════════════ */
+const BOOK = {
+ "slug": "reality-transurfing",
+ "title": "Reality Transurfing",
+ "subtitle": "Steps I–V",
+ "author": "Vadim Zeland",
+ "cover": "img/cover.jpg",
+ "argument": {
+  "question": "Why does the thing you want most keep slipping away the harder you chase it, and what would it mean to choose it instead?",
+  "answer": [
+   "Desires do not come true, and dreams do not come true, because wanting is itself the obstacle. Every possible outcome already exists in the alternatives space, an information field holding every script and set of scenery that could ever be. Your thought energy lights up one sector of it, and that sector becomes the layer of your world. You are always on the lifeline that matches what you radiate.",
+   "Struggle fails for two reasons. Pendulums, the energy structures built by people thinking alike, harvest your attention whether you love a thing or hate it, and pull you onto their lines. And importance, any meaning inflated beyond its weight, creates excess potential that balanced forces flatten, usually against the person who inflated it.",
+   "So the method runs in order. Step out of the pendulum's game. Lower importance. Stop fighting the flow of alternatives and let it carry the solution to you. Then choose, with outer intention: not the wish to have, and not the effort to get, but the calm resolve to have. The world behaves like a mirror, and it reflects that resolve, slowly, as long as you hold it."
+  ]
+ },
+ "framework": {
+  "name": "Choosing a Lifeline",
+  "intro": [
+   "Transurfing is not a set of moves executed one, two, three. It is a way of relating to the world, and the steps below are the order in which the obstacles come down. The first four clear the ground; the last three are the choice itself."
+  ],
+  "steps": [
+   {
+    "mark": "1",
+    "term": "The alternatives space",
+    "gloss": "Every outcome already exists. You do not create reality or fight it; your thought energy selects the sector that materializes."
+   },
+   {
+    "mark": "2",
+    "term": "Out of the pendulum's game",
+    "gloss": "Pendulums feed on your emotions, for or against. Ignore rather than avoid, or break the script they expect."
+   },
+   {
+    "mark": "3",
+    "term": "Lower importance",
+    "gloss": "Inflated meaning is excess potential, and balanced forces remove it. Take care without worrying."
+   },
+   {
+    "mark": "4",
+    "term": "Go with the flow",
+    "gloss": "The flow of alternatives follows the path of least resistance and already carries the solution. Shift from control to observation."
+   },
+   {
+    "mark": "—",
+    "term": "The ground is clear",
+    "gloss": "With importance low and no pendulum holding the strings, there is nothing to defend and nothing to conquer. Now you can choose."
+   },
+   {
+    "mark": "5",
+    "term": "Outer intention",
+    "gloss": "The resolve to have, not the wish to have or the struggle to get. It works in the unity of heart and mind."
+   },
+   {
+    "mark": "6",
+    "term": "The target slide",
+    "gloss": "Picture the goal as already reached and turn it in your mind, systematically, for long enough. Leave the means out."
+   },
+   {
+    "mark": "7",
+    "term": "Your own goal, your own door",
+    "gloss": "A goal that is yours makes life a celebration and fulfils your other desires along the way. Only the heart can tell you which it is."
+   }
+  ]
+ },
+ "vocabulary": {
+  "intro": [
+   "Zeland builds a whole model from a small set of coined terms, and he insists it is only a model: its value is in what you can do with it. The terms matter because the method turns on distinctions ordinary language blurs, such as ignoring against avoiding, or intending against wanting."
+  ],
+  "terms": [
+   {
+    "term": "Alternatives space",
+    "def": "An infinite information field holding every possible event, past and future, each with its script and scenery. Physical reality is the sector currently materialized."
+   },
+   {
+    "term": "Lifeline",
+    "def": "A chain of neighbouring sectors of roughly uniform quality. Life runs stably along one until thought energy shifts and it turns onto another."
+   },
+   {
+    "term": "Pendulum",
+    "def": "An energy-information structure created when many people think alike. It grows on its adherents' emotions and leads them away from their own happiness."
+   },
+   {
+    "term": "Importance",
+    "def": "Meaning ascribed out of proportion. Inner importance overrates or underrates yourself; outer importance overrates something in the world."
+   },
+   {
+    "term": "Excess potential and balanced forces",
+    "def": "Importance disturbs the energy field; balanced forces arise to flatten the disturbance, which is why you so often get the opposite of what you intended."
+   },
+   {
+    "term": "Alternatives flow",
+    "def": "The current of cause and effect through the space. It takes the path of least resistance, so it already holds the most economical solution."
+   },
+   {
+    "term": "Outer intention",
+    "def": "The resolve to have, which lets the world fulfil your will. Inner intention achieves a goal by acting on the world; outer intention chooses it."
+   },
+   {
+    "term": "Slide",
+    "def": "A picture carried in your head that others do not share. Negative slides distort perception; a target slide shows the goal as already reached."
+   },
+   {
+    "term": "Coordination of intention",
+    "def": "Every event forks into a favourable and an unfavourable branch. Decide to read an apparent setback as positive and you step onto the favourable one."
+   }
+  ]
+ },
+ "insights": [
+  {
+   "id": "insight-1",
+   "n": 1,
+   "title": "You do not have to fight for happiness, only choose it",
+   "lede": [
+    "Everything that could happen already exists in the alternatives space, stored like frames on a roll of film. Thought energy has parameters, and when it is radiated it lights up the sector that matches it. That sector materializes as the layer of your world. You are always on the lifeline that corresponds to what you are radiating."
+   ],
+   "evidence": [
+    "The clearest demonstration is the negativist. People inclined to expect the worst watch their worst expectations arrive with remarkable reliability. If thought can steer events that accurately in one direction, it can steer them in the other. The pessimist has already proved the mechanism works; they have simply been using it against themselves."
+   ],
+   "operative": [
+    "You cannot change the scenery of the line you are on, and fighting it only binds you to it. Every struggle yields for a moment and then slaps back. What you can change is which scenery you are standing in. Choosing a different alternative is not a battle. It is closer to picking something off a shelf."
+   ],
+   "plate": "img/insight-01.png",
+   "alt": "A grid of empty film frames in four rows, the first few in the top row holding tiny drawings: a house, a boat, a desk, a stick figure. The stick figure's frame is labelled CHOSEN and the grid ALREADY THERE. Below, a stick figure stands in a small crowd, a line running from it up to the grid.",
+   "takeaway": "Every alternative already exists. Do not fight the scenery you are in; choose other scenery."
+  },
+  {
+   "id": "insight-2",
+   "n": 2,
+   "title": "Hating something is the surest way to have more of it",
+   "lede": [
+    "When many people think in the same way, their thought energy fuses into an independent structure, a pendulum. It feeds on its adherents through their emotions: indignation, fear, guilt, admiration, contempt. It does not care which. Love a thing or detest it, if your thoughts are fastened on it you are tuned to its frequency and carried to lines where it is plentiful."
+   ],
+   "evidence": [
+    "Picture someone who detests apples. They cannot simply pass them by; the existence of apples offends them, and they say so every time. On the energetic level this person is gorging on apples, stuffing their pockets, eating until they are sick, and complaining all the while that they cannot stand the things."
+   ],
+   "operative": [
+    "To remove something from your life, ignore it. Do not avoid it. Avoiding means you have already let it into your space and are now pushing it back out, which keeps it there. Ignoring means not reacting, so it never enters. You are a radio: change the station, and the programme you hated simply stops playing."
+   ],
+   "plate": "img/insight-02.png",
+   "alt": "A stick figure with anger marks above its head, arms out. Around its feet lies a heap of apples labelled MORE, arrows pushing still more in from both sides. One larger apple at the edge of the heap is labelled NO!",
+   "takeaway": "A pendulum feeds on attention for or against. Hating something keeps you tuned to it."
+  },
+  {
+   "id": "insight-3",
+   "n": 3,
+   "title": "The more it matters, the less likely it becomes",
+   "lede": [
+    "Importance is meaning ascribed out of proportion. It creates excess potential, a local disturbance in an otherwise even field, and balanced forces arise to remove it. They act in whatever way is quickest, which is usually against the person who created the disturbance. That is why a desperate wish so often produces the exact opposite of what was wanted."
+   ],
+   "evidence": [
+    "Walking along a log lying on the ground is trivial. Lay the same log across the roofs of two tall buildings and the identical walk becomes enormously important, and nothing you tell yourself will change that. The task has not changed at all. Only the importance has, and the importance is what makes you fall."
+   ],
+   "operative": [
+    "Importance comes in two kinds. Inner importance overrates or underrates yourself, and playing small creates as much potential as boasting, only with the opposite charge. Outer importance overrates something in the world. Confidence is the same excess potential as insecurity. Take care of what matters, but without worrying about it."
+   ],
+   "plate": "img/insight-03.png",
+   "alt": "Two tall buildings with a gap between them. A log spans the gap at the top, labelled SAME LOG, with a stick figure balancing on it. An arrow falls down the gap, labelled IMPORTANCE, to an identical log lying at ground level.",
+   "takeaway": "Inflated importance summons balanced forces, and they usually push against whoever inflated it."
+  },
+  {
+   "id": "insight-4",
+   "n": 4,
+   "title": "The world mirrors what you hold in mind, and it is slow",
+   "lede": [
+    "The world behaves like a dual mirror: one side is physical, the other lies in the alternatives space. It reflects your relationship to it. It reflects the content of that relationship and ignores its tone, so thinking hard about what you do not want gives the mirror a clear image of exactly that. Fear comes true easily because heart and mind agree in it."
+   ],
+   "evidence": [
+    "Stand before an ordinary mirror, but imagine one that lags. You smile and the reflection stays serious. You raise your arms and drop them again, and nothing changes. To see your arms raised you have to hold them up for a long time. Material reality is inert, like tar, and most people let their arms fall before it has caught up."
+   ],
+   "operative": [
+    "Stop looking into the mirror to see what is there and then reacting to it. That makes reality the image and you the reflection. Glance at it instead, only to look for signs of the new picture forming, and keep holding the image in the meantime. Think about what you are striving for, not about what you are escaping."
+   ],
+   "plate": "img/insight-04.png",
+   "alt": "A stick figure stands with both arms raised high. Beside it, a tall mirror shows its reflection with arms only out at shoulder height, labelled STILL CATCHING UP. A stack of pages on the floor is labelled HOLD IT.",
+   "takeaway": "The world reflects what you hold in mind, not your verdict on it, and only after a long delay."
+  },
+  {
+   "id": "insight-5",
+   "n": 5,
+   "title": "Your own goal feels like a celebration; a foreign one feels like a duty",
+   "lede": [
+    "Pendulums hand people goals that serve the pendulum: the prestigious career, the thing kept under lock and key, the achievement that proves something to others. Such a goal feels like an obligation and runs on endless obstacles. Your own goal is different. It makes your life a celebration, and reaching it fulfils your other desires along the way."
+   ],
+   "evidence": [
+    "Pendulums sell their pattern of success and say, do as I do. Yet the stars they point to succeeded precisely because they went their own way. Only your soul knows the algorithm of your success. People who follow the pattern study professions that are not theirs and take work that is prestigious and feels alien."
+   ],
+   "operative": [
+    "Ask what your heart is drawn to and what would make life joyful, and do not think about the means until you know. Then listen to the inner voice. The mind's inhibition, the sense of being unworthy, can be removed. The soul's discomfort, a quiet unwillingness, cannot, and it means the goal is not yours."
+   ],
+   "plate": "img/insight-05.png",
+   "alt": "A stick figure holds out a key with a wavy bit toward a row of doors. Three tall doors are labelled PRESTIGE, PROOF and OUT OF REACH, each with a round keyhole. A smaller door at the end, a music note above it, has a wavy keyhole and is labelled YOURS.",
+   "takeaway": "Your own goal feels like a celebration, a foreign one like a duty. The heart knows which."
+  },
+  {
+   "id": "insight-6",
+   "n": 6,
+   "title": "The means will present themselves if you stop steering",
+   "lede": [
+    "Cause and effect form a current through the alternatives space, and it takes the path of least resistance, so it already carries the most economical solution to your problem. The restless mind keeps trying to seize control, and its decisions are mostly hands slapping at the water. It is the mind, not the stream, that brings you to the edge of the waterfall."
+   ],
+   "evidence": [
+    "A fly beats itself against the windowpane beside an open window. All its life it has been taught that when you see the goal you fly straight at it. People do the same when they cannot see how to reach something: they hit the glass of the obvious route and conclude the goal is impossible."
+   ],
+   "operative": [
+    "Move the centre of gravity from control to observation. Most problems, especially small ones, resolve themselves if you do not obstruct them. Watch for signs, which appear as a sense that something is not quite right, and take spontaneous phrases seriously. Let go of control, and you find you have genuine control."
+   ],
+   "plate": "img/insight-06.png",
+   "alt": "A window with two panes, the right one swung open toward a sun. A fly bumps against the closed left pane, labelled STRAIGHT AT IT. A dotted flight path curves away from the glass and out through the open pane, labelled THE WAY.",
+   "takeaway": "The flow already holds the easiest solution. It is the controlling mind that steers you into the waterfall."
+  }
+ ],
+ "actions": [
+  {
+   "id": "action-1",
+   "n": 1,
+   "title": "Step out of the pendulum's game, or break its script",
+   "lede": [
+    "When something hooks you, name the emotion it is pulling on and decline to answer at that frequency. Do what you would normally do, but from the position of an observer. Zeland calls this renting yourself out: you give your hands and your time to the task, and keep your inner space empty of the problem."
+   ],
+   "operative": [
+    "When a pendulum cannot be ignored, change the script it is running. If a boss is bearing down, do not argue or refuse; ask his advice on how the job is best done, and his energy turns elsewhere. Warm, positive visualization of an aggressive person gently stills a human pendulum, and its freed energy becomes yours."
+   ],
+   "caveat": [
+    "Cutting yourself off from every pendulum leaves you in a desert: fewer problems and no achievements either. The human world is built of pendulums and they are what turn dreams into reality. The aim is to choose your own pendulums consciously, not to be free of them all."
+   ],
+   "plate": "img/action-01.png",
+   "alt": "Three panels. First, a pendulum bob labelled ANGER swings into a stick figure, a string connecting them. Second, the stick figure steps aside, an arrow showing the move, as the bob swings past. Third, the bob hangs still and the stick figure stands clear of it.",
+   "takeaway": "When a pendulum hooks you, do not answer in kind. Ignore it, or break its script."
+  },
+  {
+   "id": "action-2",
+   "n": 2,
+   "title": "Lower the stakes before you act",
+   "lede": [
+    "Before anything that matters, build a safety net: a plan B, an alternative route, a substitute if this door closes. Then accept the possibility of defeat once, deliberately, and act. Imagining the worst case is a one-time event, not a place to live. Importance drops the moment failure stops being the end of the world."
+   ],
+   "operative": [
+    "Do not fight fear or talk yourself out of it; the battle drains the energy that is feeding the anxiety. If you are nervous before a presentation, be nervous, fully and with pleasure. Allowed, the nerves dissolve. The same rule runs through the rest: not to worry, act; not to wait in expectation, act."
+   ],
+   "caveat": [
+    "Stop justifying yourself, and set no ultimatums. Guilt and the need to prove yourself are both importance, and both invite someone to judge you. You have the right to be yourself. If you cannot let go of a resentment, give yourself permission not to, and that too lowers the charge."
+   ],
+   "plate": "img/action-02.png",
+   "alt": "Three panels. First, a stick figure stands by a card labelled PLAN B. Second, the stick figure beside a box, a thought cloud above reading IF IT FAILS. Third, a stick figure climbs a staircase toward a tall door, labelled GO.",
+   "takeaway": "Set up a safety net, accept defeat as possible once, then act. Importance drops and fear with it."
+  },
+  {
+   "id": "action-3",
+   "n": 3,
+   "title": "Turn the target slide until the mirror catches up",
+   "lede": [
+    "Build a mental picture of the goal as though it has already been reached, pleasing to both heart and mind, and entirely your own, never copied from someone else. Look at it often and add detail each time. Leave the means out of it completely. Live in the slide, and move one foot at a time in its direction."
+   ],
+   "operative": [
+    "The secret is ordinary persistence: turn the slide systematically for long enough. While the mind doubts, the image stays hazy; keep going. If the route is unclear, visualize the slide rather than the process, and picture the process only as the next link in the chain. When hope has done its work, you stop wanting and stop hoping. You intend."
+   ],
+   "caveat": [
+    "Expect a pause in which nothing changes, and sometimes problems surfacing to spite you. The mirror works with a delay. Do not look round, as in the fairy tale where looking back turns you to stone. A slide can remove an inhibition; it cannot remove the soul's discomfort with a goal that is not yours."
+   ],
+   "plate": "img/action-03.png",
+   "alt": "Three panels. First, a stick figure beside a slide projector with a card being fed into it. Second, the projector's beam falls on a small house. Third, a stick figure stands on the roof of that house, now drawn full size.",
+   "takeaway": "Picture the goal as already reached, no means in it, and keep turning the picture."
+  },
+  {
+   "id": "action-4",
+   "n": 4,
+   "title": "Take joy in setbacks, and say so every time",
+   "lede": [
+    "Every event forks the lifeline into a favourable and an unfavourable branch, and your relationship to the event chooses which you take. So decide in advance that any apparently negative change to the script is for the good. Adopt what Zeland calls the foolish habit of taking joy in setbacks, and hold it without exception."
+   ],
+   "operative": [
+    "Choose an amalgam formula, a single line that sets the background of your world, such as: my world takes care of me. Confirm it at every event, large or trivial. When something goes well, tell yourself the world is looking after you. When something disappoints, tell yourself everything is unfolding as it should."
+   ],
+   "caveat": [
+    "This is not sitting with folded arms, and it is not suppressing what you feel. People habitually voice their attitude to life only when dissatisfied and take good things for granted. The practice reverses that habit. Persistent effort is needed only at first, until it runs on its own."
+   ],
+   "plate": "img/action-04.png",
+   "alt": "Three panels. First, a stick figure beside a rock on the path labelled SETBACK. Second, the stick figure stands by the rock with a thought cloud reading MY WORLD TAKES CARE OF ME. Third, the path forks and the stick figure climbs the branch rising toward a sun.",
+   "takeaway": "Treat every setback as for the good and say so each time: my world takes care of me."
+  },
+  {
+   "id": "action-5",
+   "n": 5,
+   "title": "Replace the intention to get with the intention to give",
+   "lede": [
+    "In any conversation, shift your attention from yourself to the other person, and find the thing they are proud of or passionate about. Let them talk about it. People are not assessing how interesting you are; they are assessing how well you might serve their sense of self-worth. Give them that, sincerely."
+   ],
+   "operative": [
+    "A successful businessman once said that everyone offers him something and nobody asks what he needs. Ask. Admit your mistakes without justifying them, defend others when they are right, and ask a small favour, which lowers your importance and raises theirs. Abandon the intention to get and you receive the very thing you gave up."
+   ],
+   "caveat": [
+    "Never do anything that wounds another person's self-esteem, including winning an argument. Arguing and criticism are the mind fighting the flow. And do not try to change anyone, yourself included; the method uses the other person's inner intention without compromising their interests."
+   ],
+   "plate": "img/action-05.png",
+   "alt": "Three panels. First, one stick figure reaches for a box held by another. Second, the first listens, an oversized ear drawn beside it, while the second talks, a star above its head. Third, the second stick figure hands the box across to the first.",
+   "takeaway": "Stop trying to get. Raise the other person's self-worth, and what you let go of comes back."
+  }
+ ],
+ "quickReference": [
+  {
+   "kind": "line",
+   "label": "The premise",
+   "text": "Every outcome already exists. Thought energy selects which sector materializes. You choose; you do not fight."
+  },
+  {
+   "kind": "line",
+   "label": "Pendulums",
+   "text": "Fed by emotion for or against. Ignore, do not avoid. Cornered: break the script. Rent yourself out."
+  },
+  {
+   "kind": "line",
+   "label": "Importance",
+   "text": "Excess potential summons balanced forces. Take care without worrying. Safety net, accept defeat once, act."
+  },
+  {
+   "kind": "line",
+   "label": "Negative information",
+   "text": "Reacting to it induces a shift onto negative lines. Do not let it into your layer: express no interest."
+  },
+  {
+   "kind": "line",
+   "label": "The flow",
+   "text": "It holds the least-resistance solution. Control to observation. Signs feel like something is not quite right."
+  },
+  {
+   "kind": "line",
+   "label": "Intention",
+   "text": "Inner intention acts on the world; outer intention is the resolve to have. Heart and mind must agree."
+  },
+  {
+   "kind": "line",
+   "label": "The target slide",
+   "text": "The goal already reached, your own image, no means in it. Turn it systematically. The mirror lags."
+  },
+  {
+   "kind": "line",
+   "label": "Goals and doors",
+   "text": "Your goal is a celebration, a foreign one an obligation. Inspiration on the path marks your door."
+  },
+  {
+   "kind": "line",
+   "label": "Every day",
+   "text": "Joy in setbacks. My world takes care of me. Give, not get. Permission to be yourself, and for others to be themselves."
+  }
+ ],
+ "closingLine": "When hope has done its work, you stop wanting and you stop hoping. You intend.",
+ "links": [
+  {
+   "mark": "↓",
+   "label": "Spoken Companion",
+   "href": "Spoken_Companion.docx"
+  }
+ ]
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   Render
+   ════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el  = id => document.getElementById(id);
+
+document.title = BOOK.title;
+if(BOOK.cover){
+  el('bCover').innerHTML = `<img src="${esc(BOOK.cover)}" alt="Cover of ${esc(BOOK.title)} by ${esc(BOOK.author)}">`;
+  el('bCover').hidden = false;
+  // If the file is missing, drop the slot rather than showing a broken image.
+  el('bCover').querySelector('img').onerror = () => { el('bCover').hidden = true; };
+  // Home-screen icon, since this mostly gets opened from a phone.
+  for(const rel of ["icon","apple-touch-icon"]){
+    const l = document.createElement('link');
+    l.rel = rel; l.href = BOOK.cover;
+    document.head.appendChild(l);
+  }
+}
+el('bTitle').textContent  = BOOK.title;
+el('bByline').textContent = BOOK.author || "";
+el('bSub').textContent    = BOOK.subtitle || "";
+if(!BOOK.subtitle) el('bSub').hidden = true;
+el('bLinks').innerHTML = (BOOK.links || []).map(l =>
+  `<a href="${esc(l.href)}"${/^https?:/.test(l.href) ? ' target="_blank" rel="noopener"' : ''}><span class="mk" aria-hidden="true">${esc(l.mark)}</span>${esc(l.label)}</a>`
+).join("");
+
+const asList = v => (v == null || v === "" ? [] : Array.isArray(v) ? v.filter(Boolean) : [v]);
+/* Every prose field arrives as a list of paragraphs — build_page.py breaks the
+   long ones at sentence boundaries before the page ever sees them. */
+const proseHTML = (v, cls) => asList(v).map(p => `<p class="${cls}">${esc(p)}</p>`).join("");
+const ledeHTML = v => proseHTML(v, "lede");
+
+function entryHTML(e, kind, n){
+  const label = (kind === "insight" ? "INS " : "ACT ") + n;
+  return `
+  <article class="entry${e.plate ? '' : ' no-plate'}" id="${esc(e.id)}" data-open="0">
+    <div class="entry-head">
+      <span class="entry-mark">${label}</span>
+      <h3 class="entry-title">${esc(e.title)}</h3>
+      <span class="entry-sign" aria-hidden="true"><i></i><i></i></span>
+    </div>
+    <div class="entry-wrap"><div class="entry-body">
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+    </div></div>
+  </article>`;
+}
+
+function secHead(name){
+  return `<div class="sec-head"><h2>${esc(name)}</h2></div>`;
+}
+
+const any = v => Array.isArray(v) ? v.length > 0 : !!v;
+
+const argumentHTML = () => !BOOK.argument ? '' : `
+  <div id="argument">
+    <p class="q">${esc(BOOK.argument.question)}</p>
+    ${proseHTML(BOOK.argument.answer, "a")}
+  </div>`;
+
+const frameworkHTML = () => !(BOOK.framework && any(BOOK.framework.steps)) ? '' : `
+  <section id="framework" class="open-sec">
+    ${secHead(BOOK.framework.name)}
+    ${proseHTML(BOOK.framework.intro, "sec-intro")}
+    ${BOOK.framework.steps.map(st => `
+      <div class="fw-row">
+        <span class="fw-mark ${/^\d/.test(st.mark) ? 'seq' : 'letter'}">${esc(st.mark)}</span>
+        <div>
+          <div class="fw-term">${esc(st.term)}</div>
+          <p class="fw-gloss">${esc(st.gloss)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+const listHTML = (items, kind, name) => !any(items) ? '' : `
+  <section id="${kind}s" class="coll-sec">
+    ${secHead(name)}
+    ${items.map((e,i) => entryHTML(e, kind, i+1)).join("")}
+  </section>`;
+
+const vocabHTML = () => !(BOOK.vocabulary && any(BOOK.vocabulary.terms)) ? '' : `
+  <section id="vocabulary" class="open-sec">
+    ${secHead("Vocabulary")}
+    ${proseHTML(BOOK.vocabulary.intro, "sec-intro")}
+    ${BOOK.vocabulary.terms.map(t => `
+      <div class="voc-row" id="${esc(t.id)}">
+        <span class="voc-mark"></span>
+        <div>
+          <div class="voc-term">${esc(t.term)}</div>
+          <p class="voc-def">${esc(t.def)}</p>
+        </div>
+      </div>`).join("")}
+  </section>`;
+
+// The entries are not repeated here — they live in Plates, one at a time, and
+// listing them again just duplicated every word on the page. What is left is
+// the only copy of the book's argument and its terms.
+el('mode-index').innerHTML =
+  argumentHTML() + frameworkHTML() + vocabHTML();
+
+function tileHTML(e, kind, n, i){
+  const cls = kind === "action" ? "tile act" : "tile";
+  const st = ` style="--i:${i}"`;
+  if(!e.plate){
+    return `<a class="${cls} empty" href="#${esc(e.id)}"${st}>
+      <span class="ph">${esc(e.title)}</span>
+      <span class="cap">Plate coming</span>
+    </a>`;
+  }
+  return `<a class="${cls}" href="#${esc(e.id)}"${st}>
+    <img src="${esc(e.plate)}" alt="${esc(e.alt || '')}">
+    <span class="cap">${esc(e.title)}</span>
+  </a>`;
+}
+
+const RS = 'stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+// One flat list in slot order — the rail, the solo view and its prev/next all
+// count against this, so they can never disagree about what "next" means.
+const SEQ = [
+  ...(BOOK.insights || []).map((e,i) => ({e, kind:"insight", n:i+1})),
+  ...(BOOK.actions  || []).map((e,i) => ({e, kind:"action",  n:i+1}))
+];
+const slides = [
+  ...(BOOK.insights || []).map((e,i) => tileHTML(e,"insight",i+1,i)),
+  ...(BOOK.actions  || []).map((e,i) => tileHTML(e,"action", i+1,(BOOK.insights||[]).length+i))
+];
+el('mode-plates').innerHTML = !slides.length ? '' : `
+  <div class="rail-wrap">
+    <div class="rail" id="rail" tabindex="0" aria-label="Plates, use arrow keys">${slides.join("")}</div>
+    <div class="rail-foot">
+      <button class="rail-btn" id="railPrev" type="button" aria-label="Previous plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+      <span class="rail-count" id="railCount"></span>
+      <button class="rail-btn" id="railNext" type="button" aria-label="Next plate">
+        <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </div>`;
+
+/* ════════════════════════════════════════════════════════════════════
+   Behavior — mode is driven entirely by location.hash, so every state
+   is linkable and the back button works.
+   ════════════════════════════════════════════════════════════════════ */
+const MODES = {};
+// A book without quick reference has no One page, and one without drawings has
+// no Plates. Drop the empty ones rather than offering a blank view.
+for(const k of ['plates','index']){
+  const v = el('mode-' + k);
+  if(v.innerHTML.trim()) MODES[k] = v;
+  else { v.remove(); document.querySelector(`.bar a[data-mode="${k}"]`)?.remove(); }
+}
+const FIRST = Object.keys(MODES)[0] || 'index';
+// The solo view has no tab — you reach it by tapping a plate — so it is never
+// pruned for being empty. It renders on demand.
+MODES.entry = el('mode-entry');
+const barInd = el('barInd');
+let booted = false;
+
+// The hairline travels to the live word. On first paint it is placed, not moved.
+function placeIndicator(mode){
+  const a = document.querySelector(`.bar a[data-mode="${mode}"]`);
+  if(!a) return;
+  barInd.style.width = a.offsetWidth + "px";
+  barInd.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+
+function setMode(mode){
+  if(!MODES[mode]) mode = FIRST;
+  const changed = MODES[mode].hidden || !booted;
+  for(const k in MODES) MODES[k].hidden = (k !== mode);
+  if(mode === 'plates') requestAnimationFrame(railSync);
+  // A solo plate belongs to Plates, so the bar keeps pointing there.
+  const lit = mode === 'entry' ? (MODES.plates ? 'plates' : FIRST) : mode;
+  document.querySelectorAll('.bar a').forEach(a => a.classList.toggle('on', a.dataset.mode === lit));
+  placeIndicator(lit);
+
+  // Replay the arrival on the incoming view, but not on the very first paint —
+  // the page-level entrance already covers that.
+  if(changed && booted){
+    const v = MODES[mode];
+    v.classList.remove('enter');
+    void v.offsetWidth;          // restart the animation
+    v.classList.add('enter');
+  }
+}
+
+
+
+/* One plate, on its own. Built on demand from the same entry data the index
+   uses, so there is no second copy of the content to keep in step. */
+function renderSolo(i){
+  const { e, kind, n } = SEQ[i];
+  MODES.entry.innerHTML = `
+    <article class="solo">
+      <div class="solo-mark">${kind === "insight" ? "INS " : "ACT "}${n}</div>
+      <h2 class="solo-title">${esc(e.title)}</h2>
+      ${e.takeaway ? `<p class="solo-take">${esc(e.takeaway)}</p>` : ''}
+      ${e.plate ? `<figure><img src="${esc(e.plate)}" alt="${esc(e.alt || '')}"></figure>` : ''}
+      ${ledeHTML(e.lede)}
+      ${proseHTML(e.evidence, "evidence")}
+      ${e.operative ? `<div class="operative">${proseHTML(e.operative, "op-p")}</div>` : ''}
+      ${proseHTML(e.caveat, "caveat")}
+      <nav class="solo-nav">
+        <button class="rail-btn" id="soloPrev" type="button" aria-label="Previous plate"${i === 0 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m15 18-6-6 6-6"/></svg></button>
+        <span class="rail-count">${String(i+1).padStart(2,'0')} / ${String(SEQ.length).padStart(2,'0')}</span>
+        <button class="rail-btn" id="soloNext" type="button" aria-label="Next plate"${i === SEQ.length-1 ? ' disabled' : ''}>
+          <svg viewBox="0 0 24 24"><path ${RS} d="m9 18 6-6-6-6"/></svg></button>
+      </nav>
+    </article>`;
+  soloAt = i;
+  el('soloPrev').addEventListener('click', () => soloGo(-1));
+  el('soloNext').addEventListener('click', () => soloGo(1));
+}
+let soloAt = -1;
+function soloGo(step){
+  const j = soloAt + step;
+  if(j < 0 || j >= SEQ.length) return;
+  location.hash = SEQ[j].e.id;      // through the hash, so back works
+}
+
+function route(){
+  const hash = location.hash.replace(/^#/, "");
+
+  if((hash === "plates" || hash === "index") && MODES[hash]){
+    setMode(hash);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  if(hash === ""){ setMode(FIRST); return; }
+
+  // A plate's own page. This is where tapping a plate lands.
+  const at = SEQ.findIndex(x => x.e.id === hash);
+  if(at > -1){
+    renderSolo(at);
+    setMode('entry');
+    // Land on the plate, not the top of the page. Tapping a drawing should put
+    // that drawing under the bar with the first paragraph already showing
+    // beneath it, so you read on from there instead of scrolling back down past
+    // the jacket. Measured off #mode-entry, whose top sits above the image, so
+    // it is stable whether or not the image has loaded yet.
+    const bar = document.querySelector('.bar');
+    const top = MODES.entry.getBoundingClientRect().top + window.scrollY
+              - (bar ? bar.offsetHeight : 0) - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: booted ? 'smooth' : 'auto' });
+    return;
+  }
+
+  // Anything else that names something on the index — a vocabulary row.
+  if(MODES.index){
+    setMode("index");
+    const target = document.getElementById(hash);
+    if(target){
+      const top = target.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
+      return;
+    }
+  }
+  setMode(FIRST);
+}
+
+window.addEventListener('hashchange', route);
+route();
+requestAnimationFrame(() => {           // hand the indicator its transition back
+  barInd.classList.remove('instant');
+  booted = true;
+});
+// The words change width when the real mono face lands — re-measure once.
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => {
+    const on = document.querySelector('.bar a.on');
+    if(on){
+      barInd.classList.add('instant');
+      placeIndicator(on.dataset.mode);
+      requestAnimationFrame(() => barInd.classList.remove('instant'));
+    }
+  });
+}
+addEventListener('resize', () => {
+  barInd.classList.add('instant');
+  placeIndicator(document.querySelector('.bar a.on').dataset.mode);
+  requestAnimationFrame(() => barInd.classList.remove('instant'));
+});
+
+/* ── Plates rail ─────────────────────────────────────────────────────
+   Swipe on touch; arrows and the keyboard on anything with a pointer. The
+   snap is CSS, so the gesture stays native and the JS only reports position. */
+const rail = el('rail');
+const MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function railIndex(){
+  if(!rail) return 0;
+  const r = rail.getBoundingClientRect(), mid = r.left + r.width / 2;
+  let best = 0, bd = Infinity;
+  [...rail.children].forEach((t, i) => {
+    const b = t.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - mid);
+    if(d < bd){ bd = d; best = i; }
+  });
+  return best;
+}
+function railSync(){
+  if(!rail) return;
+  const i = railIndex(), n = rail.children.length;
+  el('railCount').textContent = String(i + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+  el('railPrev').disabled = i === 0;
+  el('railNext').disabled = i === n - 1;
+  [...rail.children].forEach((t, k) => t.classList.toggle('cur', k === i));
+}
+function railGo(step){
+  if(!rail) return;
+  const t = rail.children[Math.max(0, Math.min(rail.children.length - 1, railIndex() + step))];
+  if(!t) return;
+  const r = rail.getBoundingClientRect(), b = t.getBoundingClientRect();
+  rail.scrollBy({ left: (b.left + b.width/2) - (r.left + r.width/2), behavior: MOTION ? 'smooth' : 'auto' });
+}
+
+if(rail){
+  let ticking = false;
+  rail.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { railSync(); ticking = false; });
+  }, { passive: true });
+
+  el('railPrev').addEventListener('click', () => railGo(-1));
+  el('railNext').addEventListener('click', () => railGo(1));
+
+  // A swipe must not count as a tap on the plate underneath it.
+  let downX = 0, downY = 0;
+  rail.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; }, { passive: true });
+  rail.addEventListener('click', e => {
+    if(Math.abs(e.clientX - downX) > 10 || Math.abs(e.clientY - downY) > 10){
+      e.preventDefault(); e.stopPropagation();
+    }
+  }, true);
+
+  addEventListener('keydown', e => {
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const step = e.key === 'ArrowRight' ? 1 : -1;
+    if(MODES.plates && !MODES.plates.hidden){ e.preventDefault(); railGo(step); }
+    else if(!MODES.entry.hidden){ e.preventDefault(); soloGo(step); }
+  });
+  addEventListener('resize', railSync);
+  railSync();
+}
+
+/* ── Theme ───────────────────────────────────────────────────────────
+   Dark by default, and it shares the shelf's storage key — pick a side once
+   and every page in Book HQ agrees. The guard keeps it working where storage
+   is blocked (private browsing). */
+const THEME_BG = { light: "#F4F5F7", dark: "#0D0F13" };
+const themeBtn = el('themeBtn');
+const TS = 'stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+const TICON = {
+  sun:`<svg viewBox="0 0 24 24"><circle ${TS} cx="12" cy="12" r="4"/><path ${TS} d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24"><path ${TS} d="M20 14.4A8 8 0 1 1 9.6 4 6.5 6.5 0 0 0 20 14.4Z"/></svg>`
+};
+
+function paintTheme(theme){
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.innerHTML = dark ? TICON.sun : TICON.moon;
+  themeBtn.setAttribute('aria-label', dark ? "Switch to light mode" : "Switch to dark mode");
+  el('themeColor').setAttribute('content', THEME_BG[dark ? "dark" : "light"]);
+}
+
+let theme = "dark";
+try{ theme = localStorage.getItem('bookhq-theme') || "dark"; }catch(e){}
+paintTheme(theme);
+
+themeBtn.addEventListener('click', () => {
+  theme = theme === "dark" ? "light" : "dark";
+  // Ease the colour change for the length of the swap only, so the transition
+  // never sits on the page slowing everything else down.
+  document.body.classList.add('theming');
+  themeBtn.classList.remove('swap'); void themeBtn.offsetWidth; themeBtn.classList.add('swap');
+  paintTheme(theme);
+  setTimeout(() => document.body.classList.remove('theming'), 520);
+  try{ localStorage.setItem('bookhq-theme', theme); }catch(e){}
+});
+</script>
+</body>
+</html>
